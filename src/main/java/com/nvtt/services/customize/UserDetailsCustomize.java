@@ -37,7 +37,7 @@ public class UserDetailsCustomize implements UserDetailsService {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
         
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
 }

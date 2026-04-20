@@ -19,4 +19,9 @@ public class HomePageController {
         return "Hello world";
     }
     
+    @GetMapping("/api/secure")
+    public String getAdminPage() {
+        return "Hello world";
+    }
+    
 }

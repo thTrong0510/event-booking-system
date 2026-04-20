@@ -8,7 +8,7 @@ package com.nvtt.pojo.dtos.user;
  *
  * @author vthan
  */
-public class ResUserInfo {
+public class ResUserInfoDTO {
     private Long id;
     private String email;
     private String fullName;
@@ -70,14 +70,14 @@ public class ResUserInfo {
         this.avatarUrl = avatarUrl;
     }
 
-    public ResUserInfo(Long id, String email, String fullName, String avatarUrl) {
+    public ResUserInfoDTO(Long id, String email, String fullName, String avatarUrl) {
         this.id = id;
         this.email = email;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
     }
 
-    public ResUserInfo() {
+    public ResUserInfoDTO() {
     }
     
 }

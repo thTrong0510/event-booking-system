@@ -5,7 +5,7 @@
 package com.nvtt.services;
 
 import com.nvtt.pojo.User;
-import com.nvtt.pojo.dtos.user.ResUserInfo;
+import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @author vthan
  */
 public interface UserService {
+
     public User getUserByEmail(String email);
-    public ResUserInfo addUser(Map<String, String> params, MultipartFile avatar);
+
+    public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar);
+
+    boolean authenticate(String email, String password);
 }

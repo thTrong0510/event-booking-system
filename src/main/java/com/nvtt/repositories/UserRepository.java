@@ -13,4 +13,5 @@ import com.nvtt.pojo.User;
 public interface UserRepository {
     public User getUserByEmail(String email);
     public void addUser(User user);
+    boolean authenticate(String email, String password);
 }

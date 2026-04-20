@@ -8,7 +8,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
-import com.nvtt.pojo.dtos.user.ResUserInfo;
+import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import com.nvtt.repositories.RoleRepository;
 import com.nvtt.repositories.UserRepository;
 import com.nvtt.services.UserService;
@@ -46,11 +46,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResUserInfo addUser(Map<String, String> params, MultipartFile avatar) {
+    public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar) {
         User user = new User();
         user.setFullName(params.get("fullName"));
         user.setEmail(params.get("email"));
-        user.setPasswordHash(this.passwordEncoder.encode(params.get("password")));
+        user.setPassword(this.passwordEncoder.encode(params.get("password")));
         
         Role role = this.roleRepository.getRoleById(Long.valueOf(params.get("role")));
         user.setRole(role);
@@ -70,9 +70,14 @@ public class UserServiceImpl implements UserService {
         this.userRepository.addUser(user);
 
         // Tạo response user 
-        ResUserInfo userInfo = new ResUserInfo(user.getId(), user.getEmail(), user.getFullName(), user.getAvatarUrl());
+        ResUserInfoDTO userInfo = new ResUserInfoDTO(user.getId(), user.getEmail(), user.getFullName(), user.getAvatarUrl());
 
         return userInfo;
+    }
+
+    @Override
+    public boolean authenticate(String email, String password) {
+        return this.userRepository.authenticate(email, password);
     }
 
 }

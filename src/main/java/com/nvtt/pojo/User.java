@@ -4,6 +4,8 @@
  */
 package com.nvtt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -37,7 +39,7 @@ import java.util.Set;
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-    @NamedQuery(name = "User.findByPasswordHash", query = "SELECT u FROM User u WHERE u.passwordHash = :passwordHash"),
+    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByFullName", query = "SELECT u FROM User u WHERE u.fullName = :fullName"),
     @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "User.findByCreatedAt", query = "SELECT u FROM User u WHERE u.createdAt = :createdAt"),
@@ -59,8 +61,9 @@ public class User implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "password_hash")
-    private String passwordHash;
+    @Column(name = "password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -101,10 +104,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Long id, String email, String passwordHash, String fullName, String avatarUrl) {
+    public User(Long id, String email, String password, String fullName, String avatarUrl) {
         this.id = id;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
     }
@@ -125,12 +128,12 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String passwordHash) {
+        this.password = passwordHash;
     }
 
     public String getFullName() {

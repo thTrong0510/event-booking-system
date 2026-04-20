@@ -4,6 +4,8 @@
  */
 package com.nvtt.configs;
 
+import com.nvtt.filters.JwtFilter;
+import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -40,5 +42,10 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
         registration.setMultipartConfig(
                 new MultipartConfigElement("/", 50000000, 150000000, 0)
         );
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{new JwtFilter()}; // Filter sẽ áp dụng cho mọi request
     }
 }
