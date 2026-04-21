@@ -16,6 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
@@ -177,5 +180,14 @@ public class Payment implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.Payment[ id=" + id + " ]";
     }
-    
+
+    @PrePersist
+    public void beforeSave() {
+        this.createdAt = Date.from(Instant.now());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        this.updatedAt = Date.from(Instant.now());
+    }
 }

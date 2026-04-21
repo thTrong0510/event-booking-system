@@ -16,5 +16,6 @@
     <class>com.nvtt.pojo.Ticket</class>
     <class>com.nvtt.pojo.User</class>
     <class>com.nvtt.pojo.Orders</class>
+    <class>com.nvtt.pojo.EventMedia</class>
   </persistence-unit>
 </persistence>

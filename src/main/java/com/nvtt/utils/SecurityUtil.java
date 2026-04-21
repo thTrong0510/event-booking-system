@@ -4,6 +4,8 @@
  */
 package com.nvtt.utils;
 
+import com.nimbusds.jwt.JWT;
+import java.text.ParseException;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,8 +30,12 @@ public class SecurityUtil {
             return null;
         } else if (authentication.getPrincipal() instanceof UserDetails springSecurityUser) {
             return springSecurityUser.getUsername();
-//        } else if (authentication.getPrincipal() instanceof Jwt jwt) {
-//            return jwt.getSubject();
+        } else if (authentication.getPrincipal() instanceof JWT jwt) {
+            try {
+                return jwt.getJWTClaimsSet().getSubject();
+            } catch (ParseException ex) {
+                return null;
+            }
         } else if (authentication.getPrincipal() instanceof String s) {
             return s;
         }

@@ -12,12 +12,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -133,6 +136,16 @@ public class EventStatistic implements Serializable {
     @Override
     public String toString() {
         return "com.nvtt.pojo.EventStatistic[ eventId=" + eventId + " ]";
+    }
+    
+    @PrePersist
+    public void beforeSave() {
+        this.lastUpdated = Date.from(Instant.now());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        this.lastUpdated = Date.from(Instant.now());
     }
     
 }

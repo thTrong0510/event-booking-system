@@ -10,12 +10,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -110,5 +112,10 @@ public class SystemStatisticsDaily implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.SystemStatisticsDaily[ statDate=" + statDate + " ]";
     }
-    
+
+    @PrePersist
+    public void beforeSave() {
+        this.statDate = Date.from(Instant.now());
+    }
+
 }

@@ -4,6 +4,7 @@
  */
 package com.nvtt.pojo;
 
+import com.nvtt.utils.SecurityUtil;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,13 +16,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -146,4 +151,21 @@ public class OrganizerVerification implements Serializable {
         return "com.nvtt.pojo.OrganizerVerification[ id=" + id + " ]";
     }
     
+        @PrePersist
+    public void beforeSave() {
+        this.createdAt = Date.from(Instant.now());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : null;
+        if(!Objects.isNull(email)) {
+            User user = new User() ;
+            user.setEmail(email);
+            this.approvedBy = user;
+        }
+        this.approvedAt = Date.from(Instant.now());
+    }
 }

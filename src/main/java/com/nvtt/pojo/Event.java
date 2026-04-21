@@ -18,6 +18,8 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -25,6 +27,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
@@ -64,14 +67,6 @@ public class Event implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "description")
     private String description;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "image_url")
-    private String imageUrl;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "video_url")
-    private String videoUrl;
     @Basic(optional = false)
     @NotNull
     @Column(name = "start_time")
@@ -102,6 +97,8 @@ public class Event implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "eventId")
+    private Set<EventMedia> eventMedias;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private Set<Ticket> tickets;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
@@ -160,22 +157,6 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
     public Date getStartTime() {
         return startTime;
     }
@@ -230,6 +211,14 @@ public class Event implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<EventMedia> getEventMedias() {
+        return eventMedias;
+    }
+
+    public void setEventMedias(Set<EventMedia> eventMedias) {
+        this.eventMedias = eventMedias;
     }
 
     public Set<Ticket> getTickets() {
@@ -304,5 +293,14 @@ public class Event implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.Event[ id=" + id + " ]";
     }
-    
+
+    @PrePersist
+    public void beforeSave() {
+        this.createdAt = Date.from(Instant.now());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        this.updatedAt = Date.from(Instant.now());
+    }
 }

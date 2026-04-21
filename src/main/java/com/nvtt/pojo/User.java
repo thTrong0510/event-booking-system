@@ -4,7 +4,6 @@
  */
 package com.nvtt.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -20,12 +19,15 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
@@ -248,5 +250,16 @@ public class User implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.User[ id=" + id + " ]";
     }
-    
+
+    @PrePersist
+    public void beforeSave() {
+        this.isActive = true;
+        this.createdAt = Date.from(Instant.now());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        this.updatedAt = Date.from(Instant.now());
+    }
+
 }

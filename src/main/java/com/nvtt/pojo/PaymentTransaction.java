@@ -15,11 +15,13 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -174,5 +176,10 @@ public class PaymentTransaction implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.PaymentTransaction[ id=" + id + " ]";
     }
-    
+
+    @PrePersist
+    public void beforeSave() {
+        this.createdAt = Date.from(Instant.now());
+    }
+
 }
