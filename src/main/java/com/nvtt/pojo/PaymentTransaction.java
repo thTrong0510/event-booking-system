@@ -4,9 +4,12 @@
  */
 package com.nvtt.pojo;
 
+import com.nvtt.utils.constants.ProviderStatus;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +22,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
@@ -59,9 +63,10 @@ public class PaymentTransaction implements Serializable {
     @Size(max = 255)
     @Column(name = "payer_id")
     private String payerId;
-    @Size(max = 100)
-    @Column(name = "provider_status")
-    private String providerStatus;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider_status", nullable = false)
+    private ProviderStatus providerStatus;
     @Lob
     @Size(max = 1073741824)
     @Column(name = "raw_response")
@@ -120,11 +125,11 @@ public class PaymentTransaction implements Serializable {
         this.payerId = payerId;
     }
 
-    public String getProviderStatus() {
+    public ProviderStatus getProviderStatus() {
         return providerStatus;
     }
 
-    public void setProviderStatus(String providerStatus) {
+    public void setProviderStatus(ProviderStatus providerStatus) {
         this.providerStatus = providerStatus;
     }
 

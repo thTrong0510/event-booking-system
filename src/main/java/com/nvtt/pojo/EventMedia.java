@@ -52,7 +52,7 @@ public class EventMedia implements Serializable {
     private String mediaUrl;
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Event eventId;
+    private Event event;
 
     public EventMedia() {
     }
@@ -91,12 +91,12 @@ public class EventMedia implements Serializable {
         this.mediaUrl = mediaUrl;
     }
 
-    public Event getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(Event eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override

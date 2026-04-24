@@ -97,7 +97,7 @@ public class Event implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "eventId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private Set<EventMedia> eventMedias;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private Set<Ticket> tickets;

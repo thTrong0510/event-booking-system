@@ -4,10 +4,13 @@
  */
 package com.nvtt.pojo;
 
+import com.nvtt.utils.constants.PaymentStatus;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -61,11 +64,10 @@ public class Payment implements Serializable {
     @NotNull
     @Column(name = "amount")
     private BigDecimal amount;
-    @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private PaymentStatus status;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -85,7 +87,7 @@ public class Payment implements Serializable {
         this.id = id;
     }
 
-    public Payment(Long id, String paymentMethod, BigDecimal amount, String status) {
+    public Payment(Long id, String paymentMethod, BigDecimal amount, PaymentStatus status) {
         this.id = id;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
@@ -116,11 +118,11 @@ public class Payment implements Serializable {
         this.amount = amount;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 

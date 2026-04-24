@@ -5,9 +5,12 @@
 package com.nvtt.pojo;
 
 import com.nvtt.utils.SecurityUtil;
+import com.nvtt.utils.constants.OrganizerVerificationStatus;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +25,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
@@ -48,11 +50,10 @@ public class OrganizerVerification implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OrganizerVerificationStatus status;
     @Column(name = "approved_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedAt;
@@ -73,7 +74,7 @@ public class OrganizerVerification implements Serializable {
         this.id = id;
     }
 
-    public OrganizerVerification(Long id, String status) {
+    public OrganizerVerification(Long id, OrganizerVerificationStatus status) {
         this.id = id;
         this.status = status;
     }
@@ -86,11 +87,11 @@ public class OrganizerVerification implements Serializable {
         this.id = id;
     }
 
-    public String getStatus() {
+    public OrganizerVerificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrganizerVerificationStatus status) {
         this.status = status;
     }
 
@@ -150,8 +151,8 @@ public class OrganizerVerification implements Serializable {
     public String toString() {
         return "com.nvtt.pojo.OrganizerVerification[ id=" + id + " ]";
     }
-    
-        @PrePersist
+
+    @PrePersist
     public void beforeSave() {
         this.createdAt = Date.from(Instant.now());
     }
@@ -161,8 +162,8 @@ public class OrganizerVerification implements Serializable {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : null;
-        if(!Objects.isNull(email)) {
-            User user = new User() ;
+        if (!Objects.isNull(email)) {
+            User user = new User();
             user.setEmail(email);
             this.approvedBy = user;
         }
