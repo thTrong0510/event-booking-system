@@ -13,6 +13,7 @@ public class ResUserInfoDTO {
     private String email;
     private String fullName;
     private String avatarUrl;
+    private String role;
 
     /**
      * @return the id
@@ -78,6 +79,28 @@ public class ResUserInfoDTO {
     }
 
     public ResUserInfoDTO() {
+    }
+    
+    public ResUserInfoDTO(Long id, String email, String fullName, String avatarUrl, String role) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.avatarUrl = avatarUrl;
+        this.role = role;
+    }
+
+    /**
+     * @return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
     
 }

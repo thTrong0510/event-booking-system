@@ -4,10 +4,13 @@
  */
 package com.nvtt.pojo;
 
+import com.nvtt.utils.constants.OrderStatus;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +24,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -63,11 +65,10 @@ public class Orders implements Serializable {
     @NotNull
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
-    @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OrderStatus status;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -89,7 +90,7 @@ public class Orders implements Serializable {
         this.id = id;
     }
 
-    public Orders(Long id, int quantity, BigDecimal unitPrice, BigDecimal totalAmount, String status) {
+    public Orders(Long id, int quantity, BigDecimal unitPrice, BigDecimal totalAmount, OrderStatus status) {
         this.id = id;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
@@ -129,11 +130,11 @@ public class Orders implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

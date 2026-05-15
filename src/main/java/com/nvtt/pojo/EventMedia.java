@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -51,7 +52,7 @@ public class EventMedia implements Serializable {
     private String mediaUrl;
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Event eventId;
+    private Event event;
 
     public EventMedia() {
     }
@@ -90,32 +91,32 @@ public class EventMedia implements Serializable {
         this.mediaUrl = mediaUrl;
     }
 
-    public Event getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(Event eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return id != null ? id.hashCode() : Objects.hash(mediaType, mediaUrl);
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EventMedia)) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
         EventMedia other = (EventMedia) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if (id != null && other.id != null) {
+            return id.equals(other.id);
         }
-        return true;
+        return mediaType.equals(other.mediaType) && mediaUrl.equals(other.mediaUrl);
     }
 
     @Override

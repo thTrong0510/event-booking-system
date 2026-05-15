@@ -20,4 +20,6 @@ public interface UserService {
     public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar);
 
     boolean authenticate(String email, String password);
+    
+    public User getMyInfo();
 }
