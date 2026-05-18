@@ -14,7 +14,8 @@ import java.util.Map;
  */
 public interface CategoryService {
     Category getCategoryByName(String name);
-    Category addCategory(Map<String, String> params); // add and modify
+    Category addCategory(Map<String, String> params);
+    Category updateCategory(Long id, Map<String, String> params);
     void deleteCategory(Category category);
     List<Category> getCategory(Map<String, String> params);
 }

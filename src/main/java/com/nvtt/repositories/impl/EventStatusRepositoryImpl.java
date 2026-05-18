@@ -33,6 +33,15 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
                 .getSingleResult();
         return eventStatus;
     }
+    
+    @Override
+    public EventStatus getStatusById(Long id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        EventStatus eventStatus = session.createNamedQuery("EventStatus.findById", EventStatus.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return eventStatus;
+    }
 
     @Override
     public EventStatus addEventStatus(EventStatus eventStatus) {

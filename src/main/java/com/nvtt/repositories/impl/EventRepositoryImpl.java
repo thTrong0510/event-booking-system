@@ -14,7 +14,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nvtt.pojo.Event;
+import com.nvtt.pojo.EventStatus;
 import com.nvtt.repositories.EventRepository;
+import com.nvtt.utils.EventStatusUtils.EventStatusUtils;
 
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -36,6 +38,9 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Autowired
     private Environment env;
+    
+    @Autowired
+    private EventStatusUtils eventStatusUtils;
 
     @Override
     public Event getEventById(Long eventId) {
@@ -50,17 +55,20 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<Event> getEvent(Map<String, String> params) {
+    public List<Event> getPublicEvents(Map<String, String> params) {
         Session session = this.factory.getObject().getCurrentSession();
+        List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
         q.select(root).distinct(true);
 
-        if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = new ArrayList<>();
+        
+        predicates.add(root.get("status").in(publicStatuses));
 
+        if (params != null) {
             String id = params.get("id");
             if (id != null && !id.isEmpty()) {
                 predicates.add(b.equal(root.get("id"), Long.parseLong(id)));
@@ -105,10 +113,9 @@ public class EventRepositoryImpl implements EventRepository {
             if (location != null && !location.isEmpty()) {
                 predicates.add(b.like(root.get("location"), String.format("%%%s%%", location)));
             }
-
-            q.where(predicates.toArray(new Predicate[0]));
         }
 
+        q.where(predicates.toArray(new Predicate[0]));
         q.orderBy(b.desc(root.get("id")));
 
         Query query = session.createQuery(q);
@@ -146,7 +153,7 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<Event> getOrganizerEvent(Long organizerId, Map<String, String> params) {
+    public List<Event> getOrganizerEvents(Long organizerId, Map<String, String> params) {
         Session s = factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Event> q = b.createQuery(Event.class);

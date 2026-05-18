@@ -58,18 +58,43 @@ public class EventUtils {
     public Event convertParamsToEventObject(Map<String, String> params){
         User organizer = userUtils.getCurrentUser();
         Event event = new Event();
-        event.setStatus(updateStatusForEventByTime(new Date(Long.parseLong(params.get("startTime"))), new Date(Long.parseLong(params.get("endTime")))));
-        Category category = categoryRepository.getCategoryByName(params.get("category"));
-        event.setCategory(category);
         event.setOrganizer(organizer);
-        event.setName(params.get("name"));
-        event.setDescription(params.get("description"));
-        event.setStartTime(new Date(Long.parseLong(params.get("startTime"))));
-        event.setEndTime(new Date(Long.parseLong(params.get("endTime"))));
-        event.setLocation(params.get("location"));
-        event.setTotalTickets(Integer.parseInt(params.get("totalTickets")));
-        event.setTicketPrice(BigDecimal.valueOf(Double.parseDouble(params.get("ticketPrice"))));
-        event.setAvailableTickets(Integer.parseInt(params.get("totalTickets")));
+        if (params.get("statusId") != null){
+            EventStatus status = eventStatusRepository.getStatusById(Long.valueOf(params.get("statusId")));
+            event.setStatus(status);
+        } else {
+            EventStatus status = eventStatusRepository.getStatusByName("DRAFT");
+            event.setStatus(status);
+        }
+        if(params.get("category") != null){
+            Category category = categoryRepository.getCategoryByName(params.get("category"));
+            event.setCategory(category);
+        }
+        if (params.get("name") != null){
+            event.setName(params.get("name"));
+        }
+        if (params.get("description") != null){
+            event.setDescription(params.get("description"));
+        }
+        if (params.get("startTime") != null){
+            event.setStartTime(new Date(Long.parseLong(params.get("startTime"))));
+        }
+        if (params.get("endTime") != null){
+            event.setEndTime(new Date(Long.parseLong(params.get("endTime"))));
+        }
+        if (params.get("location") != null){
+            event.setLocation(params.get("location"));
+        }
+        if (params.get("totalTickets") != null){
+            event.setTotalTickets(Integer.parseInt(params.get("totalTickets")));
+        }
+        if (params.get("ticketPrice") != null){
+            event.setTicketPrice(BigDecimal.valueOf(Double.parseDouble(params.get("ticketPrice"))));
+        }
+        if (params.get("availableTickets") != null){
+            event.setAvailableTickets(Integer.parseInt(params.get("availableTickets")));
+        }
+        
         return event;
     }
 

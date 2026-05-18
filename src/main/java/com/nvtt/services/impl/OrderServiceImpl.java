@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.Orders;
-import com.nvtt.repositories.EventRepository;
 import com.nvtt.repositories.OrderRepository;
 import com.nvtt.services.OrderService;
+import com.nvtt.services.EventService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.UserUtils.UserUtils;
 import com.nvtt.pojo.User;
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private EventRepository eventRepository;
+    private EventService eventService;
 
     @Override
     public List<Orders> getOrders(Map<String, String> params) {
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
             if (currentUser == null) {
                 throw new RuntimeException("User not authenticated");
             }
-            Event event = eventRepository.getEventById(Long.parseLong(params.get("eventId")));
+            Event event = eventService.getEventById(Long.parseLong(params.get("eventId")));
             if (eventUtils.isOwner(event, currentUser.getId())) {
                 return this.orderRepository.getOrders(params);
             } else {

@@ -39,6 +39,15 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 .getSingleResult();
         return category;
     }
+    
+    @Override
+    public Category getCategoryById(Long id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Category category = session.createNamedQuery("Category.findById", Category.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return category;
+    }
 
     @Override
     public Category addCategory(Category category) {

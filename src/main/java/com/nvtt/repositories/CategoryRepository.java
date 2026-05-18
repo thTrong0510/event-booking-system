@@ -17,4 +17,5 @@ public interface CategoryRepository {
     Category addCategory(Category category); // add and modify
     void deleteCategory(Category category);
     List<Category> getCategory(Map<String, String> params);
+    Category getCategoryById(Long id);
 }

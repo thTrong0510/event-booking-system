@@ -15,4 +15,5 @@ import com.nvtt.pojo.EventStatus;
 public interface EventStatusRepository {
     EventStatus getStatusByName(String name);
     EventStatus addEventStatus(EventStatus eventStatus); // add and update
+    EventStatus getStatusById(Long id);
 }

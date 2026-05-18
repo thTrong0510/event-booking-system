@@ -49,7 +49,16 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new RuntimeException("You don't have permission to add Category");
         }
-        
+    }
+    
+    @Override
+    public Category updateCategory(Long id, Map<String, String> params){
+        Category ct = categoryRepository.getCategoryById(id);
+        if (ct == null){
+            throw new RuntimeException("Don't have any Category with this id");
+        } else {
+            return categoryRepository.addCategory(ct);
+        }
     }
 
     @Override

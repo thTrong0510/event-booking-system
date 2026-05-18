@@ -31,8 +31,10 @@ import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventMediaDTO;
 import com.nvtt.services.EventService;
+import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
+import com.nvtt.utils.UserUtils.UserUtils;
 
 import jakarta.data.repository.Delete;
 
@@ -52,11 +54,17 @@ public class ApiEventController {
     
     @Autowired
     private EventUtils eventUtils;
+    
+    @Autowired
+    private UserUtils userUtils;
+    
+    @Autowired
+    private EventStatisticService eventStatisticService;
 
     @GetMapping("/events")
     public ResponseEntity<Set<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
         try {
-            List<Event> events = eventService.getEvent(params);
+            List<Event> events = eventService.getPublicEvents(params);
             Set<ResEventInfoDTO> resEventInfoDTOs = events.stream()
                     .map(event -> eventUtils.convertToResEventInfoDTO(event))
                     .collect(Collectors.toSet());
@@ -72,6 +80,7 @@ public class ApiEventController {
         try {
             Event event = eventService.getEventById(id);
             ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
+            eventStatisticService.increaseViews(event.getId(), 1);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (Exception e) {
             System.err.println("Error fetching events: " + e.getMessage());
@@ -86,7 +95,7 @@ public class ApiEventController {
             if (authentication != null) {
                 User u = userService.getUserByEmail(authentication.getName());
                 Map<String, Long> organizerId = Map.of("organizerId", u.getId());
-                List<Event> events = eventService.getOrganizerEvent(params);
+                List<Event> events = eventService.getOrganizerEvents(params);
                 Set<ResEventInfoDTO> resEventInfoDTOs = events.stream()
                     .map(event -> eventUtils.convertToResEventInfoDTO(event))
                     .collect(Collectors.toSet());
@@ -140,6 +149,16 @@ public class ApiEventController {
             return ResponseEntity.status(HttpStatus.OK).body(eventUtils.convertToResEventInfoDTO(updatedEvent));
         } catch (Exception e) {
             System.err.println("Error updating event: " + e.getMessage());
+            throw new RuntimeException(e.getMessage().toString(), e);
+        }
+    }
+    
+    @PutMapping("/secure/organizer/launch-event")
+    public ResponseEntity<Void> launchEvent(@RequestParam Long eventId){
+        try {
+            eventService.launchEvent(eventId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage().toString(), e);
         }
     }

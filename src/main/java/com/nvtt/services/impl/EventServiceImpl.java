@@ -23,15 +23,17 @@ import com.cloudinary.utils.ObjectUtils;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
 import com.nvtt.pojo.Role;
-import com.nvtt.repositories.CategoryRepository;
 import com.nvtt.repositories.EventRepository;
-import com.nvtt.repositories.EventStatusRepository;
 import com.nvtt.services.EventService;
 import com.nvtt.services.UserService;
+import com.nvtt.services.EventStatisticService;
+import com.nvtt.services.EventStatusService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.UserUtils.UserUtils;
 import com.nvtt.pojo.User;
-import com.nvtt.repositories.UserRepository;
+import com.nvtt.pojo.EventStatus;
+import com.nvtt.utils.EventStatusUtils.EventStatusUtils;
+import java.util.HashMap;
 
 /**
  *
@@ -51,26 +53,33 @@ public class EventServiceImpl implements EventService {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private EventUtils eventUtils;
 
     @Autowired
     private UserUtils userUtils;
 
+    @Autowired
+    private EventStatusService eventStatusService;
+    
+    @Autowired
+    private EventStatisticService eventStatisticService;
+    
+    @Autowired
+    private EventStatusUtils eventStatusUtils;
+
     @Override
-    public List<Event> getEvent(Map<String, String> params) {
-        return eventRepository.getEvent(params);
+    public List<Event> getPublicEvents(Map<String, String> params) {
+        List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
+        return eventRepository.getPublicEvents(params);
     }
 
     @Override
-    public List<Event> getOrganizerEvent(Map<String, String> params) {
+    public List<Event> getOrganizerEvents(Map<String, String> params) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
-                User u = userRepository.getUserByEmail(authentication.getName());
-                return eventRepository.getOrganizerEvent(u.getId(), params);
+                User u = userService.getUserByEmail(authentication.getName());
+                return eventRepository.getOrganizerEvents(u.getId(), params);
             } else {
                 return null;
             }
@@ -96,6 +105,7 @@ public class EventServiceImpl implements EventService {
                 throw new RuntimeException("Unauthorized: User does not have ORGANIZER role");
             }
             Event event = eventUtils.convertParamsToEventObject(params);
+            event.setAvailableTickets(event.getTotalTickets());
             event.setEventMedias(new HashSet<>());
 
             if (!images.isEmpty()) {
@@ -133,7 +143,6 @@ public class EventServiceImpl implements EventService {
                     }
                 }
             }
-            System.err.println("Event name: " + event.getName());
 
             return eventRepository.addEvent(event);
         } catch (Exception e) {
@@ -222,6 +231,37 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @Override
+    public boolean launchEvent(Long id) {
+        try {
+            Event event = eventRepository.getEventById(id);
+            User current = userUtils.getCurrentUser();
+            if (event == null) {
+                throw new RuntimeException("Event not found");
+            } else {
+                if (!eventUtils.isOwner(event, current.getId())) {
+                    throw new RuntimeException("Don't have permission to launch event");
+                }
+                EventStatus status = eventStatusService.getStatusByName("ONSALE");
+                event.setStatus(status);
+                Event savedEvent = eventRepository.addEvent(event);
+                if (savedEvent != null){
+                    Map<String, String> params = new HashMap<>();
+                    params.put("eventId", event.getId().toString());
+                    params.put("totalViews", "0");
+                    params.put("totalTicketsSold", "0");
+                    params.put("totalRevenue", "0");
+                    eventStatisticService.addEventStatistic(params);
+                } else {
+                    throw new RuntimeException("Error in add Event Statistic");
+                }
+                return true;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error in lauch event: " + e.getMessage());
+        }
+    }
+
     private boolean isOrganizer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
@@ -233,5 +273,4 @@ public class EventServiceImpl implements EventService {
         return false;
     }
 
-    
 }
