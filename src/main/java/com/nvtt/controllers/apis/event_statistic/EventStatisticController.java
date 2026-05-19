@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.nvtt.controllers.event_statistic;
+package com.nvtt.controllers.apis.event_statistic;
 
 import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.dtos.event_statistic.ResEventStatisticDTO;
