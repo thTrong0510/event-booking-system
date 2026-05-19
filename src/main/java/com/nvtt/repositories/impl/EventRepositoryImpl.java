@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.repositories.EventRepository;
-import com.nvtt.utils.EventStatusUtils.EventStatusUtils;
 
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -38,26 +37,58 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Autowired
     private Environment env;
-    
-    @Autowired
-    private EventStatusUtils eventStatusUtils;
 
     @Override
-    public Event getEventById(Long eventId) {
+    public Event getEventById(Long id) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
         q.select(root).distinct(true);
-        q.where(b.equal(root.get("id"), eventId));
+        q.where(b.equal(root.get("id"), id));
         return session.createQuery(q).getSingleResult();
     }
 
     @Override
-    public List<Event> getPublicEvents(Map<String, String> params) {
+    public Event getEventById(Long id, List<EventStatus> statuses) {
         Session session = this.factory.getObject().getCurrentSession();
-        List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<Event> q = b.createQuery(Event.class);
+        Root<Event> root = q.from(Event.class);
+        root.fetch("eventMedias", JoinType.LEFT);
+        q.select(root).distinct(true);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(root.get("id"), id));
+        if (statuses != null) {
+            predicates.add(statuses.isEmpty() ? b.disjunction() : root.get("status").in(statuses));
+        }
+
+        q.where(predicates.toArray(new Predicate[0]));
+        return session.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public Event getOwnEventById(Long id, Long organizerId){
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<Event> q = b.createQuery(Event.class);
+        Root<Event> root = q.from(Event.class);
+        root.fetch("eventMedias", JoinType.LEFT);
+        q.select(root).distinct(true);
+        q.where(
+            b.and(
+                b.equal(root.get("id"), id),
+                b.equal(root.get("organizer").get("id"), organizerId)
+            )
+        );
+        return session.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public List<Event> getEvents(Map<String, String> params, List<EventStatus> statuses) {
+        Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
@@ -66,7 +97,9 @@ public class EventRepositoryImpl implements EventRepository {
 
         List<Predicate> predicates = new ArrayList<>();
         
-        predicates.add(root.get("status").in(publicStatuses));
+        if (statuses != null) {
+            predicates.add(statuses.isEmpty() ? b.disjunction() : root.get("status").in(statuses));
+        }
 
         if (params != null) {
             String id = params.get("id");

@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
             if (currentUser == null) {
                 throw new RuntimeException("User not authenticated");
             }
-            Event event = eventService.getEventById(Long.parseLong(params.get("eventId")));
+            Event event = eventService.getPublicEventById(Long.parseLong(params.get("eventId")));
             if (eventUtils.isOwner(event, currentUser.getId())) {
                 return this.orderRepository.getOrders(params);
             } else {

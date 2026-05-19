@@ -90,7 +90,7 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
-        Root<Event> root = q.from(Event.class);
+        Root<EventStatistic> root = q.from(EventStatistic.class);
         q.where(b.equal(root.get("eventId"), eventId));
         return session.createQuery(q).getSingleResult();
     }

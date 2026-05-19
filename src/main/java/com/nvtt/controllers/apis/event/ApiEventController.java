@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,10 +25,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
+import com.nvtt.pojo.dtos.RestResponse;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventMediaDTO;
 import com.nvtt.services.EventService;
@@ -35,6 +39,7 @@ import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.UserUtils.UserUtils;
+import com.nvtt.utils.exceptions.IdInvalidException;
 
 import jakarta.data.repository.Delete;
 
@@ -78,13 +83,15 @@ public class ApiEventController {
     @GetMapping("/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getEventById(@PathVariable Long id) {
         try {
-            Event event = eventService.getEventById(id);
+            Event event = eventService.getPublicEventById(id);
             ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
-            eventStatisticService.increaseViews(event.getId(), 1);
+            if(event != null){
+                eventStatisticService.increaseViews(event.getId(), 1);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (Exception e) {
             System.err.println("Error fetching events: " + e.getMessage());
-            throw new RuntimeException("Error fetching events", e);
+            throw new RuntimeException(e.getMessage());
         }
     }
     
@@ -140,7 +147,7 @@ public class ApiEventController {
             if (authentication != null) {
                 String email = authentication.getName();
                 User user = userService.getUserByEmail(email);
-                Event event = eventService.getEventById(id);
+                Event event = eventService.getOwnEventById(id);
                 if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
                     throw new RuntimeException("Unauthorized: User is not the organizer of this event");
                 }
@@ -170,7 +177,7 @@ public class ApiEventController {
             if (authentication != null) {
                 String email = authentication.getName();
                 User user = userService.getUserByEmail(email);
-                Event event = eventService.getEventById(id);
+                Event event = eventService.getOwnEventById(id);
                 if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
                     throw new RuntimeException("Unauthorized: User is not the organizer of this event");
                 }

@@ -70,7 +70,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getPublicEvents(Map<String, String> params) {
         List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-        return eventRepository.getPublicEvents(params);
+        return eventRepository.getEvents(params, publicStatuses);
     }
 
     @Override
@@ -90,8 +90,19 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getEventById(Long id) {
-        return eventRepository.getEventById(id);
+    public Event getPublicEventById(Long id) {
+        try {
+            List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
+            return eventRepository.getEventById(id, publicStatuses);
+        } catch (Exception e) {
+            throw new RuntimeException("Don't have any event with this id");
+        }
+    }
+
+    @Override
+    public Event getOwnEventById(Long id){
+        User u = userUtils.getCurrentUser();
+        return eventRepository.getOwnEventById(id, u.getId());
     }
 
     @Override
