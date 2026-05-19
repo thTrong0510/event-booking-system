@@ -54,6 +54,9 @@ public class EventStatistic implements Serializable {
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
     @JoinColumn(name = "event_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Event event;
@@ -146,6 +149,20 @@ public class EventStatistic implements Serializable {
     @PreUpdate
     public void beforeUpdate() {
         this.lastUpdated = Date.from(Instant.now());
+    }
+
+    /**
+     * @return the createdAt
+     */
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * @param createdAt the createdAt to set
+     */
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
     
 }

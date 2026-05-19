@@ -4,14 +4,12 @@
  */
 package com.nvtt.repositories.impl;
 
-import com.nvtt.pojo.Category;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventStatistic;
 import com.nvtt.repositories.EventStatisticRepository;
-import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
@@ -59,29 +57,64 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
     }
     
     @Override
-    public List<EventStatistic> getEventStatistics(Map<String, String> params){
+    public List<EventStatistic> getEventStatistics(Map<String, String> params) {
+        return getEventStatisticsByOrganizerAndCreatedAtRange(null, params, null, null);
+    }
+    
+    @Override
+    public List<EventStatistic> getEventStatisticsByCreatedAtRange(Map<String, String> params, Date fromCreatedAt, Date toCreatedAt) {
+        return getEventStatisticsByOrganizerAndCreatedAtRange(null, params, fromCreatedAt, toCreatedAt);
+    }
+    
+    @Override
+    public List<EventStatistic> getEventStatisticsByOrganizerAndCreatedAtRange(Long organizerId, Map<String, String> params, Date fromCreatedAt, Date toCreatedAt){
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
         Root<EventStatistic> root = q.from(EventStatistic.class);
+        List<Predicate> predicates = new ArrayList<>();
+        
+        if (organizerId != null) {
+            Join<EventStatistic, Event> event = root.join("event");
+            predicates.add(b.equal(event.get("organizer").get("id"), organizerId));
+        }
         
         if (params != null) {
-            if (params.containsKey("eventId")) {
-                q.where(b.equal(root.get("eventId"), Long.parseLong(params.get("eventId"))));
+            String eventId = params.get("eventId");
+            if (eventId != null && !eventId.isEmpty()) {
+                predicates.add(b.equal(root.get("eventId"), Long.parseLong(eventId)));
             }
-            if (params.containsKey("fromRevenue")) {
-                q.where(b.greaterThanOrEqualTo(root.get("totalRevenue"), new BigDecimal(params.get("fromRevenue"))));
+            
+            String fromRevenue = params.get("fromRevenue");
+            if (fromRevenue != null && !fromRevenue.isEmpty()) {
+                predicates.add(b.greaterThanOrEqualTo(root.<BigDecimal>get("totalRevenue"), new BigDecimal(fromRevenue)));
             }
-            if (params.containsKey("toRevenue")) {
-                q.where(b.lessThanOrEqualTo(root.get("totalRevenue"), new BigDecimal(params.get("toRevenue"))));
+            
+            String toRevenue = params.get("toRevenue");
+            if (toRevenue != null && !toRevenue.isEmpty()) {
+                predicates.add(b.lessThanOrEqualTo(root.<BigDecimal>get("totalRevenue"), new BigDecimal(toRevenue)));
             }
-            if (params.containsKey("fromViews")) {
-                q.where(b.greaterThanOrEqualTo(root.get("totalViews"), new BigDecimal(params.get("fromViews"))));
+            
+            String fromViews = params.get("fromViews");
+            if (fromViews != null && !fromViews.isEmpty()) {
+                predicates.add(b.greaterThanOrEqualTo(root.<Integer>get("totalViews"), Integer.parseInt(fromViews)));
             }
-            if (params.containsKey("toViews")) {
-                q.where(b.lessThanOrEqualTo(root.get("totalViews"), new BigDecimal(params.get("toViews"))));
+            
+            String toViews = params.get("toViews");
+            if (toViews != null && !toViews.isEmpty()) {
+                predicates.add(b.lessThanOrEqualTo(root.<Integer>get("totalViews"), Integer.parseInt(toViews)));
             }
         }
+        
+        if (fromCreatedAt != null) {
+            predicates.add(b.greaterThanOrEqualTo(root.<Date>get("createdAt"), fromCreatedAt));
+        }
+        
+        if (toCreatedAt != null) {
+            predicates.add(b.lessThan(root.<Date>get("createdAt"), toCreatedAt));
+        }
+
+        q.where(predicates.toArray(new Predicate[0]));
         return session.createQuery(q).getResultList();
     }
     
@@ -92,6 +125,22 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
         Root<EventStatistic> root = q.from(EventStatistic.class);
         q.where(b.equal(root.get("eventId"), eventId));
+        return session.createQuery(q).getSingleResult();
+    }
+    
+    @Override
+    public EventStatistic getEventStatisticByEventIdAndOrganizerId(Long eventId, Long organizerId){
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
+        Root<EventStatistic> root = q.from(EventStatistic.class);
+        Join<EventStatistic, Event> event = root.join("event");
+        q.where(
+            b.and(
+                b.equal(root.get("eventId"), eventId),
+                b.equal(event.get("organizer").get("id"), organizerId)
+            )
+        );
         return session.createQuery(q).getSingleResult();
     }
 }
