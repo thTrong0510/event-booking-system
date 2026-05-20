@@ -111,12 +111,11 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
     @Override
     public void updateStatus(Long id, String status, Long adminId) {
         Session session = factory.getObject().getCurrentSession();
-        
+
         OrganizerVerificationStatus enumStatus = OrganizerVerificationStatus.APPROVED;
-        if(status.equals(OrganizerVerificationStatus.REJECTED.toString())) {
+        if (status.equals(OrganizerVerificationStatus.REJECTED.toString())) {
             enumStatus = OrganizerVerificationStatus.REJECTED;
         }
-        
 
         // Cập nhật nhanh bằng HQL, chuẩn hóa thời gian và định danh admin phê duyệt
         String hql = "UPDATE OrganizerVerification ov SET ov.status = :status, "

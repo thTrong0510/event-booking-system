@@ -29,5 +29,9 @@ public interface PermissionRepository {
             String module,
             String apiMethod);
 
-    boolean exists(String name, String apiPath, String apiMethod);
+    boolean exists(String apiPath, String apiMethod);
+
+    List<Permission> findByRoleId(Long roleId);
+
+    List<Permission> findAll();
 }

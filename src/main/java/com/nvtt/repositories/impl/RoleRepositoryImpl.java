@@ -12,12 +12,14 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.nvtt.repositories.RoleRepository;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -39,9 +41,20 @@ public class RoleRepositoryImpl implements RoleRepository {
         Query q = this.getSession().createNamedQuery("Role.findById", Role.class);
         q.setParameter("id", id);
 
-        Role role = (Role) q.getSingleResult();
+        Optional<Role> optionalRole;
 
-        return role;
+        try {
+            Role role = (Role) q.getSingleResult();
+            optionalRole = Optional.of(role);
+        } catch (NoResultException e) {
+            optionalRole = Optional.empty();
+        }
+
+        if (optionalRole.isEmpty()) {
+            return null;
+        }
+
+        return optionalRole.get();
     }
 
     @Override
@@ -49,9 +62,20 @@ public class RoleRepositoryImpl implements RoleRepository {
         Query q = this.getSession().createNamedQuery("Role.findByName", Role.class);
         q.setParameter("name", name);
 
-        Role role = (Role) q.getSingleResult();
+        Optional<Role> optionalRole;
 
-        return role;
+        try {
+            Role role = (Role) q.getSingleResult();
+
+            optionalRole = Optional.of(role);
+        } catch (NoResultException e) {
+            optionalRole = Optional.empty();
+        }
+        if (optionalRole.isEmpty()) {
+            return null;
+        }
+
+        return optionalRole.get();
     }
 
     @Override

@@ -187,7 +187,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     public boolean checkExistEmail(String email) {
         Session s = factory.getObject().getCurrentSession();
-        
+
         String hql = "select count(u.id) from User u where lower(u.email) = :email";
 
         Long count = s.createQuery(hql, Long.class)

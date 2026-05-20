@@ -27,6 +27,6 @@ public interface RoleRepository {
             Boolean isActive,
             int offset,
             int limit);
-    
+
     List<Role> findAll();
 }

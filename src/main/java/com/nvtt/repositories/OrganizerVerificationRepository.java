@@ -12,8 +12,12 @@ import java.util.List;
  * @author vthan
  */
 public interface OrganizerVerificationRepository {
+
     List<OrganizerVerification> findAll(String status, String search, int offset, int limit);
+
     long countAll(String status, String search);
+
     OrganizerVerification findById(Long id);
+
     void updateStatus(Long id, String status, Long adminId);
 }

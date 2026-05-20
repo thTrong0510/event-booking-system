@@ -48,17 +48,17 @@ public class OrganizerVerificationController {
 
     @PostMapping("/{id}/action")
     public String handleAction(@PathVariable("id") Long id,
-                               @RequestParam("action") String action,
-                               @RequestParam(value = "status", defaultValue = "PENDING") String status,
-                               @RequestParam(value = "search", required = false) String search,
-                               @RequestParam(value = "page", defaultValue = "1") int page,
-                               Principal principal) {
-        
+            @RequestParam("action") String action,
+            @RequestParam(value = "status", defaultValue = "PENDING") String status,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            Principal principal) {
+
         // principal.getName() trả về Username/Email của Admin đang login phối hợp thực hiện lệnh
         verificationService.processVerification(id, action, principal.getName());
 
-        return "redirect:/admin/verifications?status=" + status 
-                + "&search=" + (search != null ? search : "") 
+        return "redirect:/admin/verifications?status=" + status
+                + "&search=" + (search != null ? search : "")
                 + "&page=" + page;
     }
 }

@@ -20,15 +20,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;
-    
+
     @Override
     public Role getRoleById(Long id) {
         return this.getRoleById(id);
     }
-    
+
     @Override
     public List<Role> findAll() {
         return this.roleRepository.findAll();
     }
-    
+
 }

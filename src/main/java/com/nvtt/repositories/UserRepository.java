@@ -12,13 +12,22 @@ import java.util.List;
  * @author vthan
  */
 public interface UserRepository {
+
     public User getUserByEmail(String email);
+
     public void addUser(User user);
+
     boolean authenticate(String email, String password);
+
     List<User> findAll(String search, Long roleId, int offset, int limit);
+
     long countAll(String search, Long roleId);
+
     User getUserById(Long id);
+
     void toggleStatus(Long id);
+
     void updateRole(Long userId, Long roleId);
+
     boolean checkExistEmail(String email);
 }

@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @PropertySource("classpath:configs.properties")
 public class UserServiceImpl implements UserService {
-    
+
     @Autowired
     private Environment env;
 

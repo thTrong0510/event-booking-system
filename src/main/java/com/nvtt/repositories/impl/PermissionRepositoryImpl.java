@@ -35,7 +35,7 @@ public class PermissionRepositoryImpl implements PermissionRepository {
 
     @Override
     public Permission save(Permission permission) {
-        if (this.exists(permission.getName(), permission.getApiPath(), permission.getApiMethod())) {
+        if (this.exists(permission.getApiPath(), permission.getApiMethod())) {
             this.getSession().persist(permission);
         } else {
             this.getSession().merge(permission);
@@ -120,23 +120,37 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     }
 
     @Override
-    public boolean exists(String name, String apiPath, String apiMethod) {
+    public boolean exists(String apiPath, String apiMethod) {
         String hql = """
         select 1
         from Permission p
-        where lower(p.name) = :name
-        and p.apiPath = :path
+        where p.apiPath = :path
         and p.apiMethod = :method
     """;
 
         return !getSession()
                 .createQuery(hql, Integer.class)
-                .setParameter("name", name.toLowerCase())
                 .setParameter("path", apiPath)
                 .setParameter("method", apiMethod)
                 .setMaxResults(1)
                 .getResultList()
                 .isEmpty();
+    }
+
+    @Override
+    public List<Permission> findByRoleId(Long roleId) {
+        // Câu lệnh liên kết bảng trung gian qua quan hệ n-n (ManyToMany) trên Entity
+        String hql = "SELECT p FROM Permission p JOIN p.roles r WHERE r.id = :roleId";
+        return this.getSession().createQuery(hql, Permission.class)
+                .setParameter("roleId", roleId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Permission> findAll() {
+        String hql = "from Permission p order by p.name asc";
+
+        return getSession().createQuery(hql, Permission.class).getResultList();
     }
 
 }

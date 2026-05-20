@@ -12,6 +12,8 @@ import java.util.List;
  * @author vthan
  */
 public interface RoleService {
+
     Role getRoleById(Long id);
+
     List<Role> findAll();
 }

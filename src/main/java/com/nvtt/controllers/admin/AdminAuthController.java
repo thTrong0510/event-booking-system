@@ -31,10 +31,10 @@ public class AdminAuthController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private RoleRepository roleRepository;
-    
+
     @ModelAttribute("roles")
     public List<Role> populateRoles() {
         return roleRepository.findAll();
@@ -66,7 +66,7 @@ public class AdminAuthController {
     public String registerAdmin(@ModelAttribute("registerDTO") @Valid RegisterRequestDTO dto,
             BindingResult registerResult,
             RedirectAttributes redirectAttributes) {
-        
+
         if (registerResult.hasErrors()) {
             return "admin/auth/register";
         }

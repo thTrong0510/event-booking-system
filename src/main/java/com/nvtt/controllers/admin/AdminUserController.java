@@ -33,50 +33,50 @@ public class AdminUserController {
 
     @GetMapping
     public String listUsers(@RequestParam(value = "search", required = false) String search,
-                            @RequestParam(value = "roleId", required = false) Long roleId,
-                            @RequestParam(value = "page", defaultValue = "1") int page,
-                            Model model) {
-        
+            @RequestParam(value = "roleId", required = false) Long roleId,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            Model model) {
+
         Map<String, Object> data = userService.getUsersData(search, roleId, page);
-        
+
         model.addAllAttributes(data);
         model.addAttribute("search", search);
         model.addAttribute("roleId", roleId);
         model.addAttribute("allRoles", roleService.findAll()); // Dành cho dropdown lọc và dropdown sửa quyền
         model.addAttribute("activePage", "users");
-        
+
         return "admin/users/list";
     }
 
     // Chặn / Kích hoạt tài khoản người dùng
     @PostMapping("/{id}/toggle-status")
     public String toggleStatus(@PathVariable("id") Long id,
-                               @RequestParam(value = "search", required = false) String search,
-                               @RequestParam(value = "roleId", required = false) Long roleId,
-                               @RequestParam(value = "page", defaultValue = "1") int page,
-                               RedirectAttributes redirectAttributes) {
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "roleId", required = false) Long roleId,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            RedirectAttributes redirectAttributes) {
         userService.toggleStatus(id);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái tài khoản thành công!");
-        
+
         // Giữ nguyên trạng thái phân trang và bộ lọc sau khi thực thi xong hành động
-        return "redirect:/admin/users?search=" + (search != null ? search : "") 
-                + "&roleId=" + (roleId != null ? roleId : "") 
+        return "redirect:/admin/users?search=" + (search != null ? search : "")
+                + "&roleId=" + (roleId != null ? roleId : "")
                 + "&page=" + page;
     }
 
     // Cập nhật quyền (Role) cho người dùng
     @PostMapping("/{id}/update-role")
     public String updateRole(@PathVariable("id") Long id,
-                             @RequestParam("newRoleId") Long newRoleId,
-                             @RequestParam(value = "search", required = false) String search,
-                             @RequestParam(value = "roleId", required = false) Long roleId,
-                             @RequestParam(value = "page", defaultValue = "1") int page,
-                             RedirectAttributes redirectAttributes) {
+            @RequestParam("newRoleId") Long newRoleId,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "roleId", required = false) Long roleId,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            RedirectAttributes redirectAttributes) {
         userService.updateUserRole(id, newRoleId);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật vai trò hệ thống thành công!");
-        
-        return "redirect:/admin/users?search=" + (search != null ? search : "") 
-                + "&roleId=" + (roleId != null ? roleId : "") 
+
+        return "redirect:/admin/users?search=" + (search != null ? search : "")
+                + "&roleId=" + (roleId != null ? roleId : "")
                 + "&page=" + page;
     }
 }
