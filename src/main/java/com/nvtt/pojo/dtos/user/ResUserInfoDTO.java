@@ -13,6 +13,9 @@ public class ResUserInfoDTO {
     private String email;
     private String fullName;
     private String avatarUrl;
+    private Long roleId;
+    private String roleName;
+    private boolean active;
 
     /**
      * @return the id
@@ -59,9 +62,10 @@ public class ResUserInfoDTO {
     /**
      * @return the avatarUrl
      */
-    public String getAvatar() {
+    public String getAvatarUrl() {
         return avatarUrl;
     }
+    
 
     /**
      * @param avatarUrl the avatarUrl to set
@@ -70,14 +74,58 @@ public class ResUserInfoDTO {
         this.avatarUrl = avatarUrl;
     }
 
-    public ResUserInfoDTO(Long id, String email, String fullName, String avatarUrl) {
-        this.id = id;
-        this.email = email;
-        this.fullName = fullName;
-        this.avatarUrl = avatarUrl;
+    /**
+     * @return the roleId
+     */
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    /**
+     * @param roleId the roleId to set
+     */
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    /**
+     * @return the roleName
+     */
+    public String getRoleName() {
+        return roleName;
+    }
+
+    /**
+     * @param roleName the roleName to set
+     */
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    /**
+     * @return the active
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * @param active the active to set
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public ResUserInfoDTO() {
     }
-    
+
+    public ResUserInfoDTO(Long id, String email, String fullName, String avatarUrl, Long roleId, String roleName, boolean active) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.avatarUrl = avatarUrl;
+        this.roleId = roleId;
+        this.roleName = roleName;
+        this.active = active;
+    }
 }

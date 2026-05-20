@@ -7,6 +7,7 @@ package com.nvtt.services.impl;
 import com.nvtt.pojo.Role;
 import com.nvtt.repositories.RoleRepository;
 import com.nvtt.services.RoleService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getRoleById(Long id) {
         return this.getRoleById(id);
+    }
+    
+    @Override
+    public List<Role> findAll() {
+        return this.roleRepository.findAll();
     }
     
 }

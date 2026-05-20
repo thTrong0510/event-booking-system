@@ -21,8 +21,14 @@ public interface UserService {
     public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar);
 
     boolean authenticate(String email, String password);
-    
+
     boolean checkExistEmail(String email);
-    
+
     public void addUser(RegisterRequestDTO dto);
+
+    Map<String, Object> getUsersData(String search, Long roleId, int page);
+
+    void toggleStatus(Long id);
+
+    void updateUserRole(Long userId, Long roleId);
 }

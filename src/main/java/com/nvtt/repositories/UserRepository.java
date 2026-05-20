@@ -18,7 +18,7 @@ public interface UserRepository {
     List<User> findAll(String search, Long roleId, int offset, int limit);
     long countAll(String search, Long roleId);
     User getUserById(Long id);
-    void updateStatus(Long id, boolean isActive);
+    void toggleStatus(Long id);
     void updateRole(Long userId, Long roleId);
     boolean checkExistEmail(String email);
 }

@@ -62,12 +62,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updateStatus(Long userId, boolean isActive) {
+    public void toggleStatus(Long userId) {
         Session s = factory.getObject().getCurrentSession();
         // Gom câu lệnh HQL tác động database về đúng vị trí hạ tầng Repository
-        String hql = "UPDATE User u SET u.isActive = :isActive WHERE u.id = :userId";
+        String hql = "UPDATE User u SET u.isActive = CASE WHEN u.isActive = true THEN false ELSE true END WHERE u.id = :userId";
         s.createQuery(hql)
-                .setParameter("isActive", isActive)
                 .setParameter("userId", userId)
                 .executeUpdate();
     }

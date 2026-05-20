@@ -5,6 +5,7 @@
 package com.nvtt.services;
 
 import com.nvtt.pojo.Role;
+import java.util.List;
 
 /**
  *
@@ -12,4 +13,5 @@ import com.nvtt.pojo.Role;
  */
 public interface RoleService {
     Role getRoleById(Long id);
+    List<Role> findAll();
 }
