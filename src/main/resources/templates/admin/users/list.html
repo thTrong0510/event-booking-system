@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{admin/layout :: main-layout(~{:: #userContent}, ~{:: title})}">
+    <head>
+        <!-- Định nghĩa Title riêng cho trang này -->
+        <title>Quản Lý Người Dùng - Ticket Booking</title>
+    </head>
+    <body>
+
+        <!-- Chỉ tập trung viết Code logic xử lý của riêng trang này trong ID tương ứng -->
+        <div id="userContent">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2"><i class="bi bi-people-fill text-primary"></i> Quản Lý Hệ Thống Người Dùng</h1>
+                <span class="badge bg-dark p-2" th:text="${'Tổng cộng: ' + totalElements + ' thành viên'}">0</span>
+            </div>
+
+            <!-- Thanh Tìm kiếm -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/admin/users}" method="get" class="row g-3">
+                        <div class="col-md-6">
+                            <input type="text" name="search" th:value="${search}" class="form-control" placeholder="Tìm kiếm theo Tên hoặc Email...">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="roleId" class="form-select">
+                                <option value="">-- Tất cả vai trò --</option>
+                                <option value="1" th:selected="${roleId == 1}">Admin</option>
+                                <option value="2" th:selected="${roleId == 2}">Organizer</option>
+                                <option value="3" th:selected="${roleId == 3}">Attendee</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Lọc</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bảng hiển thị (Rút gọn cho thoáng mắt) -->
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ Và Tên</th>
+                                <th>Email</th>
+                                <th>Vai Trò</th>
+                                <th>Trạng Trái</th>
+                                <th class="text-center">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.id}">1</td>
+                                <td th:text="${user.fullName}">Nguyen Van A</td>
+                                <td th:text="${user.email}">a@example.com</td>
+                                <td><span class="badge bg-info text-dark" th:text="${user.roleName}">Attendee</span></td>
+                                <td>
+                                    <span th:if="${user.active}" class="badge bg-success">Hoạt Động</span>
+                                    <span th:if="${!user.active}" class="badge bg-danger">Đang Khóa</span>
+                                </td>
+                                <td class="text-center">
+                                    <form th:action="@{/admin/users/{id}/toggle-status(id=${user.id})}" method="post">
+                                        <input type="hidden" name="page" th:value="${currentPage}" />
+                                        <button type="submit" class="btn btn-sm" th:classappend="${user.active} ? 'btn-outline-danger' : 'btn-success'">
+                                            <i th:class="${user.active} ? 'bi bi-lock-fill' : 'bi bi-unlock-fill'"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -8,6 +8,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
+import com.nvtt.pojo.dtos.admin.RegisterRequestDTO;
 import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import com.nvtt.repositories.RoleRepository;
 import com.nvtt.repositories.UserRepository;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
             // tới đây cần parser -> cũng cần phải khai báo Bean tương tự 
         } catch (IOException ex) {
-            System.err.println("errorr");
+            System.err.println("error: upload avatar to cloudinary");
         }
 
         this.userRepository.addUser(user);
@@ -78,6 +79,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticate(String email, String password) {
         return this.userRepository.authenticate(email, password);
+    }
+    
+    public boolean checkExistEmail(String email) {
+        return this.userRepository.checkExistEmail(email);
+    }
+
+    public void addUser(RegisterRequestDTO dto) {
+        User user = new User();
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        
+        Role role = this.roleRepository.getRoleById(dto.getRoleId());
+        
+        user.setRole(role);
+        
+        try {
+            Map res = this.cloudinary.uploader().upload(dto.getAvatarUrl().getBytes(), ObjectUtils.asMap("resource type", "auto"));
+            user.setAvatarUrl(res.get("secure_url").toString());
+        } catch (Exception ex) {
+            System.err.print("error: upload avatar to cloudinary");
+        }
+        
+        this.userRepository.addUser(user);
     }
 
 }

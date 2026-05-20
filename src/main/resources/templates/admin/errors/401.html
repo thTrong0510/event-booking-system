@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{admin/layout :: main-layout(~{:: #error401Content}, ~{:: title})}">
+<head>
+    <title>401 Truy Cập Bị Từ Chối - Ticket Admin</title>
+</head>
+<body>
+
+    <div id="error401Content" class="container py-5">
+        <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+            <div class="col-md-6 text-center">
+                <!-- Biểu tượng cảnh báo an ninh -->
+                <div class="mb-3">
+                    <i class="bi bi-shield-slash-fill text-danger" style="font-size: 6rem;"></i>
+                </div>
+                
+                <div class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-3 fs-6">
+                    MÃ LỖI: 401 / 403 ACCESS DENIED
+                </div>
+                
+                <h2 class="fw-bold text-dark mb-3">Bạn Không Có Quyền Truy Cập!</h2>
+                
+                <p class="text-muted mb-4 fs-6">
+                    Tài khoản của bạn (<strong sec:authentication="name">User</strong>) không được cấp quyền hạn cần thiết để xem nội dung hoặc thực hiện thao tác tại trang này.
+                </p>
+                
+                <div class="card bg-light border-0 p-3 mb-4 text-start small">
+                    <div class="text-secondary fw-bold mb-1"><i class="bi bi-info-circle-fill me-1"></i> Khuyến nghị dành cho bạn:</div>
+                    <ul class="mb-0 text-muted ps-3">
+                        <li>Nếu đây là một sự nhầm lẫn, vui lòng liên hệ với <strong>Super Admin</strong> để yêu cầu nâng cấp quyền.</li>
+                        <li>Không cố gắng thay đổi tham số URL để vượt qua hàng rào bảo mật.</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a th:href="@{/admin/dashboard}" class="btn btn-dark px-4 py-2 shadow-sm">
+                        <i class="bi bi-speedometer2 me-2"></i> Về Trang Chủ Admin
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-danger px-4 py-2">
+                        <i class="bi bi-arrow-left me-2"></i> Quay lại an toàn
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
