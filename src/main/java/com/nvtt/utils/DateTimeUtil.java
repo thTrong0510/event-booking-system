@@ -3,10 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.nvtt.utils;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -63,10 +67,13 @@ public class DateTimeUtil {
      * HỖ TRỢ THÊM: Chuyển đổi từ String thành java.util.Date
      */
     public static Date toDate(String dateStr) {
-        LocalDateTime localDateTime = toLocalDateTime(dateStr);
-        if (localDateTime == null) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(dateStr);
+            return date;
+        } catch (ParseException ex) {
+            System.err.println("error: parse String to date");
             return null;
         }
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

@@ -7,6 +7,7 @@ package com.nvtt.services;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.admin.RegisterRequestDTO;
 import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
+import java.util.List;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,4 +32,6 @@ public interface UserService {
     void toggleStatus(Long id);
 
     void updateUserRole(Long userId, Long roleId);
+    
+    List<User> findByRoleName(String roleName);
 }

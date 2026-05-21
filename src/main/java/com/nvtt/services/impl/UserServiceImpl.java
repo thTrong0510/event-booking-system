@@ -152,4 +152,9 @@ public class UserServiceImpl implements UserService {
         userRepository.updateRole(userId, roleId);
     }
 
+    @Override
+    public List<User> findByRoleName(String roleName) {
+        return this.userRepository.findByRoleName(roleName);
+    }
+
 }

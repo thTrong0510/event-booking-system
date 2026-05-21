@@ -7,15 +7,18 @@ package com.nvtt.repositories.impl;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
 import com.nvtt.repositories.UserRepository;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -52,13 +55,24 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(Long id) {
         Session s = factory.getObject().getCurrentSession();
-
+            
         Query query = s.createNamedQuery("User.findById", User.class);
         query.setParameter("id", id);
+        
+         Optional<User> optionalUser;
 
-        User user = (User) query.getSingleResult();
+        try {
+            User user = (User) query.getSingleResult();
+            optionalUser = Optional.of(user);
+        } catch (NoResultException e) {
+            optionalUser = Optional.empty();
+        }
 
-        return user;
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        return optionalUser.get();
     }
 
     @Override
@@ -195,5 +209,29 @@ public class UserRepositoryImpl implements UserRepository {
                 .getSingleResult();
 
         return count > 0;
+    }
+    
+@Override
+    public List<User> findByRoleName(String roleName) {
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        
+        // Gốc truy vấn từ bảng User
+        Root<User> root = cq.from(User.class);
+        
+        // Sử dụng FETCH JOIN để nạp luôn thông tin Role (Tránh lỗi N+1 và tối ưu Performance)
+        Fetch<User, Role> roleFetch = root.fetch("role", JoinType.INNER);
+        Join<User, Role> roleJoin = (Join<User, Role>) roleFetch;
+
+        // Xử lý điều kiện LIKE tương đối: %roleName%
+        // Ép cả 2 đầu về chữ thường (LOWER) để tìm kiếm không phân biệt hoa thường
+        String pattern = "%" + roleName.trim().toLowerCase() + "%";
+        Predicate likePredicate = cb.like(cb.lower(roleJoin.get("name")), pattern);
+
+        cq.where(likePredicate);
+        cq.orderBy(cb.asc(root.get("fullName"))); // Sắp xếp theo bảng chữ cái từ A-Z
+
+        return session.createQuery(cq).getResultList();
     }
 }
