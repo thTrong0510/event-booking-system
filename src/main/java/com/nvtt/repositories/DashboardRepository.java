@@ -4,22 +4,20 @@
  */
 package com.nvtt.repositories;
 
-import com.nvtt.pojo.SystemStatisticsDaily;
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author vthan
  */
 public interface DashboardRepository {
-    // 4 Hàm lấy dữ liệu Real-time cho 4 cái Cards đầu trang
-    Long countActiveEvents();
-    BigDecimal sumTotalRevenue();
-    Long countTotalTicketsSold();
-    Long countPendingOrganizers();
 
-    // Hàm lấy dữ liệu biểu đồ và bảng báo cáo chiến lược
-    List<SystemStatisticsDaily> getDailyStatistics(Date startDate, Date endDate);
+    List<Map<String, Object>> getEventsCountByTime(String type, int year); // type: MONTH, QUARTER, YEAR
+
+    List<Map<String, Object>> getTicketSalesOverTime();
+
+    List<Map<String, Object>> getRevenueByOrganizer();
+
+    List<Map<String, Object>> getStatisticsByCategory();
 }

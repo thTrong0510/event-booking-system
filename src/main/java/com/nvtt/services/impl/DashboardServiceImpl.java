@@ -5,6 +5,7 @@
 package com.nvtt.services.impl;
 
 import com.nvtt.pojo.SystemStatisticsDaily;
+import com.nvtt.pojo.dtos.admin.AdminDashboardDTO;
 import com.nvtt.repositories.DashboardRepository;
 import com.nvtt.services.DashboardService;
 import java.util.Date;
@@ -27,17 +28,18 @@ public class DashboardServiceImpl implements DashboardService {
     private DashboardRepository dashboardRepository;
 
     @Override
-    public Map<String, Object> getCardMetrics() {
-        Map<String, Object> metrics = new HashMap<>();
-        metrics.put("activeEvents", dashboardRepository.countActiveEvents());
-        metrics.put("totalRevenue", dashboardRepository.sumTotalRevenue());
-        metrics.put("totalTicketsSold", dashboardRepository.countTotalTicketsSold());
-        metrics.put("pendingOrganizers", dashboardRepository.countPendingOrganizers());
-        return metrics;
-    }
+    public AdminDashboardDTO getDashboardData(String timeFilter, int year) {
+        String filter = (timeFilter == null || timeFilter.isEmpty()) ? "MONTH" : timeFilter.toUpperCase();
 
-    @Override
-    public List<SystemStatisticsDaily> getReportData(Date startDate, Date endDate) {
-        return dashboardRepository.getDailyStatistics(startDate, endDate);
+        AdminDashboardDTO dto = new AdminDashboardDTO();
+
+        // Truyền thêm biến year vào hàm lấy số lượng sự kiện
+        dto.setEventsByTime(dashboardRepository.getEventsCountByTime(filter, year));
+
+        dto.setTicketSalesTrend(dashboardRepository.getTicketSalesOverTime());
+        dto.setRevenueByOrganizer(dashboardRepository.getRevenueByOrganizer());
+        dto.setStatisticsByCategory(dashboardRepository.getStatisticsByCategory());
+
+        return dto;
     }
 }

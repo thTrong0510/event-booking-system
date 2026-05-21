@@ -1,242 +1,206 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
-<head>
-    <title>Báo Cáo Tổng Quan & Chiến Lược | Hệ Thống Quản Trị</title>
-</head>
-<body>
-    <div th:fragment="main-content">
-        <!-- Header tiêu đề -->
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2"><i class="bi bi-speedometer2"></i> Hệ Thống Thống Kê & Báo Cáo Tổng Quan</h1>
-            <div class="text-muted fw-semibold">Hôm nay: <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">20/05/2026</span></div>
-        </div>
+    <head>
+        <!-- Phục vụ cho việc th:replace tiêu đề -->
+        <title id="dashboard-title">Báo Cáo Chi Tiết Hệ Thống</title>
+    </head>
+    <body>
 
-        <!-- ======================================================== -->
-        <!-- SECTION 1: CÁC CHỈ SỐ HIỂN THỊ NHANH (CARDS) -->
-        <!-- ======================================================== -->
-        <div class="row g-3 mb-4">
-            <!-- Card 1: Sự kiện đang mở -->
-            <div class="col-xl-3 col-sm-6">
-                <div class="card shadow-sm border-start border-primary border-4 h-100 bg-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase small mb-1 fw-bold">Sự Kiện Đang Mở</h6>
-                                <h3 class="mb-0 text-dark fw-bold" th:text="${cardActiveEvents}">0</h3>
-                            </div>
-                            <div class="bg-primary-subtle text-primary rounded p-3 fs-3">
-                                <i class="bi bi-calendar-event"></i>
-                            </div>
+        <div th:fragment="main-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="bi bi-graph-up-arrow text-primary me-2"></i>Báo Cáo Chi Tiết Tổng Quan
+                </h1>
+
+                <!-- Bộ lọc tích hợp nâng cao gồm Chọn Loại hình hiển thị & Chọn Năm cụ thể -->
+                <form th:action="@{/admin/dashboard}" method="get" class="d-flex align-items-center gap-3 bg-white p-2 rounded shadow-sm border">
+
+                    <!-- Ô chọn Loại hình hiển thị (Tháng / Quý / Năm) -->
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small fw-bold text-nowrap"><i class="bi bi-filter-left"></i> Thống kê theo:</span>
+                        <select name="timeFilter" class="form-select form-select-sm" style="width: 120px;" onchange="this.form.submit()">
+                            <option value="MONTH" th:selected="${currentTimeFilter == 'MONTH'}">Chi tiết Tháng</option>
+                            <option value="QUARTER" th:selected="${currentTimeFilter == 'QUARTER'}">Chi tiết Quý</option>
+                            <option value="YEAR" th:selected="${currentTimeFilter == 'YEAR'}">Theo các Năm</option>
+                        </select>
+                    </div>
+
+                    <!-- Ô chọn Năm cụ thể (Sẽ ẩn đi nếu Admin đang chọn xem chế độ "Theo các Năm") -->
+                    <div class="d-flex align-items-center gap-2 border-start ps-3" th:style="${currentTimeFilter == 'YEAR' ? 'display: none;' : ''}">
+                        <span class="text-muted small fw-bold text-nowrap"><i class="bi bi-calendar3"></i> Thuộc năm:</span>
+                        <select name="selectedYear" class="form-select form-select-sm" style="width: 100px;" onchange="this.form.submit()">
+                            <!-- Danh sách năm tĩnh linh hoạt hoặc bạn có thể truyền list năm từ controller ra -->
+                            <option value="2024" th:selected="${currentYear == 2024}">2024</option>
+                            <option value="2025" th:selected="${currentYear == 2025}">2025</option>
+                            <option value="2026" th:selected="${currentYear == 2026}">2026</option>
+                            <option value="2027" th:selected="${currentYear == 2027}">2027</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- HỆ THỐNG BIỂU ĐỒ TRỰC QUAN -->
+            <div class="row g-4 mb-4">
+                <!-- 1. Biểu đồ sự kiện & 2. Biểu đồ tần suất vé -->
+                <div class="col-md-7">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="card-title border-bottom pb-2 text-dark fw-bold"><i class="bi bi-activity text-danger me-2"></i>Tần Suất Bán Vé Theo Thời Gian</h5>
+                        <div style="height: 280px;">
+                            <canvas id="ticketSalesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="card-title border-bottom pb-2 text-dark fw-bold"><i class="bi bi-calendar-event text-success me-2"></i>Số Lượng Sự Kiện Được Mở</h5>
+                        <div style="height: 280px;">
+                            <canvas id="eventsTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Biểu đồ Doanh thu Organizer & 4. Biểu đồ cơ cấu Lĩnh vực -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="card-title border-bottom pb-2 text-dark fw-bold"><i class="bi bi-pie-chart text-warning me-2"></i>Tỷ Lệ Doanh Thu Theo Lĩnh Vực</h5>
+                        <div style="height: 280px;" class="d-flex justify-content-center">
+                            <canvas id="categoryPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="card-title border-bottom pb-2 text-dark fw-bold"><i class="bi bi-person-workspace text-info me-2"></i>Top Doanh Thu Theo Nhà Tổ Chức (Organizer)</h5>
+                        <div style="height: 280px;">
+                            <canvas id="organizerBarChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 2: Tổng doanh thu toàn hệ thống -->
-            <div class="col-xl-3 col-sm-6">
-                <div class="card shadow-sm border-start border-success border-4 h-100 bg-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase small mb-1 fw-bold">Doanh Thu Hệ Thống</h6>
-                                <h3 class="mb-0 text-dark fw-bold" th:text="${#numbers.formatDecimal(cardTotalRevenue, 1, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
-                            </div>
-                            <div class="bg-success-subtle text-success rounded p-3 fs-3">
-                                <i class="bi bi-currency-dollar"></i>
-                            </div>
+            <!-- BẢNG DỮ LIỆU CHI TIẾT THEO LĨNH VỰC -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 text-dark fw-bold"><i class="bi bi-table text-primary me-2"></i>Bảng Số Liệu Chi Tiết Theo Từng Lĩnh Vực</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tên Lĩnh Vực</th>
+                                        <th class="text-center">Số Lượng Sự Kiện Đã Tổ Chức</th>
+                                        <th class="text-end">Tổng Doanh Thu Mang Lại</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cat : ${dashboardData.statisticsByCategory}">
+                                        <td class="fw-bold text-secondary" th:text="${cat.category}">Âm nhạc</td>
+                                        <td class="text-center" th:text="${cat.eventCount}">0</td>
+                                        <td class="text-end text-success fw-bold" th:text="${#numbers.formatDecimal(cat.revenue, 1, 'DEFAULT', 2, 'DEFAULT')} + ' USD'">0.00</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(dashboardData.statisticsByCategory)}">
+                                        <td colspan="3" class="text-center text-muted py-4">Chưa có dữ liệu thống kê nào được ghi nhận.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 3: Tổng số vé đã bán -->
-            <div class="col-xl-3 col-sm-6">
-                <div class="card shadow-sm border-start border-warning border-4 h-100 bg-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase small mb-1 fw-bold">Vé Đã Bán Ra</h6>
-                                <h3 class="mb-0 text-dark fw-bold" th:text="${cardTotalTicketsSold}">0</h3>
-                            </div>
-                            <div class="bg-warning-subtle text-warning rounded p-3 fs-3">
-                                <i class="bi bi-ticket-perforated"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- NHÚNG SCRIPT KHỞI TẠO BIỂU ĐỒ CHART.JS -->
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script th:inline="javascript">
+                // Nhận chuỗi JSON thô từ Spring Controller gửi qua
+                const eventsData = JSON.parse('[(${eventsJson})]');
+                const salesData = JSON.parse('[(${salesJson})]');
+                const organizerData = JSON.parse('[(${organizerJson})]');
+                const categoryData = JSON.parse('[(${categoryJson})]');
 
-            <!-- Card 4: Nhà tổ chức chờ duyệt -->
-            <div class="col-xl-3 col-sm-6">
-                <div class="card shadow-sm border-start border-danger border-4 h-100 bg-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase small mb-1 fw-bold">Đối Tác Chờ Duyệt</h6>
-                                <h3 class="mb-0 text-dark fw-bold" th:text="${cardPendingOrganizers}">0</h3>
-                            </div>
-                            <div class="bg-danger-subtle text-danger rounded p-3 fs-3">
-                                <i class="bi bi-person-check"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                // Log kiểm tra dữ liệu trực tiếp trên màn hình F12 Console của trình duyệt
+                console.log("Events:", eventsData);
+                console.log("Sales:", salesData);
+                console.log("Organizers:", organizerData);
+                console.log("Categories:", categoryData);
 
-        <!-- ======================================================== -->
-        <!-- SECTION 2: BỘ LỌC TÙY BIẾN THỜI GIAN & BIỂU ĐỒ ĐƯỜNG -->
-        <!-- ======================================================== -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm bg-white">
-                    <div class="card-header bg-transparent py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
-                        <h5 class="mb-0 text-secondary fw-bold"><i class="bi bi-graph-up"></i> Tần Suất Bán Vé & Doanh Thu</h5>
-                        
-                        <!-- Form Bộ lọc tùy biến thời gian -->
-                        <form th:action="@{/admin/dashboard}" method="GET" class="row g-2 align-items-center m-0">
-                            <div class="col-auto">
-                                <input type="date" name="startDate" th:value="${startDate}" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-auto">
-                                <span class="text-muted small">đến</span>
-                            </div>
-                            <div class="col-auto">
-                                <input type="date" name="endDate" th:value="${endDate}" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-sm btn-primary px-3"><i class="bi bi-filter"></i> Lọc</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-body">
-                        <!-- Canvas để Chart.js vẽ biểu đồ -->
-                        <div style="position: relative; height: 320px; width: 100%;">
-                            <canvas id="strategyLineChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================================================== -->
-        <!-- SECTION 3: BÁO CÁO CHIẾN LƯỢC DẠNG BẢNG CHI TIẾT -->
-        <!-- ======================================================== -->
-        <div class="card shadow-sm bg-white mb-4">
-            <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 text-secondary fw-bold"><i class="bi bi-table"></i> Báo Cáo Chiến Lược Chi Tiết Theo Ngày</h5>
-                <div>
-                    <!-- Nút xuất file mở rộng (Giả lập hoặc tích hợp thư viện xuất dữ liệu POI sau) -->
-                    <button class="btn btn-sm btn-outline-success" onclick="alert('Tính năng mở rộng: Xuất file Excel/PDF báo cáo chiến lược.')">
-                        <i class="bi bi-file-earmark-spreadsheet"></i> Xuất Báo Cáo
-                    </button>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle mb-0" style="font-size: 13.5px;">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-4">Ngày Ghi Nhận</th>
-                                <th class="text-center">Số Lượng Đơn Hàng</th>
-                                <th class="text-center">Số Sự Kiện Được Mở</th>
-                                <th class="text-end pe-4">Doanh Thu Trong Ngày</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="stat : ${tableReportData}">
-                                <td class="ps-4 fw-medium" th:text="${#dates.format(stat.statDate, 'dd/MM/yyyy')}">20/05/2026</td>
-                                <td class="text-center" th:text="${stat.totalOrders}">0</td>
-                                <td class="text-center" th:text="${stat.totalEvents}">0</td>
-                                <td class="text-end pe-4 text-success fw-bold" th:text="${#numbers.formatDecimal(stat.totalRevenue, 1, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(tableReportData)}">
-                                <td colspan="4" class="text-center text-muted py-4">Không tìm thấy dữ liệu thống kê trong khoảng thời gian đã chọn.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================================================== -->
-        <!-- CHUYỂN DỮ LIỆU TỪ JAVA SANG JAVASCRIPT ĐỂ VẼ CHART -->
-        <!-- ======================================================== -->
-        <!-- Thư viện Chart.js -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        
-        <!-- Khối script xử lý dựng Line Chart -->
-        <script th:inline="javascript">
-            document.addEventListener("DOMContentLoaded", function () {
-                // Nhúng trực tiếp List dữ liệu từ Spring Model sang JSON array nhờ cơ chế th:inline
-                /*[[${chartData}]]*/ var rawData = [];
-                
-                // Trích xuất mảng dữ liệu cho các trục đồ thị
-                var labels = rawData.map(item => {
-                    var date = new Date(item.statDate);
-                    return date.getDate() + '/' + (date.getMonth() + 1);
-                });
-                var revenueData = rawData.map(item => item.totalRevenue);
-                var orderData = rawData.map(item => item.totalOrders);
-
-                var ctx = document.getElementById('strategyLineChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Doanh Thu (đ)',
-                                data: revenueData,
-                                borderColor: '#0d6efd',
-                                backgroundColor: 'rgba(13, 110, 253, 0.05)',
-                                borderWidth: 3,
-                                tension: 0.3,
-                                fill: true,
-                                yAxisID: 'y'
-                            },
-                            {
-                                label: 'Số Đơn Hàng',
-                                data: orderData,
-                                borderColor: '#ffc107',
-                                backgroundColor: 'transparent',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                tension: 0.1,
-                                yAxisID: 'y1'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: { display: true, text: 'Doanh thu (VND)' },
-                                ticks: {
-                                    callback: function(value) { return value.toLocaleString() + ' đ'; }
-                                }
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                title: { display: true, text: 'Đơn hàng' },
-                                grid: { drawOnChartArea: false } // Ẩn grid của trục y2 để tránh rối mắt
-                            }
+                // 1. Biểu đồ Đếm số lượng Sự Kiện (Bar Chart)
+                if (eventsData && eventsData.length > 0) {
+                    new Chart(document.getElementById('eventsTimeChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: eventsData.map(item => item.label),
+                            datasets: [{
+                                    label: 'Số sự kiện',
+                                    data: eventsData.map(item => item.value),
+                                    backgroundColor: 'rgba(40, 167, 69, 0.75)',
+                                    borderColor: 'rgb(40, 167, 69)',
+                                    borderWidth: 1
+                                }]
                         },
-                        plugins: {
-                            legend: { position: 'top' }
+                        options: {responsive: true, maintainAspectRatio: false}
+                    });
+                }
+
+                // 2. Biểu đồ Tần Suất Vé Bán Ra (Line Chart)
+                if (salesData && salesData.length > 0) {
+                    new Chart(document.getElementById('ticketSalesChart'), {
+                        type: 'line',
+                        data: {
+                            labels: salesData.map(item => item.date),
+                            datasets: [{
+                                    label: 'Số lượng vé bán được',
+                                    data: salesData.map(item => item.quantity),
+                                    borderColor: 'rgb(220, 53, 69)',
+                                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                                    fill: true,
+                                    tension: 0.2
+                                }]
+                        },
+                        options: {responsive: true, maintainAspectRatio: false}
+                    });
+                }
+
+                // 3. Biểu đồ Thống Kê Doanh Thu Lĩnh Vực (Pie Chart)
+                if (categoryData && categoryData.length > 0) {
+                    new Chart(document.getElementById('categoryPieChart'), {
+                        type: 'pie',
+                        data: {
+                            labels: categoryData.map(item => item.category),
+                            datasets: [{
+                                    data: categoryData.map(item => item.revenue),
+                                    backgroundColor: ['#0d6efd', '#6f42c1', '#d63384', '#fd7e14', '#198754', '#0dcaf0']
+                                }]
+                        },
+                        options: {responsive: true, maintainAspectRatio: false}
+                    });
+                }
+
+                // 4. Biểu đồ Doanh Thu Nhà Tổ Chức (Horizontal Bar Chart)
+                if (organizerData && organizerData.length > 0) {
+                    new Chart(document.getElementById('organizerBarChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: organizerData.map(item => item.organizer),
+                            datasets: [{
+                                    label: 'Doanh thu (USD)',
+                                    data: organizerData.map(item => item.revenue),
+                                    backgroundColor: 'rgba(13, 202, 240, 0.75)',
+                                    borderColor: 'rgb(13, 202, 240)',
+                                    borderWidth: 1
+                                }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false
                         }
-                    }
-                });
-            });
-        </script>
-    </div>
-</body>
+                    });
+                }
+            </script>
+        </div>
+
+    </body>
 </html>

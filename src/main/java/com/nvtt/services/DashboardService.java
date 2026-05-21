@@ -5,6 +5,7 @@
 package com.nvtt.services;
 
 import com.nvtt.pojo.SystemStatisticsDaily;
+import com.nvtt.pojo.dtos.admin.AdminDashboardDTO;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,5 @@ import java.util.Map;
  * @author vthan
  */
 public interface DashboardService {
-    Map<String, Object> getCardMetrics();
-    List<SystemStatisticsDaily> getReportData(Date startDate, Date endDate);
+    AdminDashboardDTO getDashboardData(String timeFilter, int year);
 }
