@@ -4,14 +4,9 @@
  */
 package com.nvtt.services.impl;
 
-import com.nvtt.pojo.SystemStatisticsDaily;
 import com.nvtt.pojo.dtos.admin.AdminDashboardDTO;
 import com.nvtt.repositories.DashboardRepository;
 import com.nvtt.services.DashboardService;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +28,11 @@ public class DashboardServiceImpl implements DashboardService {
 
         AdminDashboardDTO dto = new AdminDashboardDTO();
 
-        // Truyền thêm biến year vào hàm lấy số lượng sự kiện
+        // Đồng bộ hóa cấu trúc lọc thời gian trên cả 4 sơ đồ báo cáo
         dto.setEventsByTime(dashboardRepository.getEventsCountByTime(filter, year));
-
-        dto.setTicketSalesTrend(dashboardRepository.getTicketSalesOverTime());
-        dto.setRevenueByOrganizer(dashboardRepository.getRevenueByOrganizer());
-        dto.setStatisticsByCategory(dashboardRepository.getStatisticsByCategory());
+        dto.setTicketSalesTrend(dashboardRepository.getTicketSalesOverTime(filter, year));
+        dto.setStatisticsByCategory(dashboardRepository.getStatisticsByCategory(filter, year));
+        dto.setRevenueByOrganizer(dashboardRepository.getRevenueByOrganizer(filter, year));
 
         return dto;
     }

@@ -97,9 +97,10 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="cat : ${dashboardData.statisticsByCategory}">
-                                        <td class="fw-bold text-secondary" th:text="${cat.category}">Âm nhạc</td>
-                                        <td class="text-center" th:text="${cat.eventCount}">0</td>
-                                        <td class="text-end text-success fw-bold" th:text="${#numbers.formatDecimal(cat.revenue, 1, 'DEFAULT', 2, 'DEFAULT')} + ' USD'">0.00</td>
+                                        <td class="fw-bold text-secondary" th:text="${cat['category']}">Âm nhạc</td>
+                                        <td class="text-center" th:text="${cat['eventCount'] != null ? cat['eventCount'] : 0}">0</td>
+                                        <td class="text-end text-success fw-bold" 
+                                            th:text="${cat['revenue'] != null ? #numbers.formatDecimal(cat['revenue'], 1, 'COMMA', 2, 'POINT') : '0.00'} + ' USD'">0.00</td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(dashboardData.statisticsByCategory)}">
                                         <td colspan="3" class="text-center text-muted py-4">Chưa có dữ liệu thống kê nào được ghi nhận.</td>
@@ -114,91 +115,91 @@
             <!-- NHÚNG SCRIPT KHỞI TẠO BIỂU ĐỒ CHART.JS -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script th:inline="javascript">
-                // Nhận chuỗi JSON thô từ Spring Controller gửi qua
-                const eventsData = JSON.parse('[(${eventsJson})]');
-                const salesData = JSON.parse('[(${salesJson})]');
-                const organizerData = JSON.parse('[(${organizerJson})]');
-                const categoryData = JSON.parse('[(${categoryJson})]');
+                            // Nhận chuỗi JSON thô từ Spring Controller gửi qua
+                            const eventsData = JSON.parse('[(${eventsJson})]');
+                            const salesData = JSON.parse('[(${salesJson})]');
+                            const organizerData = JSON.parse('[(${organizerJson})]');
+                            const categoryData = JSON.parse('[(${categoryJson})]');
 
-                // Log kiểm tra dữ liệu trực tiếp trên màn hình F12 Console của trình duyệt
-                console.log("Events:", eventsData);
-                console.log("Sales:", salesData);
-                console.log("Organizers:", organizerData);
-                console.log("Categories:", categoryData);
+                            // Log kiểm tra dữ liệu trực tiếp trên màn hình F12 Console của trình duyệt
+                            console.log("Events:", eventsData);
+                            console.log("Sales:", salesData);
+                            console.log("Organizers:", organizerData);
+                            console.log("Categories:", categoryData);
 
-                // 1. Biểu đồ Đếm số lượng Sự Kiện (Bar Chart)
-                if (eventsData && eventsData.length > 0) {
-                    new Chart(document.getElementById('eventsTimeChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: eventsData.map(item => item.label),
-                            datasets: [{
-                                    label: 'Số sự kiện',
-                                    data: eventsData.map(item => item.value),
-                                    backgroundColor: 'rgba(40, 167, 69, 0.75)',
-                                    borderColor: 'rgb(40, 167, 69)',
-                                    borderWidth: 1
-                                }]
-                        },
-                        options: {responsive: true, maintainAspectRatio: false}
-                    });
-                }
+                            // 1. Biểu đồ Đếm số lượng Sự Kiện (Bar Chart)
+                            if (eventsData && eventsData.length > 0) {
+                                new Chart(document.getElementById('eventsTimeChart'), {
+                                    type: 'bar',
+                                    data: {
+                                        labels: eventsData.map(item => item.label),
+                                        datasets: [{
+                                                label: 'Số sự kiện',
+                                                data: eventsData.map(item => item.value),
+                                                backgroundColor: 'rgba(40, 167, 69, 0.75)',
+                                                borderColor: 'rgb(40, 167, 69)',
+                                                borderWidth: 1
+                                            }]
+                                    },
+                                    options: {responsive: true, maintainAspectRatio: false}
+                                });
+                            }
 
-                // 2. Biểu đồ Tần Suất Vé Bán Ra (Line Chart)
-                if (salesData && salesData.length > 0) {
-                    new Chart(document.getElementById('ticketSalesChart'), {
-                        type: 'line',
-                        data: {
-                            labels: salesData.map(item => item.date),
-                            datasets: [{
-                                    label: 'Số lượng vé bán được',
-                                    data: salesData.map(item => item.quantity),
-                                    borderColor: 'rgb(220, 53, 69)',
-                                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                                    fill: true,
-                                    tension: 0.2
-                                }]
-                        },
-                        options: {responsive: true, maintainAspectRatio: false}
-                    });
-                }
+                            // 2. Biểu đồ Tần Suất Vé Bán Ra (Line Chart)
+                            if (salesData && salesData.length > 0) {
+                                new Chart(document.getElementById('ticketSalesChart'), {
+                                    type: 'line',
+                                    data: {
+                                        labels: salesData.map(item => item.label), // Sửa từ item.date -> item.label
+                                        datasets: [{
+                                                label: 'Số lượng vé bán được',
+                                                data: salesData.map(item => item.value), // Sửa từ item.quantity -> item.value
+                                                borderColor: 'rgb(220, 53, 69)',
+                                                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                                                fill: true,
+                                                tension: 0.2
+                                            }]
+                                    },
+                                    options: {responsive: true, maintainAspectRatio: false}
+                                });
+                            }
 
-                // 3. Biểu đồ Thống Kê Doanh Thu Lĩnh Vực (Pie Chart)
-                if (categoryData && categoryData.length > 0) {
-                    new Chart(document.getElementById('categoryPieChart'), {
-                        type: 'pie',
-                        data: {
-                            labels: categoryData.map(item => item.category),
-                            datasets: [{
-                                    data: categoryData.map(item => item.revenue),
-                                    backgroundColor: ['#0d6efd', '#6f42c1', '#d63384', '#fd7e14', '#198754', '#0dcaf0']
-                                }]
-                        },
-                        options: {responsive: true, maintainAspectRatio: false}
-                    });
-                }
+                            // 3. Biểu đồ Thống Kê Doanh Thu Lĩnh Vực (Pie Chart)
+                            if (categoryData && categoryData.length > 0) {
+                                new Chart(document.getElementById('categoryPieChart'), {
+                                    type: 'pie',
+                                    data: {
+                                        labels: categoryData.map(item => item.category),
+                                        datasets: [{
+                                                data: categoryData.map(item => item.revenue),
+                                                backgroundColor: ['#0d6efd', '#6f42c1', '#d63384', '#fd7e14', '#198754', '#0dcaf0']
+                                            }]
+                                    },
+                                    options: {responsive: true, maintainAspectRatio: false}
+                                });
+                            }
 
-                // 4. Biểu đồ Doanh Thu Nhà Tổ Chức (Horizontal Bar Chart)
-                if (organizerData && organizerData.length > 0) {
-                    new Chart(document.getElementById('organizerBarChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: organizerData.map(item => item.organizer),
-                            datasets: [{
-                                    label: 'Doanh thu (USD)',
-                                    data: organizerData.map(item => item.revenue),
-                                    backgroundColor: 'rgba(13, 202, 240, 0.75)',
-                                    borderColor: 'rgb(13, 202, 240)',
-                                    borderWidth: 1
-                                }]
-                        },
-                        options: {
-                            indexAxis: 'y',
-                            responsive: true,
-                            maintainAspectRatio: false
-                        }
-                    });
-                }
+                            // 4. Biểu đồ Doanh Thu Nhà Tổ Chức (Horizontal Bar Chart)
+                            if (organizerData && organizerData.length > 0) {
+                                new Chart(document.getElementById('organizerBarChart'), {
+                                    type: 'bar',
+                                    data: {
+                                        labels: organizerData.map(item => item.organizer),
+                                        datasets: [{
+                                                label: 'Doanh thu (USD)',
+                                                data: organizerData.map(item => item.revenue),
+                                                backgroundColor: 'rgba(13, 202, 240, 0.75)',
+                                                borderColor: 'rgb(13, 202, 240)',
+                                                borderWidth: 1
+                                            }]
+                                    },
+                                    options: {
+                                        indexAxis: 'y',
+                                        responsive: true,
+                                        maintainAspectRatio: false
+                                    }
+                                });
+                            }
             </script>
         </div>
 

@@ -15,9 +15,9 @@ public interface DashboardRepository {
 
     List<Map<String, Object>> getEventsCountByTime(String type, int year); // type: MONTH, QUARTER, YEAR
 
-    List<Map<String, Object>> getTicketSalesOverTime();
+    List<Map<String, Object>> getTicketSalesOverTime(String type, int year);
 
-    List<Map<String, Object>> getRevenueByOrganizer();
+    List<Map<String, Object>> getStatisticsByCategory(String type, int year);
 
-    List<Map<String, Object>> getStatisticsByCategory();
+    List<Map<String, Object>> getRevenueByOrganizer(String type, int year);
 }
