@@ -4,6 +4,7 @@
  */
 package com.nvtt.repositories;
 
+import java.util.List;
 import java.util.Map;
 
 import com.nvtt.pojo.EventMedia;

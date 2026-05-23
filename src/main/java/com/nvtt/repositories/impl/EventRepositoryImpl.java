@@ -139,7 +139,7 @@ public class EventRepositoryImpl implements EventRepository {
 
             String endTime = params.get("endTime");
             if (endTime != null && !endTime.isEmpty()) {
-                predicates.add(b.lessThanOrEqualTo(root.get("startTime"), new Date(Long.parseLong(endTime))));
+                predicates.add(b.lessThanOrEqualTo(root.get("endTime"), new Date(Long.parseLong(endTime))));
             }
 
             String location = params.get("location");
@@ -149,13 +149,31 @@ public class EventRepositoryImpl implements EventRepository {
         }
 
         q.where(predicates.toArray(new Predicate[0]));
-        q.orderBy(b.desc(root.get("id")));
+
+        if (params != null) {
+            String sortBy = params.get("sortBy");
+            String sortDir = params.getOrDefault("sortDir", "desc");
+
+            if (sortBy != null && !sortBy.isEmpty()) {
+                if ("startTime".equalsIgnoreCase(sortBy)) {
+                    q.orderBy("asc".equalsIgnoreCase(sortDir) ? b.asc(root.get("startTime")) : b.desc(root.get("startTime")));
+                } else if ("ticketPrice".equalsIgnoreCase(sortBy)) {
+                    q.orderBy("asc".equalsIgnoreCase(sortDir) ? b.asc(root.get("ticketPrice")) : b.desc(root.get("ticketPrice")));
+                } else {
+                    q.orderBy(b.desc(root.get("id")));
+                }
+            } else {
+                q.orderBy(b.desc(root.get("id")));
+            }
+        } else {
+            q.orderBy(b.desc(root.get("id")));
+        }
 
         Query query = session.createQuery(q);
 
         // xu ly phan trang
         if (params != null) {
-            int pageSize = this.env.getProperty("events.page_size", Integer.class, 10);
+            int pageSize = this.env.getProperty("events.page_size", Integer.class, 20);
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
             int start = (page - 1) * pageSize;
 
@@ -235,7 +253,7 @@ public class EventRepositoryImpl implements EventRepository {
 
             String endTime = params.get("endTime");
             if (endTime != null && !endTime.isEmpty()) {
-                predicates.add(b.lessThanOrEqualTo(root.get("startTime"), new Date(Long.parseLong(endTime))));
+                predicates.add(b.lessThanOrEqualTo(root.get("endTime"), new Date(Long.parseLong(endTime))));
             }
 
             String location = params.get("location");
@@ -243,15 +261,33 @@ public class EventRepositoryImpl implements EventRepository {
                 predicates.add(b.like(root.get("location"), String.format("%%%s%%", location)));
             }
         }
-        
+
         q.where(predicates.toArray(new Predicate[0]));
-        q.orderBy(b.desc(root.get("id")));
+
+        if (params != null) {
+            String sortBy = params.get("sortBy");
+            String sortDir = params.getOrDefault("sortDir", "desc");
+
+            if (sortBy != null && !sortBy.isEmpty()) {
+                if ("startTime".equalsIgnoreCase(sortBy)) {
+                    q.orderBy("asc".equalsIgnoreCase(sortDir) ? b.asc(root.get("startTime")) : b.desc(root.get("startTime")));
+                } else if ("ticketPrice".equalsIgnoreCase(sortBy)) {
+                    q.orderBy("asc".equalsIgnoreCase(sortDir) ? b.asc(root.get("ticketPrice")) : b.desc(root.get("ticketPrice")));
+                } else {
+                    q.orderBy(b.desc(root.get("id")));
+                }
+            } else {
+                q.orderBy(b.desc(root.get("id")));
+            }
+        } else {
+            q.orderBy(b.desc(root.get("id")));
+        }
 
         Query query = s.createQuery(q);
 
         // xu ly phan trang
         if (params != null) {
-            int pageSize = this.env.getProperty("events.page_size", Integer.class, 10);
+            int pageSize = this.env.getProperty("events.page_size", Integer.class, 20);
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
             int start = (page - 1) * pageSize;
 

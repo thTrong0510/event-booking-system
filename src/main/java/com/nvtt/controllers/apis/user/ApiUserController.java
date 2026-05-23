@@ -12,6 +12,8 @@ import com.nvtt.services.UserService;
 import com.nvtt.utils.JwtUtil;
 import com.nvtt.utils.exceptions.IdInvalidException;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +73,17 @@ public class ApiUserController {
             User currentUser = userService.getMyInfo();
             ResUserInfoDTO userInfoDto = new ResUserInfoDTO(currentUser.getId(), currentUser.getEmail(),
                     currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getName());
+            return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/secure/me")
+    public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
+            @RequestParam("avatar") Optional<MultipartFile> avatar) {
+        try {
+            ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);
             return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

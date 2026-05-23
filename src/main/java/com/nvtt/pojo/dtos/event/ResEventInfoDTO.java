@@ -28,10 +28,11 @@ public class ResEventInfoDTO {
    private int availableTickets;
    private String status;
    private String category;
+   private int views;
    
    public ResEventInfoDTO(Long id, String name, String description, Set<ResEventMediaDTO> eventMedias, 
        Date startTime, Date endTime, String location, int totalTickets, 
-       Date createdAt, Date updatedAt, BigDecimal ticketPrice, int availableTickets, String status, String category) {
+       Date createdAt, Date updatedAt, BigDecimal ticketPrice, int availableTickets, String status, String category, int views) {
        this.id = id;
        this.name = name;
        this.description = description;
@@ -46,6 +47,7 @@ public class ResEventInfoDTO {
        this.availableTickets = availableTickets;
        this.status = status;
        this.category = category;
+       this.views = views;
    }
 
    /**
@@ -243,5 +245,20 @@ public class ResEventInfoDTO {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    /**
+     * @return the views
+     */
+    public int getViews() {
+        return views;
+    }
+
+    /**
+     * @param views the views to set
+     */
+    public void setViews(int views) {
+        this.views = views;
+    }
+    
 
 }

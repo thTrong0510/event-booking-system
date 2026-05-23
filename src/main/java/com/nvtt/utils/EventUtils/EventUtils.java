@@ -18,6 +18,7 @@ import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.pojo.User;
+import com.nvtt.pojo.dtos.event.ResEventBasicInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventMediaDTO;
 import com.nvtt.repositories.CategoryRepository;
@@ -45,10 +46,24 @@ public class EventUtils {
         Set<ResEventMediaDTO> resEventMediaDTOs = eventMedias.stream()
                 .map(eventMedia -> new ResEventMediaDTO(eventMedia.getMediaType(), eventMedia.getMediaUrl()))
                 .collect(Collectors.toSet());
+        int eventViews;
+        if(event.getEventStatistic() != null){
+            if(event.getEventStatistic().getTotalViews() != null){
+                eventViews = event.getEventStatistic().getTotalViews();
+            } else {
+                eventViews = 0;
+            }
+        } else {
+            eventViews = 0;
+        }
         return new ResEventInfoDTO(event.getId(), event.getName(), event.getDescription(),
                 resEventMediaDTOs, event.getStartTime(), event.getEndTime(), event.getLocation(),
                 event.getTotalTickets(), event.getCreatedAt(), event.getUpdatedAt(), event.getTicketPrice(), 
-                event.getAvailableTickets(), event.getStatus().getName(), event.getCategory().getName());
+                event.getAvailableTickets(), event.getStatus().getName(), event.getCategory().getName(), eventViews);
+    }
+    
+    public ResEventBasicInfoDTO convertToResEventBasicInfoDTO(Event event) {
+        return new ResEventBasicInfoDTO(event.getId(), event.getName(), event.getDescription());
     }
 
     public boolean isOwner(Event event, Long userId) {

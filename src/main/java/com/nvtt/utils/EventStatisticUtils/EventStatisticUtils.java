@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.dtos.event_statistic.ResEventStatisticDTO;
 import com.nvtt.repositories.EventStatisticRepository;
+import com.nvtt.utils.EventUtils.EventUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class EventStatisticUtils {
 
     @Autowired
     private EventStatisticRepository eventStatisticRepository;
+
+    @Autowired
+    private EventUtils eventUtils;
    
     public EventStatistic convertParamsToEventStatisticObject(Map<String, String> params){
         try {
@@ -71,6 +75,7 @@ public class EventStatisticUtils {
         dto.setTotalViews(getIntValue(eventStatistic.getTotalViews()));
         dto.setLastUpdated(eventStatistic.getLastUpdated());
         dto.setCreatedAt(eventStatistic.getCreatedAt());
+        dto.setEvent(eventUtils.convertToResEventBasicInfoDTO(eventStatistic.getEvent()));
         return dto;
     }
     

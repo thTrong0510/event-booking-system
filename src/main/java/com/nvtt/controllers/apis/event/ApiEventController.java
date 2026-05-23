@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,23 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.nvtt.pojo.Event;
-import com.nvtt.pojo.EventMedia;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
-import com.nvtt.pojo.dtos.RestResponse;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
-import com.nvtt.pojo.dtos.event.ResEventMediaDTO;
 import com.nvtt.services.EventService;
 import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
-import com.nvtt.utils.UserUtils.UserUtils;
-import com.nvtt.utils.exceptions.IdInvalidException;
-
-import jakarta.data.repository.Delete;
 
 /**
  *
@@ -61,18 +52,15 @@ public class ApiEventController {
     private EventUtils eventUtils;
     
     @Autowired
-    private UserUtils userUtils;
-    
-    @Autowired
     private EventStatisticService eventStatisticService;
 
     @GetMapping("/events")
-    public ResponseEntity<Set<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
+    public ResponseEntity<List<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
         try {
             List<Event> events = eventService.getPublicEvents(params);
-            Set<ResEventInfoDTO> resEventInfoDTOs = events.stream()
+            List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
                     .map(event -> eventUtils.convertToResEventInfoDTO(event))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
         } catch (Exception e) {
             System.err.println("Error fetching all events: " + e.getMessage());
@@ -96,16 +84,14 @@ public class ApiEventController {
     }
     
     @GetMapping("/secure/organizer/events")
-    public ResponseEntity<Set<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
+    public ResponseEntity<List<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
-                User u = userService.getUserByEmail(authentication.getName());
-                Map<String, Long> organizerId = Map.of("organizerId", u.getId());
                 List<Event> events = eventService.getOrganizerEvents(params);
-                Set<ResEventInfoDTO> resEventInfoDTOs = events.stream()
+                List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
                     .map(event -> eventUtils.convertToResEventInfoDTO(event))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
                 return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(null);

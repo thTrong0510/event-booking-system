@@ -70,7 +70,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getPublicEvents(Map<String, String> params) {
         List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-        return eventRepository.getEvents(params, publicStatuses);
+        List<Event> events = eventRepository.getEvents(params, publicStatuses);
+        return events;
     }
 
     @Override
