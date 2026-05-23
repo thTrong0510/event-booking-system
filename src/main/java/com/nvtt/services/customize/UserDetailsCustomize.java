@@ -6,6 +6,7 @@ package com.nvtt.services.customize;
 
 import com.nvtt.pojo.User;
 import com.nvtt.services.UserService;
+import com.nvtt.utils.exceptions.IdInvalidException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +33,10 @@ public class UserDetailsCustomize implements UserDetailsService {
         User user = this.userService.getUserByEmail(username);
         if (Objects.isNull(user)) {
             throw new UsernameNotFoundException("Username/Password invalid");
+        }
+        
+        if (!user.getIsActive()) {
+            throw new UsernameNotFoundException("This account was blocked");
         }
 
         Set<GrantedAuthority> authorities = new HashSet<>();

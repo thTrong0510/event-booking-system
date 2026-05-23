@@ -47,19 +47,29 @@ public class UserRepositoryImpl implements UserRepository {
         Query query = s.createNamedQuery("User.findByEmail", User.class);
         query.setParameter("email", email);
 
-        User user = (User) query.getSingleResult();
+        Optional<User> optionalUser;
+        try {
+            User user = (User) query.getSingleResult();
+            optionalUser = Optional.of(user);
+        } catch (NoResultException ex) {
+            optionalUser = Optional.empty();
+        }
 
-        return user;
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        return optionalUser.get();
     }
 
     @Override
     public User getUserById(Long id) {
         Session s = factory.getObject().getCurrentSession();
-            
+
         Query query = s.createNamedQuery("User.findById", User.class);
         query.setParameter("id", id);
-        
-         Optional<User> optionalUser;
+
+        Optional<User> optionalUser;
 
         try {
             User user = (User) query.getSingleResult();
@@ -76,13 +86,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void toggleStatus(Long userId) {
+    public User toggleStatus(Long userId) {
+
         Session s = factory.getObject().getCurrentSession();
-        // Gom câu lệnh HQL tác động database về đúng vị trí hạ tầng Repository
-        String hql = "UPDATE User u SET u.isActive = CASE WHEN u.isActive = true THEN false ELSE true END WHERE u.id = :userId";
-        s.createQuery(hql)
-                .setParameter("userId", userId)
-                .executeUpdate();
+
+        User user = s.get(User.class, userId);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setIsActive(!user.getIsActive());
+
+        s.update(user);
+
+        return user;
     }
 
     public void addUser(User user) {
@@ -148,7 +166,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean authenticate(String email, String password) {
         User u = this.getUserByEmail(email);
-
         return this.passwordEncoder.matches(password, u.getPassword());
     }
 
@@ -210,16 +227,16 @@ public class UserRepositoryImpl implements UserRepository {
 
         return count > 0;
     }
-    
-@Override
+
+    @Override
     public List<User> findByRoleName(String roleName) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cq = cb.createQuery(User.class);
-        
+
         // Gốc truy vấn từ bảng User
         Root<User> root = cq.from(User.class);
-        
+
         // Sử dụng FETCH JOIN để nạp luôn thông tin Role (Tránh lỗi N+1 và tối ưu Performance)
         Fetch<User, Role> roleFetch = root.fetch("role", JoinType.INNER);
         Join<User, Role> roleJoin = (Join<User, Role>) roleFetch;
@@ -233,5 +250,12 @@ public class UserRepositoryImpl implements UserRepository {
         cq.orderBy(cb.asc(root.get("fullName"))); // Sắp xếp theo bảng chữ cái từ A-Z
 
         return session.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public boolean checkActiveAccount(String email) {
+        User user = this.getUserByEmail(email);
+
+        return user.getIsActive();
     }
 }

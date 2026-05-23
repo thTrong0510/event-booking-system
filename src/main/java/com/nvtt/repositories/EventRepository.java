@@ -46,4 +46,6 @@ public interface EventRepository {
     void update(Event event);
 
     List<Event> searchEvents(EventSearchCriteriaDTO criteria);
+    
+    List<Event> findEventsWithDetailsByIds(List<Long> ids);
 }

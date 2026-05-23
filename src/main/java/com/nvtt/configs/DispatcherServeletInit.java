@@ -22,7 +22,8 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
             ThymeleafConfig.class,
             HibernateConfigs.class,
             SpringSecurityConfigs.class,
-            PayPalConfig.class
+            PayPalConfig.class,
+            MailConfig.class
         };
     }
 

@@ -25,11 +25,13 @@ public interface UserRepository {
 
     User getUserById(Long id);
 
-    void toggleStatus(Long id);
+    User toggleStatus(Long id);
 
     void updateRole(Long userId, Long roleId);
 
     boolean checkExistEmail(String email);
     
     List<User> findByRoleName(String roleName);
+    
+    boolean checkActiveAccount(String email);
 }

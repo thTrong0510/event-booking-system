@@ -38,7 +38,10 @@ public class ApiUserController {
 
     @PostMapping("/users")
     public ResponseEntity<ResUserInfoDTO> createUser(@RequestParam Map<String, String> params,
-            @RequestParam("avatar") MultipartFile avatar) {
+            @RequestParam("avatar") MultipartFile avatar) throws IdInvalidException {
+        if(this.userService.checkExistEmail(params.get("email"))) {
+            throw new IdInvalidException("This email was exist");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.addUser(params, avatar));
     }
 
@@ -46,6 +49,9 @@ public class ApiUserController {
     public ResponseEntity<ResLoginDTO> login(@RequestBody ReqUserLoginDTO reqUser) throws IdInvalidException {
         if (!this.userService.authenticate(reqUser.getEmail(), reqUser.getPassword())) {
             throw new IdInvalidException("username/password is wrong");
+        }
+        if (!this.userService.checkActiveAccount(reqUser.getEmail())) {
+            throw new IdInvalidException("This account was blocked");
         }
         try {
             String accessToken = this.jwtUtil.generateToken(reqUser.getEmail());

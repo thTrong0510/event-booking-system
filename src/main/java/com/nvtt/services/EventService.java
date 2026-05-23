@@ -6,6 +6,7 @@ package com.nvtt.services;
 
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.dtos.admin.EventSearchCriteriaDTO;
+import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
 import com.nvtt.pojo.dtos.response.EventResponseDTO;
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface EventService {
     void rejectEvent(Long id);
 
     void updateStatus(Long id, String statusName);
+    
+    List<EventCompareResponseDTO> getEventsForComparison(List<Long> ids);
 }

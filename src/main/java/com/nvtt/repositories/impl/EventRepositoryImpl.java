@@ -345,4 +345,18 @@ public class EventRepositoryImpl implements EventRepository {
 
         return session.createQuery(cq).getResultList();
     }
+    
+    @Override
+    public List<Event> findEventsWithDetailsByIds(List<Long> ids) {
+        String hql = "SELECT DISTINCT e FROM Event e " +
+                     "LEFT JOIN FETCH e.category " +
+                     "LEFT JOIN FETCH e.organizer " +
+                     "LEFT JOIN FETCH e.eventStatistic " +
+                     "LEFT JOIN FETCH e.eventMedias " +
+                     "WHERE e.id IN :eventIds";
+
+        return getCurrentSession().createQuery(hql, Event.class)
+                .setParameter("eventIds", ids)
+                .getResultList();
+    }
 }

@@ -4,8 +4,11 @@
  */
 package com.nvtt.controllers.admin;
 
+import com.nvtt.pojo.User;
 import com.nvtt.services.RoleService;
 import com.nvtt.services.UserService;
+import com.nvtt.services.email.EmailService;
+import com.nvtt.utils.constants.EmailType;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +34,9 @@ public class AdminUserController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping
     public String listUsers(@RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "roleId", required = false) Long roleId,
@@ -55,8 +61,16 @@ public class AdminUserController {
             @RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "page", defaultValue = "1") int page,
             RedirectAttributes redirectAttributes) {
-        userService.toggleStatus(id);
+        User user = userService.toggleStatus(id);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái tài khoản thành công!");
+
+        EmailType emailType = user.getIsActive() ? EmailType.ACCOUNT_UNLOCKED : EmailType.ACCOUNT_LOCKED;
+
+        emailService.sendAccountNotification(
+                user.getEmail(),
+                user.getFullName(),
+                emailType
+        );
 
         // Giữ nguyên trạng thái phân trang và bộ lọc sau khi thực thi xong hành động
         return "redirect:/admin/users?search=" + (search != null ? search : "")

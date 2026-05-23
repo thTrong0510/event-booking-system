@@ -143,8 +143,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void toggleStatus(Long id) {
-        userRepository.toggleStatus(id);
+    public User toggleStatus(Long id) {
+        return userRepository.toggleStatus(id);
     }
 
     @Override
@@ -157,4 +157,8 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByRoleName(roleName);
     }
 
+    @Override 
+    public boolean checkActiveAccount(String email) {
+        return this.userRepository.checkActiveAccount(email);
+    }
 }

@@ -29,9 +29,11 @@ public interface UserService {
 
     Map<String, Object> getUsersData(String search, Long roleId, int page);
 
-    void toggleStatus(Long id);
+    User toggleStatus(Long id);
 
     void updateUserRole(Long userId, Long roleId);
     
     List<User> findByRoleName(String roleName);
+    
+    boolean checkActiveAccount(String email);
 }
