@@ -3,21 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.nvtt.services;
-import com.nvtt.pojo.EventStatus;
 
 import java.util.Map;
 
 import com.nvtt.pojo.EventStatus;
+import java.util.List;
 
 /**
  *
  * @author lequa
  */
 public interface EventStatusService {
+
     EventStatus getStatusByName(String name);
+
     EventStatus addEventStatus(Map<String, String> params);
+
     EventStatus updateEventStatus(Long id, Map<String, String> params);
+
     EventStatus getStatusById(Long id);
-        List<EventStatus> getAllStatuses();
+
+    List<EventStatus> getAllStatuses();
+
     EventStatus getByName(String name);
 }

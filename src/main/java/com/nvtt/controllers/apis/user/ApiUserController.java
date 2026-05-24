@@ -42,7 +42,7 @@ public class ApiUserController {
     @PostMapping("/users")
     public ResponseEntity<ResUserInfoDTO> createUser(@RequestParam Map<String, String> params,
             @RequestParam("avatar") MultipartFile avatar) throws IdInvalidException {
-        if(this.userService.checkExistEmail(params.get("email"))) {
+        if (this.userService.checkExistEmail(params.get("email"))) {
             throw new IdInvalidException("This email was exist");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.addUser(params, avatar));
@@ -71,27 +71,21 @@ public class ApiUserController {
             throw new IdInvalidException("error: creating token");
         }
     }
-    
+
     @GetMapping("/secure/me")
     public ResponseEntity<ResUserInfoDTO> getMyInfo() {
-        try {
-            User currentUser = userService.getMyInfo();
-            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(currentUser.getId(), currentUser.getEmail(),
-                    currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getName());
-            return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+
+        User currentUser = userService.getMyInfo();
+        ResUserInfoDTO userInfoDto = new ResUserInfoDTO(currentUser.getId(), currentUser.getEmail(),
+                currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getId(), currentUser.getRole().getName(), currentUser.getIsActive());
+        return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
+
     }
 
     @PostMapping("/secure/me")
     public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
             @RequestParam("avatar") Optional<MultipartFile> avatar) {
-        try {
-            ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);
-            return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);
+        return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
     }
 }

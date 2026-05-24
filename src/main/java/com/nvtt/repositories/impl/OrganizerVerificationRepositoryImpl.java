@@ -4,7 +4,6 @@
  */
 package com.nvtt.repositories.impl;
 
-import java.util.List;
 import java.util.Map;
 
 import com.nvtt.pojo.OrganizerVerification;
@@ -37,7 +36,7 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
 
     @Autowired
     private LocalSessionFactoryBean factory;
-    
+
     @Override
     public OrganizerVerification addOrganizerVerification(OrganizerVerification organizerVerification) {
         try {
@@ -50,12 +49,12 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
     }
 
     @Override
-    public List<OrganizerVerification> getOrganizerVerifications(Map<String, String> params){
+    public List<OrganizerVerification> getOrganizerVerifications(Map<String, String> params) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<OrganizerVerification> q = b.createQuery(OrganizerVerification.class);
         Root<OrganizerVerification> root = q.from(OrganizerVerification.class);
-        
+
         if (params != null) {
             if (params.containsKey("status")) {
                 q.where(b.equal(root.get("status"), params.get("status")));
@@ -68,15 +67,16 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
     }
 
     @Override
-    public OrganizerVerification getOrganizerVerificationById(Long id){
+    public OrganizerVerification getOrganizerVerificationById(Long id) {
         Session session = factory.getObject().getCurrentSession();
-        
+
         Query q = session.createNamedQuery("OrganizerVerification.findById", OrganizerVerification.class);
         q.setParameter("id", id);
-        
+
         OrganizerVerification organizerVerification = (OrganizerVerification) q.getSingleResult();
-        
+
         return organizerVerification;
+    }
 
     @Override
     public List<OrganizerVerification> findAll(String status, String search, int offset, int limit) {
@@ -128,8 +128,10 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
     public long countAll(String status, String search) {
         Session session = factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<OrganizerVerification> root = cq.from(OrganizerVerification.class);
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class
+        );
+        Root<OrganizerVerification> root = cq.from(OrganizerVerification.class
+        );
 
         List<Predicate> predicates = new ArrayList<>();
 

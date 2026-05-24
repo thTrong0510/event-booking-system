@@ -135,17 +135,6 @@ public class Event implements Serializable {
         this.ticketPrice = ticketPrice;
         this.availableTickets = availableTickets;
     }
-    public Event(Long id, String name, String description, Date startTime, Date endTime, String location, int totalTickets, BigDecimal ticketPrice, int availableTickets) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.location = location;
-        this.totalTickets = totalTickets;
-        this.ticketPrice = ticketPrice;
-        this.availableTickets = availableTickets;
-    }
 
     public Long getId() {
         return id;

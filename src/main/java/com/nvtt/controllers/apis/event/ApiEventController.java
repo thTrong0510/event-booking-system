@@ -28,11 +28,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
+import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
 import com.nvtt.services.EventService;
 import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
+import com.nvtt.utils.exceptions.IdInvalidException;
 
 /**
  *
@@ -47,10 +49,10 @@ public class ApiEventController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private EventUtils eventUtils;
-    
+
     @Autowired
     private EventStatisticService eventStatisticService;
 
@@ -67,13 +69,13 @@ public class ApiEventController {
             throw new RuntimeException("Error fetching all events", e);
         }
     }
-    
+
     @GetMapping("/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getEventById(@PathVariable Long id) {
         try {
             Event event = eventService.getPublicEventById(id);
             ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
-            if(event != null){
+            if (event != null) {
                 eventStatisticService.increaseViews(event.getId(), 1);
             }
             return ResponseEntity.status(HttpStatus.OK).body(dto);
@@ -82,7 +84,7 @@ public class ApiEventController {
             throw new RuntimeException(e.getMessage());
         }
     }
-    
+
     @GetMapping("/secure/organizer/events")
     public ResponseEntity<List<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
         try {
@@ -90,8 +92,8 @@ public class ApiEventController {
             if (authentication != null) {
                 List<Event> events = eventService.getOrganizerEvents(params);
                 List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
-                    .map(event -> eventUtils.convertToResEventInfoDTO(event))
-                    .collect(Collectors.toList());
+                        .map(event -> eventUtils.convertToResEventInfoDTO(event))
+                        .collect(Collectors.toList());
                 return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -101,7 +103,7 @@ public class ApiEventController {
             throw new RuntimeException("Error fetching all events", e);
         }
     }
-    
+
     @GetMapping("/secure/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getOwnEventById(@PathVariable Long id) {
         try {
@@ -115,8 +117,8 @@ public class ApiEventController {
     }
 
     @PostMapping("/secure/organizer/events")
-    public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params,@RequestParam("images") Optional<Set<MultipartFile>> images, 
-        @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
+    public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params, @RequestParam("images") Optional<Set<MultipartFile>> images,
+            @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
@@ -137,7 +139,7 @@ public class ApiEventController {
 
     @PutMapping("/secure/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> updateEvent(@PathVariable Long id, @RequestParam Map<String, String> params,
-            @RequestParam("newImages") Optional<Set<MultipartFile>> newImages, 
+            @RequestParam("newImages") Optional<Set<MultipartFile>> newImages,
             @RequestParam("newVideos") Optional<Set<MultipartFile>> newVideos,
             @RequestParam("deletedMediaUrls") Optional<Set<String>> deletedMediaUrls) {
         try {
@@ -157,9 +159,9 @@ public class ApiEventController {
             throw new RuntimeException(e.getMessage().toString(), e);
         }
     }
-    
+
     @PutMapping("/secure/organizer/launch-event")
-    public ResponseEntity<Void> launchEvent(@RequestParam Long eventId){
+    public ResponseEntity<Void> launchEvent(@RequestParam Long eventId) {
         try {
             eventService.launchEvent(eventId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -186,5 +188,15 @@ public class ApiEventController {
             System.err.println("Error deleting event: " + e.getMessage());
             throw new RuntimeException(e.getMessage().toString(), e);
         }
+    }
+
+    @GetMapping("/events/compare")
+    public ResponseEntity<List<EventCompareResponseDTO>> compareEvents(@RequestParam("ids") List<Long> ids) throws IdInvalidException {
+        if (ids == null || ids.size() < 2 || ids.size() > 3) {
+            throw new IdInvalidException("Vui lòng cung cấp từ 2 đến 3 ID sự kiện để so sánh.");
+        }
+
+        List<EventCompareResponseDTO> compareResult = eventService.getEventsForComparison(ids);
+        return ResponseEntity.ok(compareResult);
     }
 }

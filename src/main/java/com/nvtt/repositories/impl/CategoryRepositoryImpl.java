@@ -6,13 +6,11 @@ package com.nvtt.repositories.impl;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nvtt.pojo.Category;
-import com.nvtt.pojo.EventMedia;
 import com.nvtt.repositories.CategoryRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -27,12 +25,12 @@ import java.util.Map;
 @Repository
 @Transactional
 public class CategoryRepositoryImpl implements CategoryRepository {
-    
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
-            private Session getCurrentSession() {
-        return sessionFactory.getObject().getCurrentSession();
+    private Session getCurrentSession() {
+        return factory.getObject().getCurrentSession();
     }
 
     @Override
@@ -43,7 +41,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 .getSingleResult();
         return category;
     }
-    
+
     @Override
     public Category getCategoryById(Long id) {
         Session session = this.factory.getObject().getCurrentSession();
@@ -77,14 +75,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             throw new RuntimeException(e.getMessage());
         }
     }
-    
+
     @Override
-    public List<Category> getCategory(Map<String, String> params){
+    public List<Category> getCategory(Map<String, String> params) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Category> q = b.createQuery(Category.class);
         Root<Category> root = q.from(Category.class);
-        
+
         if (params != null) {
             if (params.containsKey("name")) {
                 q.where(b.equal(root.get("name"), params.get("name")));
@@ -106,4 +104,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Category findById(Long id) {
         return this.getCurrentSession().get(Category.class, id);
+    }
+    
 }

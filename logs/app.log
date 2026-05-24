@@ -1,4 +1,0 @@
-2026-05-24 09:31:11 DEBUG SQL:135 - select month(e1_0.start_time),count(e1_0.id) from events e1_0 where year(e1_0.start_time)=? group by 1 order by 1
-2026-05-24 09:31:11 DEBUG SQL:135 - select month(o1_0.created_at),sum(o1_0.quantity) from orders o1_0 where o1_0.status=? and year(o1_0.created_at)=? group by 1 order by 1
-2026-05-24 09:31:12 DEBUG SQL:135 - select c1_0.name,sum(o1_0.total_amount) from orders o1_0 join events e1_0 on e1_0.id=o1_0.event_id join categories c1_0 on c1_0.id=e1_0.category_id where o1_0.status=? and year(o1_0.created_at)=? group by 1
-2026-05-24 09:31:12 DEBUG SQL:135 - select o2_0.full_name,sum(o1_0.total_amount) from orders o1_0 join events e1_0 on e1_0.id=o1_0.event_id join users o2_0 on o2_0.id=e1_0.organizer_id where o1_0.status=? and year(o1_0.created_at)=? group by 1 order by sum(o1_0.total_amount) desc limit ?

@@ -44,7 +44,7 @@ public class EventRepositoryImpl implements EventRepository {
     private Environment env;
 
     private Session getCurrentSession() {
-        return sessionFactory.getObject().getCurrentSession();
+        return factory.getObject().getCurrentSession();
     }
 
     @Override

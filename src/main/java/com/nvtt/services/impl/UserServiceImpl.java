@@ -96,9 +96,9 @@ public class UserServiceImpl implements UserService {
     public boolean authenticate(String email, String password) {
         return this.userRepository.authenticate(email, password);
     }
-    
+
     @Override
-    public User getMyInfo(){
+    public User getMyInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             String email = authentication.getName();
@@ -114,10 +114,10 @@ public class UserServiceImpl implements UserService {
         if (currentUser == null) {
             return null;
         }
-        
+
         User u = userUtils.converParamsToUserForUpdating(currentUser, params);
-        
-        if(avatar.isPresent()) {
+
+        if (avatar.isPresent()) {
             try {
                 Map res = this.cloudinary.uploader().upload(avatar.get().getBytes(), ObjectUtils.asMap("resource type", "auto"));
                 u.setAvatarUrl(res.get("secure_url").toString());
@@ -125,10 +125,10 @@ public class UserServiceImpl implements UserService {
                 System.err.println("errorr");
             }
         }
-        
+
         this.userRepository.addUser(u);
-        
-        ResUserInfoDTO userInfo = new ResUserInfoDTO(u.getId(), u.getEmail(), u.getFullName(), u.getAvatarUrl(), u.getRole().getName());
+
+        ResUserInfoDTO userInfo = new ResUserInfoDTO(u.getId(), u.getEmail(), u.getFullName(), u.getAvatarUrl(), u.getRole().getId(), u.getRole().getName(), u.getIsActive());
         return userInfo;
     }
 
@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByRoleName(roleName);
     }
 
-    @Override 
+    @Override
     public boolean checkActiveAccount(String email) {
         return this.userRepository.checkActiveAccount(email);
     }

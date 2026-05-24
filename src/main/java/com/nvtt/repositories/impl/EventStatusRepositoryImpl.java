@@ -31,7 +31,7 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
 
     
     private Session getCurrentSession() {
-        return sessionFactory.getObject().getCurrentSession();
+        return factory.getObject().getCurrentSession();
     }
     
     @Override
