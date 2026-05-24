@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement
+@EnableAsync
 @ComponentScan(
         basePackages = {
             "com.nvtt.controllers",
@@ -56,6 +58,7 @@ public class SpringSecurityConfigs {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 )
+                .exceptionHandling(handling -> handling.accessDeniedPage("/admin/errors/401"))
                 .formLogin(form -> form.loginPage("/admin/login") // đường dẫn tới trang đăng nhập
                 .loginProcessingUrl("/admin/login") // đường dẫn xử lý post 
                 .defaultSuccessUrl("/", true) // chuyển hướng khi thành công

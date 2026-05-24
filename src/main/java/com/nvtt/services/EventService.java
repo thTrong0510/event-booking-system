@@ -4,6 +4,10 @@
  */
 package com.nvtt.services;
 
+import com.nvtt.pojo.dtos.admin.EventSearchCriteriaDTO;
+import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
+import com.nvtt.pojo.dtos.response.EventResponseDTO;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,4 +31,16 @@ public interface EventService {
     boolean deleteEvent(Long id);
     List<Event> getOrganizerEvents(Map<String, String> params);
     boolean launchEvent(Long id);
+
+    List<EventResponseDTO> getFilteredEvents(EventSearchCriteriaDTO criteria);
+
+    Event getEventDetails(Long id);
+
+    void approveEvent(Long id);
+
+    void rejectEvent(Long id);
+
+    void updateStatus(Long id, String statusName);
+
+    List<EventCompareResponseDTO> getEventsForComparison(List<Long> ids);
 }

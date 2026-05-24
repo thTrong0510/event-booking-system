@@ -16,4 +16,6 @@ public interface EventStatusRepository {
     EventStatus getStatusByName(String name);
     EventStatus addEventStatus(EventStatus eventStatus); // add and update
     EventStatus getStatusById(Long id);
+        List<EventStatus> findAll();
+    EventStatus findByName(String name);
 }

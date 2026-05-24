@@ -8,4 +8,9 @@
             30
         </session-timeout>
     </session-config>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/admin/errors/404</location>
+    </error-page>
 </web-app>

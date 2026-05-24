@@ -4,6 +4,8 @@
  */
 package com.nvtt.services.impl;
 
+import com.nvtt.pojo.dtos.admin.CategoryDTO;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +71,28 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getCategory(Map<String, String> params){
         return categoryRepository.getCategory(params);
+    }
+}
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        
+        // Ánh xạ an toàn từ POJO Entity sang DTO
+        return categories.stream().map(cat -> new CategoryDTO(
+            cat.getId(),
+            cat.getName(),
+            cat.getDescription()
+        )).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryDTO getCategoryById(Long id) {
+        Category cat = categoryRepository.findById(id);
+        if (cat == null) {
+            return null;
+        }
+        return new CategoryDTO(cat.getId(), cat.getName(), cat.getDescription());
     }
 }

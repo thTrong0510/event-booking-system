@@ -31,6 +31,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Autowired
     private LocalSessionFactoryBean factory;
 
+            private Session getCurrentSession() {
+        return sessionFactory.getObject().getCurrentSession();
+    }
+
     @Override
     public Category getCategoryByName(String name) {
         Session session = this.factory.getObject().getCurrentSession();
@@ -91,4 +95,15 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         }
         return session.createQuery(q).getResultList();
     }
+
+    @Override
+    public List<Category> findAll() {
+        // Sắp xếp theo tên từ A-Z để hiển thị trên thẻ select mượt mà hơn
+        String hql = "FROM Category c ORDER BY c.name ASC";
+        return this.getCurrentSession().createQuery(hql, Category.class).getResultList();
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return this.getCurrentSession().get(Category.class, id);
 }

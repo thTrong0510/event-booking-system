@@ -17,4 +17,11 @@ public interface OrganizerVerificationRepository {
     OrganizerVerification addOrganizerVerification(OrganizerVerification organizerVerification);
     List<OrganizerVerification> getOrganizerVerifications(Map<String, String> params);
     OrganizerVerification getOrganizerVerificationById(Long id);
+        List<OrganizerVerification> findAll(String status, String search, int offset, int limit);
+
+    long countAll(String status, String search);
+
+    OrganizerVerification findById(Long id);
+
+    void updateStatus(Long id, String status, Long adminId);
 }

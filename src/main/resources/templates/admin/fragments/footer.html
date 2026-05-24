@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <footer th:fragment="admin-footer" class="footer mt-auto py-3 bg-white border-top shadow-sm">
+            <div class="container-fluid px-4">
+                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between small">
+                    <div class="text-muted">
+                        &copy; <span id="currentYear"></span> <span class="fw-semibold text-dark">Ticket System</span>. Tất cả các quyền được bảo lưu.
+                    </div>
+                    <div class="d-flex gap-3 mt-2 mt-sm-0">
+                        <a href="#" class="text-decoration-none text-secondary hover-primary">Chính sách bảo mật</a>
+                        <span class="text-muted">|</span>
+                        <a href="#" class="text-decoration-none text-secondary hover-primary">Điều khoản vận hành</a>
+                        <span class="text-muted">|</span>
+                        <a href="#" class="text-decoration-none text-secondary hover-primary">Hỗ trợ kỹ thuật</a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.getElementById("currentYear").textContent = new Date().getFullYear();
+            </script>
+        </footer>
+    </body>
+</html>

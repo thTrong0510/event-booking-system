@@ -18,4 +18,6 @@ public interface CategoryService {
     Category updateCategory(Long id, Map<String, String> params);
     void deleteCategory(Category category);
     List<Category> getCategory(Map<String, String> params);
+        List<CategoryDTO> getAllCategories();
+    CategoryDTO getCategoryById(Long id);
 }

@@ -5,6 +5,8 @@
 package com.nvtt.services.impl;
 
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,4 +80,14 @@ public class EventStatusServiceImpl implements EventStatusService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventStatus> getAllStatuses() {
+        return this.eventStatusRepository.findAll();
+    }
+
+    @Override
+    public EventStatus getByName(String name) {
+        return this.eventStatusRepository.findByName(name);
+    }
 }

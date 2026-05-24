@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
+    <head>
+        <title>Quản Lý Sự Kiện Toàn Hệ Thống</title>
+    </head>
+    <body>
+
+        <div th:fragment="main-content">
+
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Quản Lý Giao Dịch & Sự Kiện</h1>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${dangerMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${dangerMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-white font-weight-bold py-3 text-secondary">
+                    <i class="bi bi-funnel-fill me-1"></i> Bộ lọc kiểm duyệt nâng cao
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/events}" method="GET" th:object="${criteria}" class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold">Từ khóa tên sự kiện</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                <input type="text" th:field="*{keyword}" class="form-control" placeholder="Nhập tên sự kiện cần tìm...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold">Lĩnh vực / Danh mục</label>
+                            <select th:field="*{categoryId}" class="form-select form-select-sm">
+                                <option value="">-- Tất cả lĩnh vực --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold">Nhà tổ chức</label>
+                            <select th:field="*{organizerId}" class="form-select form-select-sm">
+                                <option value="">-- Tất cả nhà tổ chức --</option>
+                                <option th:each="org : ${organizers}" th:value="${org.id}" th:text="${org.fullName}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Trạng thái duyệt</label>
+                            <select th:field="*{statusId}" class="form-select form-select-sm">
+                                <option value="">-- Tất cả trạng thái --</option>
+                                <option th:each="st : ${statuses}" th:value="${st.id}" th:text="${st.description}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Diễn ra từ ngày</label>
+                            <input type="date" th:field="*{fromDate}" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary flex-fill">
+                                <i class="bi bi-funnel-fill me-1"></i> Lọc kết quả
+                            </button>
+                            <a th:href="@{/admin/events}" class="btn btn-sm btn-outline-secondary flex-fill text-nowrap">
+                                <i class="bi bi-arrow-counterclockwise"></i> Làm mới
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th class="text-start">Tên Sự Kiện</th>
+                                    <th>Lĩnh vực</th>
+                                    <th>Nhà tổ chức</th>
+                                    <th>Giá Vé</th>
+                                    <th>Vé Đã Bán / Tổng số</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${events}">
+                                    <td th:text="${item.id}">101</td>
+                                    <td class="text-start fw-bold text-dark" th:text="${item.name}">Đại Nhạc Hội Mùa Hè 2026</td>
+                                    <td th:text="${item.categoryName}">Âm nhạc</td>
+                                    <td th:text="${item.organizerName}">Công ty Giải Trí ABC</td>
+                                    <td>
+                                        <span class="text-success fw-bold" th:text="${item.ticketPrice == 0 ? 'Miễn phí' : #numbers.formatDecimal(item.ticketPrice, 0, 'COMMA', 0, 'POINT') + 'đ'}">0đ</span>
+                                    </td>
+                                    <td th:text="${item.availableTickets} + '/' + ${item.totalTickets}">150/500</td>
+                                    <td>
+                                        <span th:text="${item.statusName}" 
+                                              th:class="'badge ' + 
+                                              (${item.statusName == 'PENDING'} ? 'bg-warning text-dark' : 
+                                              (${item.statusName == 'PUBLISHED'} ? 'bg-success' : 
+                                              (${item.statusName == 'HIDDEN'} ? 'bg-secondary' : 'bg-danger')))">Trạng thái</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a th:href="@{/admin/events/{id}(id=${item.id})}" class="btn btn-outline-primary" title="Xem chi tiết nội dung">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </a>
+
+                                            <th:block th:if="${item.statusName == 'PENDING'}">
+                                                <form th:action="@{/admin/events/{id}/approve(id=${item.id})}" method="POST" class="d-inline" onsubmit="return confirm('Phê duyệt công khai sự kiện này?');">
+                                                    <button type="submit" class="btn btn-outline-success" title="Phê duyệt phát hành"><i class="bi bi-check-circle"></i></button>
+                                                </form>
+                                            </th:block>
+
+                                            <th:block th:if="${item.statusName == 'PUBLISHED'}">
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        th:data-bs-id="${item.id}" 
+                                                        th:data-bs-name="${item.name}"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#violationModal" 
+                                                        title="Xử lý vi phạm chính sách">
+                                                    <i class="bi bi-shield-x"></i>
+                                                </button>
+                                            </th:block>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(events)}">
+                                    <td colspan="8" class="text-center py-4 text-muted">Không tìm thấy sự kiện nào khớp với bộ lọc điều kiện.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="violationModal" tabindex="-1" aria-labelledby="violationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="violationModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Xử Lý Vi Phạm Chính Sách</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-3 text-secondary">Bạn đang thực hiện kỷ luật hành chính đối với sự kiện: <br><strong id="modalEventName" class="text-dark"></strong></p>
+
+                            <div class="alert alert-warning small py-2 mb-3">
+                                <i class="bi bi-info-circle me-1"></i> <strong>Ẩn:</strong> Hạ tải tạm thời khỏi ứng dụng người dùng. <br>
+                                <i class="bi bi-trash me-1"></i> <strong>Xóa vi phạm:</strong> Đánh dấu hủy và chặn khôi phục dữ liệu gốc.
+                            </div>
+
+                            <form id="violationForm" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Hình thức xử lý</label>
+                                    <select name="action" class="form-select form-select-sm" required>
+                                        <option value="HIDE">Ẩn sự kiện khẩn cấp (Trạng thái ẩn)</option>
+                                        <option value="DELETE">Xóa bỏ hoàn toàn do vi phạm nghiêm trọng</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Lý do xử lý (Gửi nhà tổ chức)</label>
+                                    <textarea name="reason" class="form-control form-control-sm" rows="3" placeholder="Nhập lý do chi tiết (Ví dụ: Hình ảnh nhạy cảm, lừa đảo vé...)" required></textarea>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                                    <button type="submit" class="btn btn-sm btn-danger">Xác nhận thực hiện</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const violationModal = document.getElementById('violationModal');
+                    if (violationModal) {
+                        violationModal.addEventListener('show.bs.modal', function (event) {
+                            const button = event.relatedTarget;
+                            const eventId = button.getAttribute('data-bs-id');
+                            const eventName = button.getAttribute('data-bs-name');
+
+                            const modalNamePlace = violationModal.querySelector('#modalEventName');
+                            const formAction = violationModal.querySelector('#violationForm');
+
+                            modalNamePlace.textContent = eventId + " - " + eventName;
+                            formAction.action = '/admin/events/' + eventId + '/violation';
+                        });
+                    }
+                });
+            </script>
+
+        </div>
+
+    </body>
+</html>

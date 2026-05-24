@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.repositories.EventStatusRepository;
+import jakarta.persistence.NoResultException;
+import java.util.List;
+import java.util.Optional;
+import org.hibernate.query.Query;
 
 /**
  *
@@ -24,6 +28,11 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
 
     @Autowired
     private LocalSessionFactoryBean factory;
+
+    
+    private Session getCurrentSession() {
+        return sessionFactory.getObject().getCurrentSession();
+    }
     
     @Override
     public EventStatus getStatusByName(String name) {
@@ -58,4 +67,30 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
         }
     }
 
+    @Override
+    public List<EventStatus> findAll() {
+        String hql = "FROM EventStatus es ORDER BY es.id ASC";
+        return getCurrentSession().createQuery(hql, EventStatus.class).getResultList();
+    }
+
+    @Override
+    public EventStatus findByName(String name) {
+        Query query = this.getCurrentSession().createNamedQuery("EventStatus.findByName", EventStatus.class);
+        query.setParameter("name", name);
+
+        Optional<EventStatus> optionalStatus;
+
+        try {
+            EventStatus status = (EventStatus) query.getSingleResult();
+            optionalStatus = Optional.of(status);
+        } catch (NoResultException e) {
+            optionalStatus = Optional.empty();
+        }
+
+        if (optionalStatus.isEmpty()) {
+            return null;
+        }
+
+        return optionalStatus.get();
+    }
 }
