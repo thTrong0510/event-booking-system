@@ -101,6 +101,18 @@ public class ApiEventController {
             throw new RuntimeException("Error fetching all events", e);
         }
     }
+    
+    @GetMapping("/secure/organizer/events/{id}")
+    public ResponseEntity<ResEventInfoDTO> getOwnEventById(@PathVariable Long id) {
+        try {
+            Event event = eventService.getOwnEventById(id);
+            ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        } catch (Exception e) {
+            System.err.println("Error fetching events: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
     @PostMapping("/secure/organizer/events")
     public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params,@RequestParam("images") Optional<Set<MultipartFile>> images, 

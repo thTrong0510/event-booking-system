@@ -12,4 +12,5 @@ import com.nvtt.pojo.Role;
  */
 public interface RoleService {
     Role getRoleById(Long id);
+    Role getRoleByName(String name);
 }
