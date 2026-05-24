@@ -25,4 +25,9 @@ public class RoleServiceImpl implements RoleService {
         return this.getRoleById(id);
     }
     
+    @Override
+    public Role getRoleByName(String name){
+        return this.getRoleByName(name);
+    }
+    
 }

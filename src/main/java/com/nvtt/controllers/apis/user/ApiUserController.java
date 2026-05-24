@@ -12,9 +12,12 @@ import com.nvtt.services.UserService;
 import com.nvtt.utils.JwtUtil;
 import com.nvtt.utils.exceptions.IdInvalidException;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +54,7 @@ public class ApiUserController {
             String accessToken = this.jwtUtil.generateToken(reqUser.getEmail());
             
             User userdb = this.userService.getUserByEmail(reqUser.getEmail());
-            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(userdb.getId(), userdb.getEmail(), userdb.getFullName(), userdb.getAvatarUrl());
+            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(userdb.getId(), userdb.getEmail(), userdb.getFullName(), userdb.getAvatarUrl(), userdb.getRole().getName());
             
 
             ResLoginDTO resUser = new ResLoginDTO();
@@ -61,6 +64,29 @@ public class ApiUserController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resUser);
         } catch (Exception ex){
             throw new IdInvalidException("error: creating token");
+        }
+    }
+    
+    @GetMapping("/secure/me")
+    public ResponseEntity<ResUserInfoDTO> getMyInfo() {
+        try {
+            User currentUser = userService.getMyInfo();
+            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(currentUser.getId(), currentUser.getEmail(),
+                    currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getName());
+            return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/secure/me")
+    public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
+            @RequestParam("avatar") Optional<MultipartFile> avatar) {
+        try {
+            ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);
+            return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

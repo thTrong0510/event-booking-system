@@ -7,7 +7,6 @@
     <class>com.nvtt.pojo.Category</class>
     <class>com.nvtt.pojo.Event</class>
     <class>com.nvtt.pojo.EventStatistic</class>
-    <class>com.nvtt.pojo.Order</class>
     <class>com.nvtt.pojo.OrganizerVerification</class>
     <class>com.nvtt.pojo.PaymentTransaction</class>
     <class>com.nvtt.pojo.Payment</class>
@@ -15,7 +14,7 @@
     <class>com.nvtt.pojo.Role</class>
     <class>com.nvtt.pojo.Ticket</class>
     <class>com.nvtt.pojo.User</class>
-    <class>com.nvtt.pojo.Orders</class>
     <class>com.nvtt.pojo.EventMedia</class>
+    <class>com.nvtt.pojo.Orders</class>
   </persistence-unit>
 </persistence>

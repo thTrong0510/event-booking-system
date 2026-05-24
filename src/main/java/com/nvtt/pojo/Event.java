@@ -114,6 +114,8 @@ public class Event implements Serializable {
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User organizer;
+    @Column(name = "available_tickets")
+    private int availableTickets;
 
     public Event() {
     }
@@ -131,6 +133,17 @@ public class Event implements Serializable {
         this.location = location;
         this.totalTickets = totalTickets;
         this.ticketPrice = ticketPrice;
+    }
+    public Event(Long id, String name, String description, Date startTime, Date endTime, String location, int totalTickets, BigDecimal ticketPrice, int availableTickets) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.totalTickets = totalTickets;
+        this.ticketPrice = ticketPrice;
+        this.availableTickets = availableTickets;
     }
 
     public Long getId() {
@@ -302,5 +315,19 @@ public class Event implements Serializable {
     @PreUpdate
     public void beforeUpdate() {
         this.updatedAt = Date.from(Instant.now());
+    }
+
+    /**
+     * @return the availableTickets
+     */
+    public int getAvailableTickets() {
+        return availableTickets;
+    }
+
+    /**
+     * @param availableTickets the availableTickets to set
+     */
+    public void setAvailableTickets(int availableTickets) {
+        this.availableTickets = availableTickets;
     }
 }

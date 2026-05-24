@@ -12,9 +12,15 @@ import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import com.nvtt.repositories.RoleRepository;
 import com.nvtt.repositories.UserRepository;
 import com.nvtt.services.UserService;
+import com.nvtt.utils.UserUtils.UserUtils;
+
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private UserUtils userUtils;
 
     @Override
     public User getUserByEmail(String email) {
@@ -78,6 +87,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticate(String email, String password) {
         return this.userRepository.authenticate(email, password);
+    }
+    
+    @Override
+    public User getMyInfo(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String email = authentication.getName();
+            User user = userRepository.getUserByEmail(email);
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public ResUserInfoDTO updateMyInfo(Map<String, String> params, Optional<MultipartFile> avatar) {
+        User currentUser = this.getMyInfo();
+        if (currentUser == null) {
+            return null;
+        }
+        
+        User u = userUtils.converParamsToUserForUpdating(currentUser, params);
+        
+        if(avatar.isPresent()) {
+            try {
+                Map res = this.cloudinary.uploader().upload(avatar.get().getBytes(), ObjectUtils.asMap("resource type", "auto"));
+                u.setAvatarUrl(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                System.err.println("errorr");
+            }
+        }
+        
+        this.userRepository.addUser(u);
+        
+        ResUserInfoDTO userInfo = new ResUserInfoDTO(u.getId(), u.getEmail(), u.getFullName(), u.getAvatarUrl(), u.getRole().getName());
+        return userInfo;
     }
 
 }
