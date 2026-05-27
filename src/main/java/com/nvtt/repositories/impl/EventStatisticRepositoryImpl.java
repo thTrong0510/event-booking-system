@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.NoResultException;
+import java.util.Optional;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,7 +127,21 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
         Root<EventStatistic> root = q.from(EventStatistic.class);
         q.where(b.equal(root.get("eventId"), eventId));
-        return session.createQuery(q).getSingleResult();
+        org.hibernate.query.Query<EventStatistic> hQuery = session.createQuery(q);
+
+        Optional<EventStatistic> optionalStat;
+        try {
+            EventStatistic stat = hQuery.getSingleResult();
+            optionalStat = Optional.of(stat);
+        } catch (NoResultException e) {
+            optionalStat = Optional.empty();
+        }
+
+        if (optionalStat.isEmpty()) {
+            return null;
+        }
+
+        return optionalStat.get();
     }
     
     @Override
@@ -141,6 +157,20 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
                 b.equal(event.get("organizer").get("id"), organizerId)
             )
         );
-        return session.createQuery(q).getSingleResult();
+        org.hibernate.query.Query<EventStatistic> hQuery = session.createQuery(q);
+
+        Optional<EventStatistic> optionalStat;
+        try {
+            EventStatistic stat = hQuery.getSingleResult();
+            optionalStat = Optional.of(stat);
+        } catch (NoResultException e) {
+            optionalStat = Optional.empty();
+        }
+
+        if (optionalStat.isEmpty()) {
+            return null;
+        }
+
+        return optionalStat.get();
     }
 }

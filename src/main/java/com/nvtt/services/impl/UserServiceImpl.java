@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmail(String email) {
         return this.userRepository.getUserByEmail(email);
     }
+    
+    @Override
+    public User getUserById(Long id){
+        return this.userRepository.getUserById(id);
+    }
 
     @Override
     public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar) {

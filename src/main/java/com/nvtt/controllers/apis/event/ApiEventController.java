@@ -58,36 +58,25 @@ public class ApiEventController {
 
     @GetMapping("/events")
     public ResponseEntity<List<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
-        try {
             List<Event> events = eventService.getPublicEvents(params);
             List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
                     .map(event -> eventUtils.convertToResEventInfoDTO(event))
                     .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
-        } catch (Exception e) {
-            System.err.println("Error fetching all events: " + e.getMessage());
-            throw new RuntimeException("Error fetching all events", e);
-        }
     }
 
     @GetMapping("/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getEventById(@PathVariable Long id) {
-        try {
             Event event = eventService.getPublicEventById(id);
             ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
             if (event != null) {
                 eventStatisticService.increaseViews(event.getId(), 1);
             }
             return ResponseEntity.status(HttpStatus.OK).body(dto);
-        } catch (Exception e) {
-            System.err.println("Error fetching events: " + e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
     }
 
     @GetMapping("/secure/organizer/events")
     public ResponseEntity<List<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
-        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
                 List<Event> events = eventService.getOrganizerEvents(params);
@@ -98,28 +87,18 @@ public class ApiEventController {
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-        } catch (Exception e) {
-            System.err.println("Error fetching all events: " + e.getMessage());
-            throw new RuntimeException("Error fetching all events", e);
-        }
     }
 
     @GetMapping("/secure/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getOwnEventById(@PathVariable Long id) {
-        try {
             Event event = eventService.getOwnEventById(id);
             ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
-        } catch (Exception e) {
-            System.err.println("Error fetching events: " + e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
     }
 
     @PostMapping("/secure/organizer/events")
     public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params, @RequestParam("images") Optional<Set<MultipartFile>> images,
             @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
-        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
                 String email = authentication.getName();
@@ -131,10 +110,6 @@ public class ApiEventController {
             }
             Event addedEvent = eventService.addEvent(params, images, videos);
             return ResponseEntity.status(HttpStatus.CREATED).body(eventUtils.convertToResEventInfoDTO(addedEvent));
-        } catch (Exception e) {
-            System.err.println("Error adding event: " + e.getMessage());
-            throw new RuntimeException(e.getMessage().toString(), e);
-        }
     }
 
     @PutMapping("/secure/organizer/events/{id}")
@@ -142,7 +117,6 @@ public class ApiEventController {
             @RequestParam("newImages") Optional<Set<MultipartFile>> newImages,
             @RequestParam("newVideos") Optional<Set<MultipartFile>> newVideos,
             @RequestParam("deletedMediaUrls") Optional<Set<String>> deletedMediaUrls) {
-        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
                 String email = authentication.getName();
@@ -154,25 +128,22 @@ public class ApiEventController {
             }
             Event updatedEvent = eventService.updateEvent(id, params, newImages, newVideos, deletedMediaUrls);
             return ResponseEntity.status(HttpStatus.OK).body(eventUtils.convertToResEventInfoDTO(updatedEvent));
-        } catch (Exception e) {
-            System.err.println("Error updating event: " + e.getMessage());
-            throw new RuntimeException(e.getMessage().toString(), e);
-        }
     }
 
     @PutMapping("/secure/organizer/launch-event")
     public ResponseEntity<Void> launchEvent(@RequestParam Long eventId) {
-        try {
             eventService.launchEvent(eventId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage().toString(), e);
-        }
+    }
+    
+    @PutMapping("/secure/organizer/end-event")
+    public ResponseEntity<Void> endEvent(@RequestParam Long eventId) {
+            eventService.endEvent(eventId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/secure/organizer/events/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
                 String email = authentication.getName();
@@ -184,12 +155,7 @@ public class ApiEventController {
             }
             eventService.deleteEvent(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (Exception e) {
-            System.err.println("Error deleting event: " + e.getMessage());
-            throw new RuntimeException(e.getMessage().toString(), e);
-        }
     }
-
     @GetMapping("/events/compare")
     public ResponseEntity<List<EventCompareResponseDTO>> compareEvents(@RequestParam("ids") List<Long> ids) throws IdInvalidException {
         if (ids == null || ids.size() < 2 || ids.size() > 3) {

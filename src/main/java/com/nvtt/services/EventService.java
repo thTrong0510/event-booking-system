@@ -38,6 +38,8 @@ public interface EventService {
     List<Event> getOrganizerEvents(Map<String, String> params);
 
     boolean launchEvent(Long id);
+    
+    boolean endEvent(Long id);
 
     List<EventResponseDTO> getFilteredEvents(EventSearchCriteriaDTO criteria);
 

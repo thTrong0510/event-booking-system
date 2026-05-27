@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import jakarta.persistence.NoResultException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -56,7 +58,21 @@ public class EventRepositoryImpl implements EventRepository {
         root.fetch("eventMedias", JoinType.LEFT);
         q.select(root).distinct(true);
         q.where(b.equal(root.get("id"), id));
-        return session.createQuery(q).getSingleResult();
+        Query<Event> hQuery = session.createQuery(q);
+
+        Optional<Event> optionalEvent;
+        try {
+            Event event = hQuery.getSingleResult();
+            optionalEvent = Optional.of(event);
+        } catch (NoResultException e) {
+            optionalEvent = Optional.empty();
+        }
+
+        if (optionalEvent.isEmpty()) {
+            return null;
+        }
+
+        return optionalEvent.get();
     }
 
     @Override
@@ -75,7 +91,21 @@ public class EventRepositoryImpl implements EventRepository {
         }
 
         q.where(predicates.toArray(new Predicate[0]));
-        return session.createQuery(q).getSingleResult();
+        Query<Event> hQuery = session.createQuery(q);
+
+        Optional<Event> optionalEvent;
+        try {
+            Event event = hQuery.getSingleResult();
+            optionalEvent = Optional.of(event);
+        } catch (NoResultException e) {
+            optionalEvent = Optional.empty();
+        }
+
+        if (optionalEvent.isEmpty()) {
+            return null;
+        }
+
+        return optionalEvent.get();
     }
 
     @Override
@@ -92,7 +122,21 @@ public class EventRepositoryImpl implements EventRepository {
                 b.equal(root.get("organizer").get("id"), organizerId)
             )
         );
-        return session.createQuery(q).getSingleResult();
+        Query<Event> hQuery = session.createQuery(q);
+
+        Optional<Event> optionalEvent;
+        try {
+            Event event = hQuery.getSingleResult();
+            optionalEvent = Optional.of(event);
+        } catch (NoResultException e) {
+            optionalEvent = Optional.empty();
+        }
+
+        if (optionalEvent.isEmpty()) {
+            return null;
+        }
+
+        return optionalEvent.get();
     }
 
     @Override

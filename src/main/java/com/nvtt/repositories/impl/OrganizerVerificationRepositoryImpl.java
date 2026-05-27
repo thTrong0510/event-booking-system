@@ -25,6 +25,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.Query;
+import jakarta.persistence.NoResultException;
+import java.util.Optional;
 
 /**
  *
@@ -73,9 +75,19 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
         Query q = session.createNamedQuery("OrganizerVerification.findById", OrganizerVerification.class);
         q.setParameter("id", id);
 
-        OrganizerVerification organizerVerification = (OrganizerVerification) q.getSingleResult();
+        Optional<OrganizerVerification> optionalOV;
+        try {
+            OrganizerVerification ov = (OrganizerVerification) q.getSingleResult();
+            optionalOV = Optional.of(ov);
+        } catch (NoResultException e) {
+            optionalOV = Optional.empty();
+        }
 
-        return organizerVerification;
+        if (optionalOV.isEmpty()) {
+            return null;
+        }
+
+        return optionalOV.get();
     }
 
     @Override

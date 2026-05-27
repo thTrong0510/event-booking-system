@@ -36,13 +36,9 @@ public class EventStatisticController {
     
     @GetMapping("/secure/event-statistics")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatistics(@RequestParam Map<String, String> params) {
-        try {
-            List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(params);
-            List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
-            return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(params);
+        List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
     @GetMapping("/secure/event-statistics/by-month")
@@ -50,7 +46,6 @@ public class EventStatisticController {
             @RequestParam String month,
             @RequestParam(required = false) String year,
             @RequestParam Map<String, String> params) {
-        try {
             Map<String, String> filterParams = new HashMap<>(params);
             filterParams.put("month", month);
             filterParams.remove("quarter");
@@ -61,9 +56,6 @@ public class EventStatisticController {
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
     
     @GetMapping("/secure/event-statistics/by-quarter")
@@ -71,7 +63,6 @@ public class EventStatisticController {
             @RequestParam String quarter,
             @RequestParam(required = false) String year,
             @RequestParam Map<String, String> params) {
-        try {
             Map<String, String> filterParams = new HashMap<>(params);
             filterParams.put("quarter", quarter);
             filterParams.remove("month");
@@ -82,16 +73,12 @@ public class EventStatisticController {
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
     
     @GetMapping("/secure/event-statistics/by-year")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatisticsByYear(
             @RequestParam String year,
             @RequestParam Map<String, String> params) {
-        try {
             Map<String, String> filterParams = new HashMap<>(params);
             filterParams.put("year", year);
             filterParams.remove("month");
@@ -100,19 +87,12 @@ public class EventStatisticController {
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
     
     @GetMapping("/secure/event-statistics/{eventId}")
     public ResponseEntity<ResEventStatisticDTO> getEventStatisticByEventId(@PathVariable Long eventId) {
-        try {
             EventStatistic eventStatistic = eventStatisticService.getEventStatisticByEventId(eventId);
             ResEventStatisticDTO dto = eventStatisticUtils.convertToResEventStatisticDTO(eventStatistic);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }

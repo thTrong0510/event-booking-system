@@ -36,20 +36,44 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
     
     @Override
     public EventStatus getStatusByName(String name) {
-        Session session = this.factory.getObject().getCurrentSession();
-        EventStatus eventStatus = session.createNamedQuery("EventStatus.findByName", EventStatus.class)
-                .setParameter("name", name)
-                .getSingleResult();
-        return eventStatus;
+        Query query = this.getCurrentSession().createNamedQuery("EventStatus.findByName", EventStatus.class);
+        query.setParameter("name", name);
+
+        Optional<EventStatus> optionalStatus;
+
+        try {
+            EventStatus status = (EventStatus) query.getSingleResult();
+            optionalStatus = Optional.of(status);
+        } catch (NoResultException e) {
+            optionalStatus = Optional.empty();
+        }
+
+        if (optionalStatus.isEmpty()) {
+            return null;
+        }
+
+        return optionalStatus.get();
     }
     
     @Override
     public EventStatus getStatusById(Long id) {
-        Session session = this.factory.getObject().getCurrentSession();
-        EventStatus eventStatus = session.createNamedQuery("EventStatus.findById", EventStatus.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        return eventStatus;
+        Query query = this.getCurrentSession().createNamedQuery("EventStatus.findById", EventStatus.class);
+        query.setParameter("id", id);
+        
+        Optional<EventStatus> optionalStatus;
+
+        try {
+            EventStatus status = (EventStatus) query.getSingleResult();
+            optionalStatus = Optional.of(status);
+        } catch (NoResultException e) {
+            optionalStatus = Optional.empty();
+        }
+
+        if (optionalStatus.isEmpty()) {
+            return null;
+        }
+
+        return optionalStatus.get();
     }
 
     @Override

@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
 
     public User getUserByEmail(String email);
+    
+    public User getUserById(Long id);
 
     public ResUserInfoDTO addUser(Map<String, String> params, MultipartFile avatar);
 

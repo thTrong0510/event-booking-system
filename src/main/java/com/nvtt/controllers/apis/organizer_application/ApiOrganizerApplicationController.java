@@ -30,14 +30,10 @@ public class ApiOrganizerApplicationController {
     
     @PostMapping("secure/organizer-application")
     public ResponseEntity<ResOrganizerApplicationDTO> addOrganizerApplication(@RequestParam Map<String, String> params) {
-        try {
-            OrganizerVerification addedVerification = organizerVerificationService.addOrganizerVerification(params);
-            ResOrganizerApplicationDTO dto = new ResOrganizerApplicationDTO();
-            dto.setUserId(addedVerification.getUser().getId());
-            dto.setStatus(addedVerification.getStatus());
-            return ResponseEntity.ok(dto);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        OrganizerVerification addedVerification = organizerVerificationService.addOrganizerVerification(params);
+        ResOrganizerApplicationDTO dto = new ResOrganizerApplicationDTO();
+        dto.setUserId(addedVerification.getUser().getId());
+        dto.setStatus(addedVerification.getStatus());
+        return ResponseEntity.ok(dto);
     }
 }

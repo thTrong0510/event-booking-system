@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,7 +83,7 @@ public class ApiUserController {
 
     }
 
-    @PostMapping("/secure/me")
+    @PutMapping("/secure/me")
     public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
             @RequestParam("avatar") Optional<MultipartFile> avatar) {
         ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);

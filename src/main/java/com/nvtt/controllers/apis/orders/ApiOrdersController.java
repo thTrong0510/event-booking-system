@@ -35,23 +35,15 @@ public class ApiOrdersController {
     
     @GetMapping("secure/orders")
     public ResponseEntity<List<ResOrderInfoDTO>> getOrders(@RequestParam Map<String, String> params) {
-        try {
-            List<Orders> orders = this.orderService.getOrders(params);
-            List<ResOrderInfoDTO> dtos = this.orderUtils.convertToResOrderInfoDTOList(orders);
-            return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        List<Orders> orders = this.orderService.getOrders(params);
+        List<ResOrderInfoDTO> dtos = this.orderUtils.convertToResOrderInfoDTOList(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
     @GetMapping("secure/my-orders")
     public ResponseEntity<List<ResOrderInfoDTO>> getMyOrders() {
-        try {
-            List<Orders> orders = this.orderService.getMyOrders();
-            List<ResOrderInfoDTO> dtos = this.orderUtils.convertToResOrderInfoDTOList(orders);
-            return ResponseEntity.status(HttpStatus.OK).body(dtos);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        List<Orders> orders = this.orderService.getMyOrders();
+        List<ResOrderInfoDTO> dtos = this.orderUtils.convertToResOrderInfoDTOList(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 }
