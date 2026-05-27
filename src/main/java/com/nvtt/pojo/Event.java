@@ -99,12 +99,12 @@ public class Event implements Serializable {
     private Date updatedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event", orphanRemoval = true)
     private Set<EventMedia> eventMedias;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Set<Ticket> tickets;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Set<Orders> orders;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "event")
-    private EventStatistic eventStatistic;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+//    private Set<Ticket> tickets;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+//    private Set<Orders> orders;
+//    @OneToOne(cascade = CascadeType.ALL, mappedBy = "event")
+//    private EventStatistic eventStatistic;
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Category category;
@@ -224,29 +224,29 @@ public class Event implements Serializable {
         this.eventMedias = eventMedias;
     }
 
-    public Set<Ticket> getTickets() {
-        return tickets;
-    }
+//    public Set<Ticket> getTickets() {
+//        return tickets;
+//    }
+//
+//    public void setTickets(Set<Ticket> tickets) {
+//        this.tickets = tickets;
+//    }
+//
+//    public Set<Orders> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(Set<Orders> orders) {
+//        this.orders = orders;
+//    }
 
-    public void setTickets(Set<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public Set<Orders> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Orders> orders) {
-        this.orders = orders;
-    }
-
-    public EventStatistic getEventStatistic() {
-        return eventStatistic;
-    }
-
-    public void setEventStatistic(EventStatistic eventStatistic) {
-        this.eventStatistic = eventStatistic;
-    }
+//    public EventStatistic getEventStatistic() {
+//        return eventStatistic;
+//    }
+//
+//    public void setEventStatistic(EventStatistic eventStatistic) {
+//        this.eventStatistic = eventStatistic;
+//    }
 
     public Category getCategory() {
         return category;

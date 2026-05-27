@@ -57,9 +57,9 @@ public class EventStatistic implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @JoinColumn(name = "event_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Event event;
+//    @JoinColumn(name = "event_id", referencedColumnName = "id", insertable = false, updatable = false)
+//    @OneToOne(optional = false)
+//    private Event event;
 
     public EventStatistic() {
     }
@@ -108,13 +108,13 @@ public class EventStatistic implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
+//    public Event getEvent() {
+//        return event;
+//    }
+//
+//    public void setEvent(Event event) {
+//        this.event = event;
+//    }
 
     @Override
     public int hashCode() {

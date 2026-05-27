@@ -63,7 +63,7 @@ public class DashboardRepositoryImpl implements DashboardRepository {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Object[] row : results) {
             Map<String, Object> map = new HashMap<>();
-            map.put("label", prefix + row[0]); // Đổi sang 'label' để đồng bộ bóc tách ở JS Frontend
+            map.put("label", prefix + row[0]);
             map.put("value", row[1] != null ? row[1] : 0);
             list.add(map);
         }

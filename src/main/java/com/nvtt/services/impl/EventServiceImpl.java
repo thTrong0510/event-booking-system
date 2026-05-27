@@ -22,6 +22,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
+import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.Role;
 import com.nvtt.repositories.EventRepository;
 import com.nvtt.services.EventService;
@@ -405,12 +406,14 @@ public class EventServiceImpl implements EventService {
             orgDto.setAvatar_url(event.getOrganizer().getAvatarUrl());
             dto.setOrganizer(orgDto);
         }
+        
+        EventStatistic eventStatistic = eventStatisticService.getEventStatisticByEventId(event.getId());
 
         // Map thông tin Thống kê (Statistics)
-        if (event.getEventStatistic()!= null) {
+        if (eventStatistic != null) {
             EventCompareResponseDTO.StatisticsDTO statDto = new EventCompareResponseDTO.StatisticsDTO();
-            statDto.setTotal_tickets_sold(event.getEventStatistic().getTotalTicketsSold());
-            statDto.setTotal_views(event.getEventStatistic().getTotalViews());
+            statDto.setTotal_tickets_sold(eventStatistic.getTotalTicketsSold());
+            statDto.setTotal_views(eventStatistic.getTotalViews());
             dto.setStatistics(statDto);
         }
 

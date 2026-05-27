@@ -10,13 +10,16 @@ import com.nvtt.pojo.dtos.user.ResLoginDTO;
 import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.JwtUtil;
+import com.nvtt.utils.Utilities;
 import com.nvtt.utils.exceptions.IdInvalidException;
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +45,11 @@ public class ApiUserController {
     @PostMapping("/users")
     public ResponseEntity<ResUserInfoDTO> createUser(@RequestParam Map<String, String> params,
             @RequestParam("avatar") MultipartFile avatar) throws IdInvalidException {
+        
+        if(Utilities.validateRequiredFields(params, "fullName", "email", "password", "role") || avatar.isEmpty()) {
+            throw new IdInvalidException("error: missing field");
+        }
+        
         if (this.userService.checkExistEmail(params.get("email"))) {
             throw new IdInvalidException("This email was exist");
         }
@@ -49,7 +57,11 @@ public class ApiUserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@RequestBody ReqUserLoginDTO reqUser) throws IdInvalidException {
+    public ResponseEntity<ResLoginDTO> login(@RequestBody @Valid ReqUserLoginDTO reqUser, BindingResult registerResult) throws IdInvalidException {
+        if (registerResult.hasErrors()) {
+            throw new IdInvalidException("username/password is missing");
+        }
+        
         if (!this.userService.authenticate(reqUser.getEmail(), reqUser.getPassword())) {
             throw new IdInvalidException("username/password is wrong");
         }

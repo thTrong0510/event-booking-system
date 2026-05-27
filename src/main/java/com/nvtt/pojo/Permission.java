@@ -54,8 +54,8 @@ public class Permission implements Serializable {
     @Size(max = 100)
     @Column(name = "module")
     private String module;
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles;
+//    @ManyToMany(mappedBy = "permissions")
+//    private Set<Role> roles;
 
     public Permission() {
     }
@@ -109,13 +109,13 @@ public class Permission implements Serializable {
         this.module = module;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+//    public Set<Role> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(Set<Role> roles) {
+//        this.roles = roles;
+//    }
 
     @Override
     public int hashCode() {

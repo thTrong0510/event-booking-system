@@ -98,8 +98,6 @@ public class UserRepositoryImpl implements UserRepository {
 
         user.setIsActive(!user.getIsActive());
 
-        s.update(user);
-
         return user;
     }
 
@@ -117,7 +115,7 @@ public class UserRepositoryImpl implements UserRepository {
         Session s = factory.getObject().getCurrentSession();
         // Gom câu lệnh HQL tác động database về đúng vị trí hạ tầng Repository
         String hql = "UPDATE User u SET u.role.id = :roleId, u.updatedAt = CURRENT_TIMESTAMP WHERE u.id = :userId";
-        s.createQuery(hql)
+        s.createMutationQuery(hql)
                 .setParameter("roleId", roleId)
                 .setParameter("userId", userId)
                 .executeUpdate();
@@ -165,6 +163,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean authenticate(String email, String password) {
+        if(!this.checkExistEmail(email)) {
+            return false;
+        }
         User u = this.getUserByEmail(email);
         return this.passwordEncoder.matches(password, u.getPassword());
     }
@@ -176,13 +177,11 @@ public class UserRepositoryImpl implements UserRepository {
         CriteriaQuery<User> cq = cb.createQuery(User.class);
 
         Root<User> root = cq.from(User.class);
-
-        // Fetch join để tránh N+1
+        
         root.fetch("role", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-
-        // Search theo username hoặc email
+        
         if (search != null && !search.trim().isEmpty()) {
             String pattern = "%" + search.trim().toLowerCase() + "%";
 
@@ -194,8 +193,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             predicates.add(cb.or(usernameLike, emailLike));
         }
-
-        // Filter theo roleId
+        
         if (roleId != null) {
             predicates.add(
                     cb.equal(root.get("role").get("id"), roleId)
@@ -233,21 +231,16 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cq = cb.createQuery(User.class);
-
-        // Gốc truy vấn từ bảng User
+        
         Root<User> root = cq.from(User.class);
-
-        // Sử dụng FETCH JOIN để nạp luôn thông tin Role (Tránh lỗi N+1 và tối ưu Performance)
         Fetch<User, Role> roleFetch = root.fetch("role", JoinType.INNER);
         Join<User, Role> roleJoin = (Join<User, Role>) roleFetch;
-
-        // Xử lý điều kiện LIKE tương đối: %roleName%
-        // Ép cả 2 đầu về chữ thường (LOWER) để tìm kiếm không phân biệt hoa thường
+        
         String pattern = "%" + roleName.trim().toLowerCase() + "%";
         Predicate likePredicate = cb.like(cb.lower(roleJoin.get("name")), pattern);
 
         cq.where(likePredicate);
-        cq.orderBy(cb.asc(root.get("fullName"))); // Sắp xếp theo bảng chữ cái từ A-Z
+        cq.orderBy(cb.asc(root.get("fullName")));
 
         return session.createQuery(cq).getResultList();
     }

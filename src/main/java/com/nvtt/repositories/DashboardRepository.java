@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface DashboardRepository {
 
-    List<Map<String, Object>> getEventsCountByTime(String type, int year); // type: MONTH, QUARTER, YEAR
+    List<Map<String, Object>> getEventsCountByTime(String type, int year);
 
     List<Map<String, Object>> getTicketSalesOverTime(String type, int year);
 

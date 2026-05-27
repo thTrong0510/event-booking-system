@@ -7,6 +7,8 @@ package com.nvtt.controllers.admin;
 import com.nvtt.services.OrganizerVerificationService;
 import java.security.Principal;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/verifications")
 public class OrganizerVerificationController {
 
+    private static final Logger logger = LogManager.getLogger(OrganizerVerificationController.class);
+    
     @Autowired
     private OrganizerVerificationService verificationService;
 
@@ -33,8 +37,9 @@ public class OrganizerVerificationController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "1") int page,
             Model model) {
-
+        logger.info("start sql listVerifications");
         Map<String, Object> data = verificationService.getVerificationsData(status, search, page);
+        logger.info("end sql");
         model.addAttribute("verifications", data.get("verifications"));
         model.addAttribute("currentPage", data.get("currentPage"));
         model.addAttribute("totalPages", data.get("totalPages"));
@@ -53,9 +58,9 @@ public class OrganizerVerificationController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "1") int page,
             Principal principal) {
-
-        // principal.getName() trả về Username/Email của Admin đang login phối hợp thực hiện lệnh
+        logger.info("start sql handleAction verification admin");
         verificationService.processVerification(id, action, principal.getName());
+        logger.info("end sql");
 
         return "redirect:/admin/verifications?status=" + status
                 + "&search=" + (search != null ? search : "")

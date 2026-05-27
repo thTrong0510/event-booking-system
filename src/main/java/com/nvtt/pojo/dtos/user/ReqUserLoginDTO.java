@@ -4,10 +4,13 @@
  */
 package com.nvtt.pojo.dtos.user;
 
+import com.nvtt.utils.validators.LoginChecked;
+
 /**
  *
  * @author vthan
  */
+@LoginChecked
 public class ReqUserLoginDTO {
     private String email;
     private String password;

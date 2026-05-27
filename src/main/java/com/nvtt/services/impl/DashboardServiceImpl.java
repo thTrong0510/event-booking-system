@@ -27,8 +27,7 @@ public class DashboardServiceImpl implements DashboardService {
         String filter = (timeFilter == null || timeFilter.isEmpty()) ? "MONTH" : timeFilter.toUpperCase();
 
         AdminDashboardDTO dto = new AdminDashboardDTO();
-
-        // Đồng bộ hóa cấu trúc lọc thời gian trên cả 4 sơ đồ báo cáo
+        
         dto.setEventsByTime(dashboardRepository.getEventsCountByTime(filter, year));
         dto.setTicketSalesTrend(dashboardRepository.getTicketSalesOverTime(filter, year));
         dto.setStatisticsByCategory(dashboardRepository.getStatisticsByCategory(filter, year));

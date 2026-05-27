@@ -1,0 +1,7 @@
+2026-05-27 13:09:16 INFO  AuthController:44 - start sql modelAttribute populateRoles admin/AuthenController
+2026-05-27 13:09:17 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 order by r1_0.name
+2026-05-27 13:09:17 INFO  AuthController:46 - end sql
+2026-05-27 13:09:24 INFO  UserDetailsCustomize:36 - start sql loadUserByUserName
+2026-05-27 13:09:24 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 13:09:24 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 where r1_0.id=?
+2026-05-27 13:09:24 INFO  UserDetailsCustomize:49 - end sql;
