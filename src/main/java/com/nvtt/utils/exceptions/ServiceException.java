@@ -2,16 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.nvtt.repositories;
-
-import com.nvtt.pojo.Ticket;
-import java.util.List;
-import java.util.Map;
+package com.nvtt.utils.exceptions;
 
 /**
  *
  * @author lequa
  */
-public interface TicketRepository {
-    List<Ticket> getTickets(Map<String, String> params);
+public class ServiceException extends RuntimeException {
+    public ServiceException(String message) {
+        super(message);
+    }
 }

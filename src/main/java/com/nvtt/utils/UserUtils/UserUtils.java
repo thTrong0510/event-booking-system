@@ -30,12 +30,16 @@ public class UserUtils {
     private BCryptPasswordEncoder passwordEncoder;
 
     public ResUserInfoDTO convertToResUserInfoDTO(User user) {
-        ResUserInfoDTO dto = new ResUserInfoDTO();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setFullName(user.getFullName());
-        dto.setAvatarUrl(user.getAvatarUrl());
-        return dto;
+        try {
+            ResUserInfoDTO dto = new ResUserInfoDTO();
+            dto.setId(user.getId());
+            dto.setEmail(user.getEmail());
+            dto.setFullName(user.getFullName());
+            dto.setAvatarUrl(user.getAvatarUrl());
+            return dto;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert User to Response User");
+        }
     }
 
     public User getCurrentUser() {
@@ -43,34 +47,44 @@ public class UserUtils {
         if (authentication != null) {
             String email = authentication.getName();
             return userService.getUserByEmail(email);
+        } else {
+            throw new RuntimeException("Can't authenticate curren user");
         }
-        return null;
     }
 
     public User convertParamsToUser(Map<String, String> params) {
-        User user = new User();
-        if(params.containsKey("fullName")) {
-            user.setFullName(params.get("fullName"));
+        try {
+            User user = new User();
+            if (params.containsKey("fullName")) {
+                user.setFullName(params.get("fullName"));
+            }
+            if (params.containsKey("email")) {
+                user.setEmail(params.get("email"));
+            }
+            if (params.containsKey("password")) {
+                user.setPassword(this.passwordEncoder.encode(params.get("password")));
+            }
+            return user;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert params to user");
         }
-        if(params.containsKey("email")) {
-            user.setEmail(params.get("email"));
-        }
-        if(params.containsKey("password")) {
-            user.setPassword(this.passwordEncoder.encode(params.get("password")));
-        }
-        return user;
+
     }
 
     public User converParamsToUserForUpdating(User user, Map<String, String> params) {
-        if(params.containsKey("fullName")) {
-            user.setFullName(params.get("fullName"));
+        try {
+            if (params.containsKey("fullName")) {
+                user.setFullName(params.get("fullName"));
+            }
+            if (params.containsKey("email")) {
+                user.setEmail(params.get("email"));
+            }
+            if (params.containsKey("password")) {
+                user.setPassword(this.passwordEncoder.encode(params.get("password")));
+            }
+            return user;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert params to user");
         }
-        if(params.containsKey("email")) {
-            user.setEmail(params.get("email"));
-        }
-        if(params.containsKey("password")) {
-            user.setPassword(this.passwordEncoder.encode(params.get("password")));
-        }
-        return user;
     }
 }

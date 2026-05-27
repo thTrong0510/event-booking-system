@@ -23,6 +23,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
 import com.nvtt.pojo.Role;
+import com.nvtt.repositories.CategoryRepository;
 import com.nvtt.repositories.EventRepository;
 import com.nvtt.services.EventService;
 import com.nvtt.services.UserService;
@@ -33,16 +34,17 @@ import com.nvtt.utils.UserUtils.UserUtils;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.utils.EventStatusUtils.EventStatusUtils;
+import com.nvtt.utils.constants.EventUpdatePolicy;
 import java.util.HashMap;
-
 
 import com.nvtt.pojo.dtos.admin.EventSearchCriteriaDTO;
 import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
 import com.nvtt.pojo.dtos.response.EventResponseDTO;
 import com.nvtt.repositories.EventStatusRepository;
 import com.nvtt.utils.DateTimeUtil;
+import com.nvtt.utils.exceptions.ServiceException;
+import com.nvtt.utils.exceptions.StorageException;
 import java.util.stream.Collectors;
-
 
 /**
  *
@@ -68,55 +70,75 @@ public class EventServiceImpl implements EventService {
     private UserUtils userUtils;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private EventStatusService eventStatusService;
-    
+
     @Autowired
     private EventStatisticService eventStatisticService;
-    
+
     @Autowired
     private EventStatusUtils eventStatusUtils;
 
     @Autowired
     private EventStatusRepository eventStatusRepository;
 
-
     @Override
     public List<Event> getPublicEvents(Map<String, String> params) {
-        List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-        List<Event> events = eventRepository.getEvents(params, publicStatuses);
-        return events;
+        try {
+            List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
+            for (EventStatus p : publicStatuses){
+                EventStatus checkedStatus = eventStatusService.getStatusByName(p.getName());
+                if (checkedStatus == null){
+                    throw new ServiceException("Don't find any status in public statuses");
+                }
+            }
+            List<Event> events = eventRepository.getEvents(params, publicStatuses);
+            return events;
+        } catch (Exception e) {
+            throw new ServiceException("Failed to get events: " + e.getMessage());
+        }
+
     }
 
     @Override
     public List<Event> getOrganizerEvents(Map<String, String> params) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                User u = userService.getUserByEmail(authentication.getName());
-                return eventRepository.getOrganizerEvents(u.getId(), params);
-            } else {
-                return null;
-            }
+            User u = userUtils.getCurrentUser();
+            return eventRepository.getOrganizerEvents(u.getId(), params);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ServiceException("Failed to get events: " + e.getMessage());
         }
-
     }
 
     @Override
     public Event getPublicEventById(Long id) {
         try {
             List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-            return eventRepository.getEventById(id, publicStatuses);
+            Event event = eventRepository.getEventById(id, publicStatuses);
+            if (event == null){
+                throw new ServiceException("Don't have any event with this id");
+            }
+            return event;
         } catch (Exception e) {
-            throw new RuntimeException("Don't have any event with this id");
+            throw new ServiceException("Failed to get event: " + e.getMessage());
         }
     }
 
     @Override
-    public Event getOwnEventById(Long id){
-        User u = userUtils.getCurrentUser();
-        return eventRepository.getOwnEventById(id, u.getId());
+    public Event getOwnEventById(Long id) {
+        try {
+            User u = userUtils.getCurrentUser();
+            Event e = eventRepository.getOwnEventById(id, u.getId());
+            if (e == null){
+                throw new ServiceException("You dont have permission for this event or event doesnt exist");
+            }
+            return e;
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage());
+        }
+        
     }
 
     @Override
@@ -150,6 +172,7 @@ public class EventServiceImpl implements EventService {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        throw new StorageException("Failed to upload images");
                     }
                 }
             }
@@ -165,6 +188,7 @@ public class EventServiceImpl implements EventService {
                         event.getEventMedias().add(media);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        throw new StorageException("Failed to upload videos");
                     }
                 }
             }
@@ -172,7 +196,7 @@ public class EventServiceImpl implements EventService {
             return eventRepository.addEvent(event);
         } catch (Exception e) {
             System.err.println("Error adding event: " + e.getMessage());
-            throw new RuntimeException("Error adding event", e);
+            throw new RuntimeException("Error adding event" + e.getMessage());
         }
     }
 
@@ -184,7 +208,26 @@ public class EventServiceImpl implements EventService {
                 throw new RuntimeException("Event not found");
             }
 
-            if (deletedMediaUrls.isPresent()) {
+            String statusName = event.getStatus() != null ? event.getStatus().getName() : "";
+            Set<String> requestedFields = new HashSet<>(params.keySet());
+            requestedFields.remove("id");
+            if (newImages.isPresent() && !newImages.get().isEmpty()) {
+                requestedFields.add("newImages");
+            }
+            if (newVideos.isPresent() && !newVideos.get().isEmpty()) {
+                requestedFields.add("newVideos");
+            }
+            if (deletedMediaUrls.isPresent() && !deletedMediaUrls.get().isEmpty()) {
+                requestedFields.add("deletedMediaUrls");
+            }
+
+            try {
+                EventUpdatePolicy.validateEditableFields(statusName, requestedFields);
+            } catch (IllegalArgumentException ex) {
+                throw new ServiceException(ex.getMessage());
+            }
+
+            if (EventUpdatePolicy.isFieldEditable(statusName, "deletedMediaUrls") && deletedMediaUrls.isPresent()) {
                 for (String url : deletedMediaUrls.get()) {
                     EventMedia mediaToDelete = event.getEventMedias().stream()
                             .filter(media -> media.getMediaUrl().equals(url))
@@ -196,15 +239,32 @@ public class EventServiceImpl implements EventService {
                 }
             }
 
-            event.setName(params.get("name"));
-            event.setDescription(params.get("description"));
-            event.setStartTime(new Date(Long.parseLong(params.get("startTime"))));
-            event.setEndTime(new Date(Long.parseLong(params.get("endTime"))));
-            event.setLocation(params.get("location"));
-            event.setTotalTickets(Integer.parseInt(params.get("totalTickets")));
-            event.setTicketPrice(BigDecimal.valueOf(Double.parseDouble(params.get("ticketPrice"))));
+            if (EventUpdatePolicy.isFieldEditable(statusName, "name") && params.get("name") != null) {
+                event.setName(params.get("name"));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "description") && params.get("description") != null) {
+                event.setDescription(params.get("description"));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "startTime") && params.get("startTime") != null) {
+                event.setStartTime(new Date(Long.parseLong(params.get("startTime"))));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "endTime") && params.get("endTime") != null) {
+                event.setEndTime(new Date(Long.parseLong(params.get("endTime"))));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "location") && params.get("location") != null) {
+                event.setLocation(params.get("location"));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "totalTickets") && params.get("totalTickets") != null) {
+                event.setTotalTickets(Integer.parseInt(params.get("totalTickets")));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "ticketPrice") && params.get("ticketPrice") != null) {
+                event.setTicketPrice(BigDecimal.valueOf(Double.parseDouble(params.get("ticketPrice"))));
+            }
+            if (EventUpdatePolicy.isFieldEditable(statusName, "category") && params.get("category") != null) {
+                event.setCategory(categoryRepository.getCategoryByName(params.get("category")));
+            }
 
-            if (!newImages.isEmpty()) {
+            if (EventUpdatePolicy.isFieldEditable(statusName, "newImages") && newImages.isPresent() && !newImages.get().isEmpty()) {
                 for (MultipartFile image : newImages.get()) {
                     try {
                         Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
@@ -216,11 +276,12 @@ public class EventServiceImpl implements EventService {
                         event.getEventMedias().add(media);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        throw new StorageException("Failed to upload images");
                     }
                 }
             }
 
-            if (!newVideos.isEmpty()) {
+            if (EventUpdatePolicy.isFieldEditable(statusName, "newVideos") && newVideos.isPresent() && !newVideos.get().isEmpty()) {
                 for (MultipartFile video : newVideos.get()) {
                     try {
                         Map uploadResult = cloudinary.uploader().upload(video.getBytes(), ObjectUtils.emptyMap());
@@ -232,15 +293,17 @@ public class EventServiceImpl implements EventService {
                         event.getEventMedias().add(media);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        throw new StorageException("Failed to upload videos");
                     }
                 }
             }
 
             return eventRepository.addEvent(event);
+        } catch (ServiceException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Error updating event", e);
+            throw new RuntimeException("Error updating event" + e.getMessage());
         }
-
     }
 
     @Override
@@ -252,7 +315,7 @@ public class EventServiceImpl implements EventService {
             }
             return eventRepository.deleteEvent(event);
         } catch (Exception e) {
-            throw new RuntimeException("Error deleting event", e);
+            throw new RuntimeException("Error deleting event: " + e.getMessage());
         }
     }
 
@@ -270,7 +333,7 @@ public class EventServiceImpl implements EventService {
                 EventStatus status = eventStatusService.getStatusByName("ONSALE");
                 event.setStatus(status);
                 Event savedEvent = eventRepository.addEvent(event);
-                if (savedEvent != null){
+                if (savedEvent != null) {
                     Map<String, String> params = new HashMap<>();
                     params.put("eventId", event.getId().toString());
                     params.put("totalViews", "0");
@@ -284,6 +347,30 @@ public class EventServiceImpl implements EventService {
             }
         } catch (Exception e) {
             throw new RuntimeException("Error in lauch event: " + e.getMessage());
+        }
+    }
+    
+    public boolean endEvent(Long id){
+        try {
+            Event event = eventRepository.getEventById(id);
+            User current = userUtils.getCurrentUser();
+            if (event == null) {
+                throw new RuntimeException("Event not found");
+            } else {
+                if (!eventUtils.isOwner(event, current.getId())) {
+                    throw new RuntimeException("Don't have permission to launch event");
+                }
+                EventStatus status = eventStatusService.getStatusByName("ENDED");
+                event.setStatus(status);
+                Event savedEvent = eventRepository.addEvent(event);
+                if (savedEvent != null){
+                    return true;
+                } else {
+                    throw new ServiceException("Event doesnt save successfully");
+                }
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Failed to end event: "+ e.getMessage());
         }
     }
 
@@ -354,7 +441,7 @@ public class EventServiceImpl implements EventService {
             eventRepository.update(event);
         }
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public List<EventCompareResponseDTO> getEventsForComparison(List<Long> ids) {
@@ -378,12 +465,12 @@ public class EventServiceImpl implements EventService {
         dto.setTotal_tickets(event.getTotalTickets());
 
         // Lấy 1 ảnh đại diện đầu tiên (media_type = 'IMAGE') từ danh sách Media đã được Fetch Join sẵn
-        if (event.getEventMedias()!= null) {
+        if (event.getEventMedias() != null) {
             event.getEventMedias().stream()
                     .filter(m -> "IMAGE".equals(m.getMediaType()))
                     .findFirst()
                     .ifPresent(media -> dto.setRepresentative_image(media.getMediaUrl()));
-                    
+
             // Lấy video đầu tiên nếu có phục vụ logic so sánh có/không video
             event.getEventMedias().stream()
                     .filter(m -> "VIDEO".equals(m.getMediaType()))
@@ -407,7 +494,7 @@ public class EventServiceImpl implements EventService {
         }
 
         // Map thông tin Thống kê (Statistics)
-        if (event.getEventStatistic()!= null) {
+        if (event.getEventStatistic() != null) {
             EventCompareResponseDTO.StatisticsDTO statDto = new EventCompareResponseDTO.StatisticsDTO();
             statDto.setTotal_tickets_sold(event.getEventStatistic().getTotalTicketsSold());
             statDto.setTotal_views(event.getEventStatistic().getTotalViews());

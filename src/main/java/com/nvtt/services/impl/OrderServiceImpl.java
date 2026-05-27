@@ -19,6 +19,7 @@ import com.nvtt.services.EventService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.UserUtils.UserUtils;
 import com.nvtt.pojo.User;
+import com.nvtt.utils.exceptions.ServiceException;
 
 /**
  *

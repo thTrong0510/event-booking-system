@@ -100,4 +100,15 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(restResponse);
     }
     
+    @ExceptionHandler(value = {
+        ServiceException.class
+    })
+    public ResponseEntity<RestResponse<Object>> handleServiceException(Exception ex) {
+        RestResponse<Object> restResponse = new RestResponse<Object>();
+        restResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        restResponse.setError("INTERNAL_SERVER_ERROR");
+        restResponse.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(restResponse);
+    }
+    
 }

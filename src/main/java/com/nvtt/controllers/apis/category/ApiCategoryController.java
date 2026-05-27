@@ -35,24 +35,15 @@ public class ApiCategoryController {
     
     @GetMapping("/categories")
     public ResponseEntity<List<ResCategoryInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
-        try {
-            List<Category> categories = categoryService.getCategory(params);
-            List<ResCategoryInfoDTO> dto = categoryUtils.convertToResCategoryInfoDTOList(categories);
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
-        } catch (Exception e) {
-            System.err.println("Error fetching all categories: " + e.getMessage());
-            throw new RuntimeException("Error fetching all categories", e);
-        }
+        List<Category> categories = categoryService.getCategory(params);
+        List<ResCategoryInfoDTO> dto = categoryUtils.convertToResCategoryInfoDTOList(categories);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PostMapping("secure/categories")
     public ResponseEntity<ResCategoryInfoDTO> addEvents(@RequestParam Map<String, String> params) {
-        try {
-            Category category = categoryService.addCategory(params);
-            ResCategoryInfoDTO dto = categoryUtils.convertToResCategoryInfoDTO(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-        } catch (Exception e) {
-            throw new RuntimeException("Error add category: " + e.getMessage());
-        }
+        Category category = categoryService.addCategory(params);
+        ResCategoryInfoDTO dto = categoryUtils.convertToResCategoryInfoDTO(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 }

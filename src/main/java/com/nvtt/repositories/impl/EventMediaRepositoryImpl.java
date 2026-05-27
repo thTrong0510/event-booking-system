@@ -7,6 +7,9 @@ package com.nvtt.repositories.impl;
 import java.util.Map;
 
 import org.hibernate.Session;
+import jakarta.persistence.NoResultException;
+import java.util.Optional;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -51,7 +54,21 @@ public class EventMediaRepositoryImpl implements EventMediaRepository {
                 q.where(b.equal(root.get("id"), Long.parseLong(params.get("id"))));
             }
         }
-        return session.createQuery(q).getSingleResult();
+        Query<EventMedia> hQuery = session.createQuery(q);
+
+        Optional<EventMedia> optionalMedia;
+        try {
+            EventMedia media = hQuery.getSingleResult();
+            optionalMedia = Optional.of(media);
+        } catch (NoResultException e) {
+            optionalMedia = Optional.empty();
+        }
+
+        if (optionalMedia.isEmpty()) {
+            return null;
+        }
+
+        return optionalMedia.get();
 
     }
 }

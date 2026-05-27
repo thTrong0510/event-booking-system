@@ -5,6 +5,9 @@
 package com.nvtt.repositories.impl;
 
 import org.hibernate.Session;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -36,19 +39,43 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Category getCategoryByName(String name) {
         Session session = this.factory.getObject().getCurrentSession();
-        Category category = session.createNamedQuery("Category.findByName", Category.class)
-                .setParameter("name", name)
-                .getSingleResult();
-        return category;
+        Query q = session.createNamedQuery("Category.findByName", Category.class);
+        q.setParameter("name", name);
+
+        Optional<Category> optionalCategory;
+        try {
+            Category category = (Category) q.getSingleResult();
+            optionalCategory = Optional.of(category);
+        } catch (NoResultException e) {
+            optionalCategory = Optional.empty();
+        }
+
+        if (optionalCategory.isEmpty()) {
+            return null;
+        }
+
+        return optionalCategory.get();
     }
 
     @Override
     public Category getCategoryById(Long id) {
         Session session = this.factory.getObject().getCurrentSession();
-        Category category = session.createNamedQuery("Category.findById", Category.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        return category;
+        Query q = session.createNamedQuery("Category.findById", Category.class);
+        q.setParameter("id", id);
+
+        Optional<Category> optionalCategory;
+        try {
+            Category category = (Category) q.getSingleResult();
+            optionalCategory = Optional.of(category);
+        } catch (NoResultException e) {
+            optionalCategory = Optional.empty();
+        }
+
+        if (optionalCategory.isEmpty()) {
+            return null;
+        }
+
+        return optionalCategory.get();
     }
 
     @Override

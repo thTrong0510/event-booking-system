@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nvtt.pojo.EventMedia;
 import com.nvtt.repositories.EventMediaRepository;
 import com.nvtt.services.EventMediaService;
+import com.nvtt.utils.exceptions.ServiceException;
 
 /**
  *
@@ -24,8 +25,12 @@ public class EventMediaServiceImpl implements EventMediaService {
     private EventMediaRepository eventMediaRepository;
     
     @Override
-    public void deleteMediaByUrl(String url) {
-        EventMedia media = eventMediaRepository.getEventMedia(Map.of("url", url));
-        eventMediaRepository.deleteEventMedia(media);
+    public void deleteMediaByUrl(String url) throws ServiceException {
+        try {
+            EventMedia media = eventMediaRepository.getEventMedia(Map.of("url", url));
+            eventMediaRepository.deleteEventMedia(media);
+        } catch (Exception e) {
+            throw new ServiceException("Error in deleting media");
+        }
     }
 }
