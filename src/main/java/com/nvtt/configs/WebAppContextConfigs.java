@@ -28,16 +28,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
             "com.nvtt.controllers",
             "com.nvtt.services",
             "com.nvtt.repositories",
-            "com.nvtt.utils"
+            "com.nvtt.utils",
+            "com.nvtt.scheduler"
         }
 )
 @EnableWebMvc
 @EnableTransactionManagement
 public class WebAppContextConfigs implements WebMvcConfigurer {
-    
-//    @Autowired
-//    private PermissionInterceptorConfig permissionInterceptor;
-//    
+       
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();

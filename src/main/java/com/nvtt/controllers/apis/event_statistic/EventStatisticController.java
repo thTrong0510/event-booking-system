@@ -10,6 +10,8 @@ import com.nvtt.services.EventStatisticService;
 import com.nvtt.utils.EventStatisticUtils.EventStatisticUtils;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class EventStatisticController {
     
+    private static final Logger logger = LogManager.getLogger(EventStatisticController.class);
+    
     @Autowired
     private EventStatisticService eventStatisticService;
     
@@ -36,8 +40,10 @@ public class EventStatisticController {
     
     @GetMapping("/secure/event-statistics")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatistics(@RequestParam Map<String, String> params) {
+        logger.info("start sql getEventStatistics");
         List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(params);
         List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
+        logger.info("end sql");
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
@@ -46,6 +52,7 @@ public class EventStatisticController {
             @RequestParam String month,
             @RequestParam(required = false) String year,
             @RequestParam Map<String, String> params) {
+            logger.info("start sql getEventStaticticsByMonth");
             Map<String, String> filterParams = new HashMap<>(params);
             filterParams.put("month", month);
             filterParams.remove("quarter");
@@ -55,6 +62,7 @@ public class EventStatisticController {
             
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
+            logger.info("end sql");
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
@@ -63,6 +71,7 @@ public class EventStatisticController {
             @RequestParam String quarter,
             @RequestParam(required = false) String year,
             @RequestParam Map<String, String> params) {
+            logger.info("start sql getEventStatisticByQuarter");
             Map<String, String> filterParams = new HashMap<>(params);
             filterParams.put("quarter", quarter);
             filterParams.remove("month");
@@ -72,6 +81,7 @@ public class EventStatisticController {
             
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
+            logger.info("end sql");
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
@@ -83,16 +93,19 @@ public class EventStatisticController {
             filterParams.put("year", year);
             filterParams.remove("month");
             filterParams.remove("quarter");
-            
+            logger.info("start sql getEventStatisticsByYear");
             List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(filterParams);
             List<ResEventStatisticDTO> dtos = eventStatisticUtils.convertToResEventStatisticDTOList(eventStatistics);
+            logger.info("end sql");
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
     @GetMapping("/secure/event-statistics/{eventId}")
     public ResponseEntity<ResEventStatisticDTO> getEventStatisticByEventId(@PathVariable Long eventId) {
+            logger.info("start sql getEventStatisticByEventId");
             EventStatistic eventStatistic = eventStatisticService.getEventStatisticByEventId(eventId);
             ResEventStatisticDTO dto = eventStatisticUtils.convertToResEventStatisticDTO(eventStatistic);
+            logger.info("end sql");
             return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 }

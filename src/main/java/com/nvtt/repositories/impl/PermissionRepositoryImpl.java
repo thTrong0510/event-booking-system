@@ -48,7 +48,7 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     public void delete(Long id) {
         String hql = "delete from Permission p where p.id = :id";
 
-        getSession().createQuery(hql)
+        getSession().createMutationQuery(hql)
                 .setParameter("id", id)
                 .executeUpdate();
     }

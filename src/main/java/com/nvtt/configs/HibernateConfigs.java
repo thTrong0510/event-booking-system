@@ -6,6 +6,8 @@ package com.nvtt.configs;
 
 import java.util.Properties;
 import javax.sql.DataSource;
+import static org.hibernate.cfg.JdbcSettings.HIGHLIGHT_SQL;
+import static org.hibernate.cfg.JdbcSettings.FORMAT_SQL;
 import static org.hibernate.cfg.JdbcSettings.DIALECT;
 import static org.hibernate.cfg.JdbcSettings.SHOW_SQL;
 import org.springframework.beans.factory.annotation.Autowired;

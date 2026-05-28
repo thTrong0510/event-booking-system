@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -72,15 +73,15 @@ public class Orders implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "order")
     private Set<Ticket> tickets;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private Set<Payment> payments;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+//    private Set<Payment> payments;
     @JoinColumn(name = "event_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Event event;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 
     public Orders() {
@@ -154,13 +155,13 @@ public class Orders implements Serializable {
         this.tickets = tickets;
     }
 
-    public Set<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(Set<Payment> payments) {
-        this.payments = payments;
-    }
+//    public Set<Payment> getPayments() {
+//        return payments;
+//    }
+//
+//    public void setPayments(Set<Payment> payments) {
+//        this.payments = payments;
+//    }
 
     public Event getEvent() {
         return event;

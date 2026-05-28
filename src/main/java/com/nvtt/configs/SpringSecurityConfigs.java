@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,12 +32,14 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableWebSecurity
 @EnableTransactionManagement
 @EnableAsync
+@EnableScheduling
 @ComponentScan(
         basePackages = {
             "com.nvtt.controllers",
             "com.nvtt.repositories",
             "com.nvtt.services",
-            "com.nvtt.utils"
+            "com.nvtt.utils",
+            "com.nvtt.scheduler"
         }
 )
 public class SpringSecurityConfigs {

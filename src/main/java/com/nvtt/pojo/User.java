@@ -85,19 +85,19 @@ public class User implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attendee")
-    private Set<Ticket> tickets;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    private OrganizerVerification organizerVerification;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attendee") -> xóa user sẽ xóa ticket 
+//    private Set<Ticket> tickets;
+//    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+//    private OrganizerVerification organizerVerification;
     @OneToMany(mappedBy = "approvedBy")
     private Set<OrganizerVerification> organizerVerifications;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Role role;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Orders> orders;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organizer")
-    private Set<Event> events;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+//    private Set<Orders> orders;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organizer")
+//    private Set<Event> events;
 
     public User() {
     }
@@ -178,21 +178,21 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Ticket> getTickets() {
-        return tickets;
-    }
+//    public Set<Ticket> getTickets() {
+//        return tickets;
+//    }
+//
+//    public void setTickets(Set<Ticket> tickets) {
+//        this.tickets = tickets;
+//    }
 
-    public void setTickets(Set<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public OrganizerVerification getOrganizerVerification() {
-        return organizerVerification;
-    }
-
-    public void setOrganizerVerification(OrganizerVerification organizerVerification) {
-        this.organizerVerification = organizerVerification;
-    }
+//    public OrganizerVerification getOrganizerVerification() {
+//        return organizerVerification;
+//    }
+//
+//    public void setOrganizerVerification(OrganizerVerification organizerVerification) {
+//        this.organizerVerification = organizerVerification;
+//    }
 
     public Set<OrganizerVerification> getOrganizerVerifications() {
         return organizerVerifications;
@@ -210,21 +210,21 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public Set<Orders> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Orders> orders) {
-        this.orders = orders;
-    }
-
-    public Set<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(Set<Event> events) {
-        this.events = events;
-    }
+//    public Set<Orders> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(Set<Orders> orders) {
+//        this.orders = orders;
+//    }
+//
+//    public Set<Event> getEvents() {
+//        return events;
+//    }
+//
+//    public void setEvents(Set<Event> events) {
+//        this.events = events;
+//    }
 
     @Override
     public int hashCode() {

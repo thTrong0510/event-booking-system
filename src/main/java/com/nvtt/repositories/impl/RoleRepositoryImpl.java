@@ -91,7 +91,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     public void delete(Long id) {
         String hql = "delete from Role r where r.id = :id";
-        getSession().createQuery(hql)
+        getSession().createMutationQuery(hql)
                 .setParameter("id", id)
                 .executeUpdate();
     }

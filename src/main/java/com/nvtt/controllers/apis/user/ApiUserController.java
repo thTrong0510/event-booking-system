@@ -10,13 +10,18 @@ import com.nvtt.pojo.dtos.user.ResLoginDTO;
 import com.nvtt.pojo.dtos.user.ResUserInfoDTO;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.JwtUtil;
+import com.nvtt.utils.Utilities;
 import com.nvtt.utils.exceptions.IdInvalidException;
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api")
 public class ApiUserController {
+    
+    private static final Logger logger = LogManager.getLogger(ApiUserController.class);
 
     @Autowired
     private UserService userService;
@@ -43,14 +50,26 @@ public class ApiUserController {
     @PostMapping("/users")
     public ResponseEntity<ResUserInfoDTO> createUser(@RequestParam Map<String, String> params,
             @RequestParam("avatar") MultipartFile avatar) throws IdInvalidException {
+        
+        if(Utilities.validateRequiredFields(params, "fullName", "email", "password", "role") || avatar.isEmpty()) {
+            throw new IdInvalidException("error: missing field");
+        }
+        logger.info("start sql modelAttribute createUser");
         if (this.userService.checkExistEmail(params.get("email"))) {
             throw new IdInvalidException("This email was exist");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.addUser(params, avatar));
+        ResUserInfoDTO dto = this.userService.addUser(params, avatar);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@RequestBody ReqUserLoginDTO reqUser) throws IdInvalidException {
+    public ResponseEntity<ResLoginDTO> login(@RequestBody @Valid ReqUserLoginDTO reqUser, BindingResult registerResult) throws IdInvalidException {
+        logger.info("start sql loin");
+        if (registerResult.hasErrors()) {
+            throw new IdInvalidException("username/password is missing");
+        }
+       
         if (!this.userService.authenticate(reqUser.getEmail(), reqUser.getPassword())) {
             throw new IdInvalidException("username/password is wrong");
         }
@@ -66,19 +85,22 @@ public class ApiUserController {
             ResLoginDTO resUser = new ResLoginDTO();
             resUser.setAccessToken(accessToken);
             resUser.setUser(userInfoDto);
-
+            
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resUser);
         } catch (Exception ex) {
             throw new IdInvalidException("error: creating token");
+        } finally {
+            logger.info("end sql");
         }
     }
 
     @GetMapping("/secure/me")
     public ResponseEntity<ResUserInfoDTO> getMyInfo() {
-
+        logger.info("start sql getMyInfo");
         User currentUser = userService.getMyInfo();
         ResUserInfoDTO userInfoDto = new ResUserInfoDTO(currentUser.getId(), currentUser.getEmail(),
                 currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getId(), currentUser.getRole().getName(), currentUser.getIsActive());
+        logger.info("end sql");
         return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
 
     }
@@ -86,7 +108,9 @@ public class ApiUserController {
     @PutMapping("/secure/me")
     public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
             @RequestParam("avatar") Optional<MultipartFile> avatar) {
+        logger.info("start sql updateMyInfo");
         ResUserInfoDTO userInfoDto = userService.updateMyInfo(params, avatar);
+        logger.info("end sql");
         return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
     }
 }

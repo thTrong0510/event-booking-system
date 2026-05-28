@@ -181,7 +181,7 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
         // Cập nhật nhanh bằng HQL, chuẩn hóa thời gian và định danh admin phê duyệt
         String hql = "UPDATE OrganizerVerification ov SET ov.status = :status, "
                 + "ov.approvedBy.id = :adminId, ov.approvedAt = CURRENT_TIMESTAMP WHERE ov.id = :id";
-        session.createQuery(hql)
+        session.createMutationQuery(hql)
                 .setParameter("status", enumStatus)
                 .setParameter("adminId", adminId)
                 .setParameter("id", id)

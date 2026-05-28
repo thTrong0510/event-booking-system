@@ -16,12 +16,14 @@ import org.springframework.stereotype.Component;
 import com.nvtt.pojo.Category;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventMedia;
+import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.event.ResEventBasicInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
 import com.nvtt.pojo.dtos.event.ResEventMediaDTO;
 import com.nvtt.repositories.CategoryRepository;
+import com.nvtt.repositories.EventStatisticRepository;
 import com.nvtt.repositories.EventStatusRepository;
 import com.nvtt.utils.UserUtils.UserUtils;
 
@@ -37,6 +39,9 @@ public class EventUtils {
 
     @Autowired
     private EventStatusRepository eventStatusRepository;
+    
+    @Autowired
+    private EventStatisticRepository eventStatisticRepository;
 
     @Autowired
     private UserUtils userUtils;
@@ -47,9 +52,10 @@ public class EventUtils {
                 .map(eventMedia -> new ResEventMediaDTO(eventMedia.getMediaType(), eventMedia.getMediaUrl()))
                 .collect(Collectors.toSet());
         int eventViews;
-        if(event.getEventStatistic() != null){
-            if(event.getEventStatistic().getTotalViews() != null){
-                eventViews = event.getEventStatistic().getTotalViews();
+        EventStatistic eventStatistic = eventStatisticRepository.getEventStatisticByEventId(event.getId());
+        if(eventStatistic != null){
+            if(eventStatistic.getTotalViews() != null){
+                eventViews = eventStatistic.getTotalViews();
             } else {
                 eventViews = 0;
             }

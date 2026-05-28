@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RegisterChecked
 public class RegisterRequestDTO {
-
+    
     private String fullName;
     private String email;
     private String password;

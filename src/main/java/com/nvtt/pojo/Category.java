@@ -14,12 +14,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  *
@@ -48,8 +46,8 @@ public class Category implements Serializable {
     @Size(max = 65535)
     @Column(name = "description")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-    private Set<Event> events;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+//    private Set<Event> events;
 
     public Category() {
     }
@@ -87,13 +85,13 @@ public class Category implements Serializable {
         this.description = description;
     }
 
-    public Set<Event> getEvents() {
-        return events;
-    }
-
-    public void setEventSet(Set<Event> events) {
-        this.events = events;
-    }
+//    public Set<Event> getEvents() {
+//        return events;
+//    }
+//
+//    public void setEventSet(Set<Event> events) {
+//        this.events = events;
+//    }
 
     @Override
     public int hashCode() {

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nvtt.pojo.dtos.admin.AdminDashboardDTO;
 import com.nvtt.services.DashboardService;
 import java.time.LocalDate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping("/admin/dashboard")
-public class AdminDashboardController {
+public class DashboardController {
+    
+    private static final Logger logger = LogManager.getLogger(DashboardController.class);
 
     @Autowired
     private DashboardService dashboardService;
@@ -36,8 +40,9 @@ public class AdminDashboardController {
         if (selectedYear == null) {
             selectedYear = LocalDate.now().getYear();
         }
-
+        logger.info("start sql showDashboard");
         AdminDashboardDTO dashboardData = dashboardService.getDashboardData(timeFilter, selectedYear);
+        logger.info("end sql");
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -51,7 +56,7 @@ public class AdminDashboardController {
 
         model.addAttribute("dashboardData", dashboardData);
         model.addAttribute("currentTimeFilter", timeFilter);
-        model.addAttribute("currentYear", selectedYear); // Đẩy năm hiện tại ra lại giao diện để hiển thị
+        model.addAttribute("currentYear", selectedYear);
 
         return "admin/dashboard";
     }

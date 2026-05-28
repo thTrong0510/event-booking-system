@@ -10,6 +10,8 @@ import com.nvtt.repositories.RoleRepository;
 import com.nvtt.services.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +29,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 @RequestMapping("/admin")
-public class AdminAuthController {
+public class AuthController {
+    
+    private static final Logger logger = LogManager.getLogger(AuthController.class);
 
     @Autowired
     private UserService userService;
@@ -37,7 +41,10 @@ public class AdminAuthController {
 
     @ModelAttribute("roles")
     public List<Role> populateRoles() {
-        return roleRepository.findAll();
+        logger.info("start sql modelAttribute populateRoles admin/AuthenController");
+        List<Role> roles = roleRepository.findAll();
+        logger.info("end sql");
+        return roles;
     }
 
     // Hiển thị trang Login
@@ -66,15 +73,17 @@ public class AdminAuthController {
     public String registerAdmin(@ModelAttribute("registerDTO") @Valid RegisterRequestDTO dto,
             BindingResult registerResult,
             RedirectAttributes redirectAttributes) {
-
+            
         if (registerResult.hasErrors()) {
             return "admin/auth/register";
         }
 
         try {
+            logger.info("start sql register");
             // Gọi service đã có của bạn (Logic gán Role ADMIN thực hiện trong Service)
             userService.addUser(dto);
             redirectAttributes.addFlashAttribute("successMessage", "Đăng ký tài khoản Admin thành công! Hãy đăng nhập.");
+            logger.info("end sql");
             return "redirect:/admin/login";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Đăng ký thất bại: " + e.getMessage());

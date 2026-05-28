@@ -68,7 +68,11 @@ public class PayPalServiceImpl implements PayPalService {
         if (event == null || event.getAvailableTickets() < request.getQuantity()) {
             throw new RuntimeException("Số lượng vé còn lại không đủ để thực hiện đăng ký!");
         }
-
+        
+        int updatedTickets = event.getAvailableTickets() - request.getQuantity();
+        event.setAvailableTickets(updatedTickets);
+        this.eventRepository.addEvent(event);
+        
         BigDecimal unitPrice = event.getTicketPrice();
         BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(request.getQuantity()));
 
@@ -137,7 +141,6 @@ public class PayPalServiceImpl implements PayPalService {
             return new PayPalResponseDTO(approvalUrl, orderId, paymentId);
 
         } catch (Exception e) {
-            // Trường hợp lỗi kết nối API bên thứ 3 -> kích hoạt Rollback DB dữ liệu vừa khởi tạo
             throw new RuntimeException("Gặp lỗi trong quá trình khởi tạo cổng thanh toán PayPal: " + e.getMessage());
         }
     }
@@ -186,7 +189,7 @@ public class PayPalServiceImpl implements PayPalService {
 
                 // Lấy thông tin đơn hàng để xử lý trừ số lượng vé và sinh mã vé chi tiết
                 Orders order = paymentRepository.findOrderById(orderId);
-                paymentRepository.deductAvailableTickets(order.getEvent().getId(), order.getQuantity());
+//                paymentRepository.deductAvailableTickets(order.getEvent().getId(), order.getQuantity());
 
                 // BƯỚC 7: Sinh chuỗi mã vé bảo mật (UUID) tương ứng với số lượng & Cập nhật thống kê
                 List<String> generatedTicketCodes = new ArrayList<>();

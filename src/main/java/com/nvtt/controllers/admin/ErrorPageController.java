@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/admin/errors")
-public class AdminErrorController {
+public class ErrorPageController {
 
     @GetMapping("/404")
     public String handle404(Model model) {

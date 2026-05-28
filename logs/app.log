@@ -1,0 +1,305 @@
+2026-05-27 21:04:30 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:04:47 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:06:14 INFO  ContextLoader:255 - Root WebApplicationContext: initialization started
+2026-05-27 21:06:18 INFO  Version:44 - HHH000412: Hibernate ORM core version 6.6.1.Final
+2026-05-27 21:06:18 INFO  RegionFactoryInitiator:50 - HHH000026: Second-level cache disabled
+2026-05-27 21:06:20 WARN  deprecation:153 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-27 21:06:20 INFO  pooling:157 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'org.springframework.jdbc.datasource.DriverManagerDataSource@1b036af9']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@24366381) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@3258a2c8)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2b43059e) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@74bb8dd4)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6306d2a9) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@143f72e3)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@2763ea0f) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@f9e161a)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@5a581eda) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@351fd718)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@d146026) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@72c59958)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@68f1f714) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@231d5a05)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@d260b10) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@53774cb5)
+2026-05-27 21:06:20 DEBUG DdlTypeRegistry:64 - addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@34594898) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7ddde164)
+2026-05-27 21:06:25 INFO  Version:21 - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-27 21:06:29 INFO  JtaPlatformInitiator:59 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-27 21:06:32 INFO  InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer:113 - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-05-27 21:06:33 INFO  TaskSchedulerRouter:225 - No TaskScheduler/ScheduledExecutorService bean found for scheduled processing
+2026-05-27 21:06:33 INFO  ContextLoader:288 - Root WebApplicationContext initialized in 19402 ms
+2026-05-27 21:06:33 INFO  DispatcherServlet:532 - Initializing Servlet 'dispatcher'
+2026-05-27 21:06:34 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/images/
+2026-05-27 21:06:34 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/css/
+2026-05-27 21:06:34 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/js/
+2026-05-27 21:06:35 INFO  DispatcherServlet:554 - Completed initialization in 1736 ms
+2026-05-27 21:06:58 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:01 INFO  ContextLoader:255 - Root WebApplicationContext: initialization started
+2026-05-27 21:08:03 INFO  Version:44 - HHH000412: Hibernate ORM core version 6.6.1.Final
+2026-05-27 21:08:04 INFO  RegionFactoryInitiator:50 - HHH000026: Second-level cache disabled
+2026-05-27 21:08:04 WARN  deprecation:153 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-27 21:08:05 INFO  pooling:157 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'org.springframework.jdbc.datasource.DriverManagerDataSource@68ffa8ad']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6bc728a1) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2c753a58)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2a5e7b02) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1da0409b)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4f70f1ae) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4ad2b5e2)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@130d41d1) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@c366fb3)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@4483121a) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@1ba1c2cd)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@625b0ba1) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@5dafabae)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1e071c3) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@14426c98)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2e7e6bb2) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@eac4708)
+2026-05-27 21:08:05 DEBUG DdlTypeRegistry:64 - addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@cc04177) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@be1cadb)
+2026-05-27 21:08:06 INFO  Version:21 - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-27 21:08:09 INFO  JtaPlatformInitiator:59 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-27 21:08:12 INFO  InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer:113 - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-05-27 21:08:12 INFO  TaskSchedulerRouter:225 - No TaskScheduler/ScheduledExecutorService bean found for scheduled processing
+2026-05-27 21:08:13 INFO  ContextLoader:288 - Root WebApplicationContext initialized in 11252 ms
+2026-05-27 21:08:13 INFO  DispatcherServlet:532 - Initializing Servlet 'dispatcher'
+2026-05-27 21:08:14 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/images/
+2026-05-27 21:08:14 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/css/
+2026-05-27 21:08:14 WARN  ResourceHandlerUtils:94 - Appended trailing slash to static resource location: classpath:/static/js/
+2026-05-27 21:08:14 INFO  DispatcherServlet:554 - Completed initialization in 1645 ms
+2026-05-27 21:08:50 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:51 DEBUG SQL:135 - select count(u1_0.id) from users u1_0 where lower(u1_0.email)=?
+2026-05-27 21:08:51 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:51 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 where r1_0.id=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 where r1_0.id=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 where r1_0.id=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:52 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:52 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:08:52 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:08:53 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:08:53 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:08:53 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:08:53 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:08:53 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:08:53 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:08:54 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:10 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:10 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:10 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:10 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:11 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.id=? and e1_0.status_id in (?,?,?)
+2026-05-27 21:09:13 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.id=? and e1_0.status_id in (?,?,?)
+2026-05-27 21:09:13 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:13 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:14 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:14 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:24 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:24 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:25 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:25 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:25 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:25 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:35 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:35 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:36 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:36 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:36 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:36 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:36 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:36 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:37 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:09:37 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:09:37 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:09:37 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:09:37 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.id=? and e1_0.status_id in (?,?,?)
+2026-05-27 21:10:16 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:16 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.id=? and e1_0.status_id in (?,?,?)
+2026-05-27 21:10:17 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:17 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:10:20 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name=?
+2026-05-27 21:10:20 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-05-27 21:10:20 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select c1_0.id,c1_0.description,c1_0.name from categories c1_0 where c1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select u1_0.id,u1_0.avatar_url,u1_0.created_at,u1_0.email,u1_0.full_name,u1_0.is_active,u1_0.password,u1_0.role_id,r1_0.id,r1_0.is_active,r1_0.name,u1_0.updated_at from users u1_0 join roles r1_0 on r1_0.id=u1_0.role_id where u1_0.id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:20 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
+2026-05-27 21:10:21 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?

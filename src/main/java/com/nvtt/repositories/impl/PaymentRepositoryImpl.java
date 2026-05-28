@@ -51,12 +51,16 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Override
     public Long saveOrder(Orders order) {
-        return (Long) getCurrentSession().save(order);
+        getCurrentSession().persist(order);
+        
+        return order.getId();
     }
 
     @Override
     public Long savePayment(Payment payment) {
-        return (Long) getCurrentSession().save(payment);
+        getCurrentSession().persist(payment);
+        
+        return payment.getId();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public void updateOrderStatus(Long orderId, OrderStatus status) {
         String hql = "UPDATE Orders o SET o.status = :status WHERE o.id = :orderId";
-        getCurrentSession().createQuery(hql)
+        getCurrentSession().createMutationQuery(hql)
                 .setParameter("status", status)
                 .setParameter("orderId", orderId)
                 .executeUpdate();
@@ -81,7 +85,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public void updatePaymentStatus(Long paymentId, PaymentStatus status) {
         String hql = "UPDATE Payment p SET p.status = :status WHERE p.id = :paymentId";
-        getCurrentSession().createQuery(hql)
+        getCurrentSession().createMutationQuery(hql)
                 .setParameter("status", status)
                 .setParameter("paymentId", paymentId)
                 .executeUpdate();
@@ -92,7 +96,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         // Bước 6: UPDATE events SET available_tickets = available_tickets - quantity
         String hql = "UPDATE Event e SET e.availableTickets = e.availableTickets - :quantity " +
                      "WHERE e.id = :eventId AND e.availableTickets >= :quantity";
-        int updatedRows = getCurrentSession().createQuery(hql)
+        int updatedRows = getCurrentSession().createMutationQuery(hql)
                 .setParameter("quantity", quantity)
                 .setParameter("eventId", eventId)
                 .executeUpdate();
@@ -106,7 +110,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         // Bước 7: UPDATE event_statistics SET total_tickets_sold+=qty, total_revenue+=total
         String hql = "UPDATE EventStatistic es SET es.totalTicketsSold = es.totalTicketsSold + :quantity, " +
                      "es.totalRevenue = es.totalRevenue + :amount WHERE es.eventId = :eventId";
-        getCurrentSession().createQuery(hql)
+        getCurrentSession().createMutationQuery(hql)
                 .setParameter("quantity", quantity)
                 .setParameter("amount", amount)
                 .setParameter("eventId", event.getId())

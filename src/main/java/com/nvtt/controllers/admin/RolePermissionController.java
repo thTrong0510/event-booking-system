@@ -8,6 +8,8 @@ import com.nvtt.pojo.Permission;
 import com.nvtt.pojo.Role;
 import com.nvtt.services.RolePermissionService;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,17 +29,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin")
 public class RolePermissionController {
+    
+    private static final Logger logger = LogManager.getLogger(RolePermissionController.class);
 
     @Autowired
     private RolePermissionService rolePermissionService;
-
-    // Giao diện chính gộp chung Role và Permission
+    
     @GetMapping("/roles-permissions")
     public String showPage(@RequestParam(value = "roleId", required = false) Long roleId, Model model) {
+        logger.info("start sql showPage role permission");
         model.addAttribute("roles", rolePermissionService.getAllRoles());
         model.addAttribute("permissionGrouped", rolePermissionService.getPermissionsGroupedByModule());
-
-        // TỐI ƯU: Đảm bảo cả 2 object form luôn sẵn sàng trên Model tránh lỗi binding trống
+        
         if (!model.containsAttribute("newRole")) {
             model.addAttribute("newRole", new Role());
         }
@@ -53,16 +56,16 @@ public class RolePermissionController {
             }
         }
         model.addAttribute("activePage", "roles-permissions");
+        logger.info("end sql");
         return "admin/authorization/roles-permissions";
     }
 
-    // Xử lý tạo Vai trò mới - Có Validate lỗi truyền sang BindingResult
     @PostMapping("/roles/create")
     public String handleCreateRole(@ModelAttribute("newRole") Role role,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-
+        logger.info("start sql handleCreateRole");
         if (role.getName() == null || role.getName().trim().isEmpty()) {
             bindingResult.addError(new FieldError("newRole", "name", "Tên vai trò không được để trống!"));
         } else if (rolePermissionService.isRoleNameExists(role.getName())) {
@@ -72,23 +75,23 @@ public class RolePermissionController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", rolePermissionService.getAllRoles());
             model.addAttribute("permissionGrouped", rolePermissionService.getPermissionsGroupedByModule());
-            // Cung cấp object rỗng cho form Permission còn lại để view không vỡ
             model.addAttribute("newPermission", new Permission());
             return "admin/authorization/roles-permissions";
         }
 
         rolePermissionService.createRole(role);
         redirectAttributes.addFlashAttribute("successMsg", "Thêm vai trò mới thành công!");
+        logger.info("end sql");
         return "redirect:/admin/roles-permissions";
     }
-
-    // Xử lý tích chọn Checkbox để lưu phân quyền
+    
     @PostMapping("/roles/assign-permissions")
     public String handleAssignPermissions(@RequestParam("roleId") Long roleId,
             @RequestParam(value = "permissionIds", required = false) List<Long> permissionIds,
             RedirectAttributes redirectAttributes) {
-
+        logger.info("start sql handleAssignPermissions");
         rolePermissionService.assignPermissionsToRole(roleId, permissionIds);
+        logger.info("end sql");
         redirectAttributes.addFlashAttribute("successMsg", "Cập nhật phân quyền thành công!");
         return "redirect:/admin/roles-permissions?roleId=" + roleId;
     }
@@ -98,8 +101,8 @@ public class RolePermissionController {
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-
-        // Validate thủ công các trường dữ liệu bắt buộc
+        
+        logger.info("start sql handleCreatePermission");
         if (permission.getName() == null || permission.getName().trim().isEmpty()) {
             bindingResult.addError(new FieldError("newPermission", "name", "Tên quyền không được để trống!"));
         }
@@ -122,6 +125,7 @@ public class RolePermissionController {
 
         rolePermissionService.createPermission(permission);
         redirectAttributes.addFlashAttribute("successMsg", "Tạo quyền hạn mới hệ thống thành công!");
+        logger.info("end sql");
         return "redirect:/admin/roles-permissions";
     }
 }
