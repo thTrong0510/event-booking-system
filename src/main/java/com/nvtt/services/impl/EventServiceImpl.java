@@ -381,7 +381,7 @@ public class EventServiceImpl implements EventService {
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
             Role userRole = user.getRole();
-            return userRole != null && userRole.getName().equals("ORGANIZER");
+            return userRole != null && userRole.getName().contains("ORGANIZER");
         }
         return false;
     }

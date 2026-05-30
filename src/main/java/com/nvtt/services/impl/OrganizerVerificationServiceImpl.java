@@ -52,7 +52,7 @@ public class OrganizerVerificationServiceImpl implements OrganizerVerificationSe
             if (currentUser == null) {
                 throw new IdInvalidException("User not authenticated");
             }
-            if (currentUser.getRole().getName().equals("ORGANIZER")) {
+            if (currentUser.getRole().getName().contains("ORGANIZER")) {
                 throw new IdInvalidException("User is already an organizer");
             }
             OrganizerVerification organizerVerification = new OrganizerVerification();
