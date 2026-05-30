@@ -24,8 +24,11 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Expression;
+import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -37,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
+@PropertySource("classpath:configs.properties")
 public class EventRepositoryImpl implements EventRepository {
 
     @Autowired
@@ -109,7 +113,7 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public Event getOwnEventById(Long id, Long organizerId){
+    public Event getOwnEventById(Long id, Long organizerId) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Event> q = b.createQuery(Event.class);
@@ -117,10 +121,10 @@ public class EventRepositoryImpl implements EventRepository {
         root.fetch("eventMedias", JoinType.LEFT);
         q.select(root).distinct(true);
         q.where(
-            b.and(
-                b.equal(root.get("id"), id),
-                b.equal(root.get("organizer").get("id"), organizerId)
-            )
+                b.and(
+                        b.equal(root.get("id"), id),
+                        b.equal(root.get("organizer").get("id"), organizerId)
+                )
         );
         Query<Event> hQuery = session.createQuery(q);
 
@@ -149,7 +153,7 @@ public class EventRepositoryImpl implements EventRepository {
         q.select(root).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
-        
+
         if (statuses != null) {
             predicates.add(statuses.isEmpty() ? b.disjunction() : root.get("status").in(statuses));
         }
@@ -226,7 +230,7 @@ public class EventRepositoryImpl implements EventRepository {
 
         // xu ly phan trang
         if (params != null) {
-            int pageSize = this.env.getProperty("events.page_size", Integer.class, 20);
+            int pageSize = this.env.getProperty("events.pageSize", Integer.class, 20);
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
             int start = (page - 1) * pageSize;
 
@@ -264,7 +268,7 @@ public class EventRepositoryImpl implements EventRepository {
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
         q.select(root).distinct(true);
-        
+
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(b.equal(root.get("organizer").get("id"), organizerId));
 
@@ -340,7 +344,7 @@ public class EventRepositoryImpl implements EventRepository {
 
         // xu ly phan trang
         if (params != null) {
-            int pageSize = this.env.getProperty("events.page_size", Integer.class, 20);
+            int pageSize = this.env.getProperty("events.pageSize", Integer.class, 20);
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
             int start = (page - 1) * pageSize;
 
@@ -387,19 +391,51 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<Event> searchEvents(EventSearchCriteriaDTO criteria) {
+    public Map<String, Object> searchEvents(EventSearchCriteriaDTO criteria) {
         Session session = getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
+        int pageSize = this.env.getProperty("pagination.pageSize", Integer.class);
+        int firstResult = (criteria.getPage() - 1) * pageSize;
+
+        // 1. Tạo Query đếm tổng số lượng (dùng cho phân trang)
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        Root<Event> countRoot = countQuery.from(Event.class);
+        countQuery.select(cb.count(countRoot));
+        // Copy lại logic Predicates vào countQuery
+        List<Predicate> predicates = buildPredicates(criteria, cb, countRoot);
+        countQuery.where(predicates.toArray(new Predicate[0]));
+        Long totalElements = session.createQuery(countQuery).getSingleResult();
+
+        // 2. Query lấy dữ liệu trang hiện tại
         CriteriaQuery<Event> cq = cb.createQuery(Event.class);
         Root<Event> root = cq.from(Event.class);
-
-        // Eager fetch tối ưu hóa tránh lỗi LazyInitializationException n+1
         root.fetch("category", JoinType.LEFT);
         root.fetch("organizer", JoinType.LEFT);
         root.fetch("status", JoinType.LEFT);
 
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates_ = buildPredicates(criteria, cb, root);
 
+        cq.where(
+            predicates_.toArray(new Predicate[0])
+        );
+        cq.orderBy(cb.desc(root.get("createdAt")));
+
+        List<Event> events = session.createQuery(cq)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .getResultList();
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("events", events);
+        result.put("totalElements", totalElements);
+        result.put("totalPages", (int) Math.ceil((double) totalElements / pageSize));
+        result.put("currentPage", criteria.getPage());
+        return result;
+    }
+
+
+    private List<Predicate> buildPredicates(EventSearchCriteriaDTO criteria, CriteriaBuilder cb, Root<Event> root) {
+        List<Predicate> predicates = new ArrayList<>();
         if (criteria.getStatusId() != null) {
             predicates.add(cb.equal(root.get("status").get("id"), criteria.getStatusId()));
         }
@@ -413,24 +449,19 @@ public class EventRepositoryImpl implements EventRepository {
             predicates.add(cb.like(root.get("name"), "%" + criteria.getKeyword().trim() + "%"));
         }
         if (criteria.getFromDate() != null && !criteria.getFromDate().trim().isEmpty()) {
-            // Lọc các sự kiện diễn ra từ 00:00:00 ngày được chọn trở đi
             predicates.add(cb.greaterThanOrEqualTo(root.get("startTime"), DateTimeUtil.toDate(criteria.getFromDate())));
         }
-
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.desc(root.get("createdAt")));
-
-        return session.createQuery(cq).getResultList();
+        return predicates;
     }
-    
+
     @Override
     public List<Event> findEventsWithDetailsByIds(List<Long> ids) {
-        String hql = "SELECT DISTINCT e FROM Event e " +
-                     "LEFT JOIN FETCH e.category " +
-                     "LEFT JOIN FETCH e.organizer " +
-                     "LEFT JOIN FETCH e.eventStatistic " +
-                     "LEFT JOIN FETCH e.eventMedias " +
-                     "WHERE e.id IN :eventIds";
+        String hql = "SELECT DISTINCT e FROM Event e "
+                + "LEFT JOIN FETCH e.category "
+                + "LEFT JOIN FETCH e.organizer "
+                + "LEFT JOIN FETCH e.eventStatistic "
+                + "LEFT JOIN FETCH e.eventMedias "
+                + "WHERE e.id IN :eventIds";
 
         return getCurrentSession().createQuery(hql, Event.class)
                 .setParameter("eventIds", ids)

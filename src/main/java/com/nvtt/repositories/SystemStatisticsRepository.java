@@ -19,4 +19,10 @@ public interface SystemStatisticsRepository {
     Long getCreatedEventsCountByPeriod(Date start, Date end);
 
     void save(SystemStatisticsDaily statistics);
+
+    SystemStatisticsDaily getHistoricalSummary(Date startDate, Date endDate);
+
+    Map<String, Object> getLiveOrderSummaryToday(Date startToday, Date endToday);
+
+    Long getLiveEventCountToday(Date startToday, Date endToday);
 }

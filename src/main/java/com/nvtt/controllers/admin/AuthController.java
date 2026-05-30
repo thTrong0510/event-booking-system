@@ -46,8 +46,7 @@ public class AuthController {
         logger.info("end sql");
         return roles;
     }
-
-    // Hiển thị trang Login
+    
     @GetMapping("/login")
     public String showLoginPage(@RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "logout", required = false) String logout,
@@ -60,15 +59,13 @@ public class AuthController {
         }
         return "admin/auth/login";
     }
-
-    // Hiển thị trang Đăng ký
+    
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("registerDTO", new RegisterRequestDTO());
         return "admin/auth/register";
     }
-
-    // Xử lý Đăng ký Admin
+    
     @PostMapping("/register")
     public String registerAdmin(@ModelAttribute("registerDTO") @Valid RegisterRequestDTO dto,
             BindingResult registerResult,
@@ -80,7 +77,6 @@ public class AuthController {
 
         try {
             logger.info("start sql register");
-            // Gọi service đã có của bạn (Logic gán Role ADMIN thực hiện trong Service)
             userService.addUser(dto);
             redirectAttributes.addFlashAttribute("successMessage", "Đăng ký tài khoản Admin thành công! Hãy đăng nhập.");
             logger.info("end sql");

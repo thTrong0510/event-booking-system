@@ -1,171 +1,192 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
 
-    <head>
-        <title th:text="'Chi Tiết Sự Kiện: ' + ${event.name}">Chi Tiết Sự Kiện | Hệ Thống Quản Trị</title>
-    </head>
-    <body>
+<head>
+    <title th:text="'Chi Tiết Sự Kiện: ' + ${event.name}">Chi Tiết Sự Kiện | Hệ Thống Quản Trị</title>
+</head>
 
-        <div th:fragment="main-content">
+<body>
 
-            <!-- Nút quay lại và điều hướng nhanh -->
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a th:href="@{/admin/events}">Quản lý sự kiện</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Chi tiết nội dung</li>
-                    </ol>
-                </nav>
-                <a th:href="@{/admin/events}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
-                </a>
-            </div>
+    <div th:fragment="main-content">
 
-            <div class="row g-4">
-                <!-- Cột trái: Thông tin nội dung & Đa phương tiện -->
-                <div class="col-lg-8">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body">
-                            <!-- Tên sự kiện & Trạng thái -->
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h2 class="h3 card-title text-dark mb-0" th:text="${event.name}">Tên sự kiện mẫu</h2>
-                                <div>
-                                    <span th:if="${event.status.id == 1}" class="badge bg-warning text-dark fs-6">Chờ kiểm duyệt</span>
-                                    <span th:if="${event.status.id == 2}" class="badge bg-success fs-6">Đang công khai</span>
-                                    <span th:if="${event.status.id == 3}" class="badge bg-danger fs-6">Bị Từ Chối</span>
-                                    <span th:if="${event.status.id == 4}" class="badge bg-secondary fs-6">Đang ẩn vi phạm</span>
-                                </div>
+        <!-- Nút quay lại và điều hướng nhanh -->
+        <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/events}">Quản lý sự kiện</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Chi tiết nội dung</li>
+                </ol>
+            </nav>
+            <a th:href="@{/admin/events}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <!-- Cột trái: Thông tin nội dung & Đa phương tiện -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <!-- Tên sự kiện & Trạng thái -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h2 class="h3 card-title text-dark mb-0" th:text="${event.name}">Tên sự kiện mẫu</h2>
+                            <div>
+                                <span th:if="${event.status.id == 1}" class="badge bg-warning text-dark fs-6">Chờ kiểm
+                                    duyệt</span>
+                                <span th:if="${event.status.id == 2}" class="badge bg-success fs-6">Đang công
+                                    khai</span>
+                                <span th:if="${event.status.id == 3}" class="badge bg-danger fs-6">Bị Từ Chối</span>
+                                <span th:if="${event.status.id == 4}" class="badge bg-secondary fs-6">Đang ẩn vi
+                                    phạm</span>
                             </div>
+                        </div>
 
-                            <p class="text-muted small mb-4">
-                                <i class="bi bi-tag-fill me-1"></i> Danh mục: <strong th:text="${event.category.name}">Lĩnh vực</strong> 
-                                <span class="mx-2">|</span>
-                                <i class="bi bi-person-fill me-1"></i> Tổ chức bởi: <strong th:text="${event.organizer.fullName}">Tên nhà tổ chức</strong>
-                            </p>
+                        <p class="text-muted small mb-4">
+                            <i class="bi bi-tag-fill me-1"></i> Danh mục: <strong th:text="${event.category.name}">Lĩnh
+                                vực</strong>
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-person-fill me-1"></i> Tổ chức bởi: <strong
+                                th:text="${event.organizer.fullName}">Tên nhà tổ chức</strong>
+                        </p>
 
-                            <!-- Khối hiển thị Media (Hình ảnh / Video từ bảng event_media) -->
-                            <h5 class="section-title border-bottom pb-2 mb-3">Hình ảnh & Video giới thiệu</h5>
-                            <div class="row g-2 mb-4">
-                                <!-- Duyệt qua danh sách eventMedias của Entity Event -->
-                                <th:block th:each="media : ${event.eventMedias}">
-                                    <!-- Nếu là IMAGE -->
-                                    <div th:if="${media.mediaType == 'IMAGE'}" class="col-md-6">
-                                        <div class="border rounded overflow-hidden bg-light text-center p-1">
-                                            <img th:src="${media.mediaUrl}" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;" alt="Hình ảnh sự kiện">
+                        <!-- Khối hiển thị Media (Hình ảnh / Video từ bảng event_media) -->
+                        <h5 class="section-title border-bottom pb-2 mb-3">Hình ảnh & Video giới thiệu</h5>
+                        <div class="row g-2 mb-4">
+                            <!-- Duyệt qua danh sách eventMedias của Entity Event -->
+                            <th:block th:each="media : ${event.eventMedias}">
+                                <!-- Nếu là IMAGE -->
+                                <div th:if="${media.mediaType == 'IMAGE'}" class="col-md-6">
+                                    <div class="border rounded overflow-hidden bg-light text-center p-1">
+                                        <img th:src="${media.mediaUrl}" class="img-fluid rounded"
+                                            style="max-height: 250px; object-fit: cover;" alt="Hình ảnh sự kiện">
+                                    </div>
+                                </div>
+                                <!-- Nếu là VIDEO -->
+                                <div th:if="${media.mediaType == 'VIDEO'}" class="col-md-6">
+                                    <div class="border rounded overflow-hidden bg-light p-1">
+                                        <div class="ratio ratio-16x9">
+                                            <!-- Hỗ trợ nhúng link video youtube hoặc link thô -->
+                                            <iframe th:src="${media.mediaUrl}" title="Video giới thiệu"
+                                                allowfullscreen></iframe>
                                         </div>
                                     </div>
-                                    <!-- Nếu là VIDEO -->
-                                    <div th:if="${media.mediaType == 'VIDEO'}" class="col-md-6">
-                                        <div class="border rounded overflow-hidden bg-light p-1">
-                                            <div class="ratio ratio-16x9">
-                                                <!-- Hỗ trợ nhúng link video youtube hoặc link thô -->
-                                                <iframe th:src="${media.mediaUrl}" title="Video giới thiệu" allowfullscreen></iframe>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th:block>
-                                <div th:if="${#lists.isEmpty(event.eventMedias)}" class="col-12 text-center text-muted py-3 bg-light rounded border border-dashed">
-                                    <i class="bi bi-image fs-3 d-block mb-1"></i> Không có tệp đa phương tiện nào đính kèm.
                                 </div>
+                            </th:block>
+                            <div th:if="${#lists.isEmpty(event.eventMedias)}"
+                                class="col-12 text-center text-muted py-3 bg-light rounded border border-dashed">
+                                <i class="bi bi-image fs-3 d-block mb-1"></i> Không có tệp đa phương tiện nào đính kèm.
                             </div>
+                        </div>
 
-                            <!-- Mô tả chi tiết -->
-                            <h5 class="section-title border-bottom pb-2 mb-3">Mô tả chi tiết sự kiện</h5>
-                            <div class="card-text text-secondary style-description" th:utext="${event.description}">
-                                Nội dung mô tả chi tiết sự kiện hiển thị ở đây...
-                            </div>
+                        <!-- Mô tả chi tiết -->
+                        <h5 class="section-title border-bottom pb-2 mb-3">Mô tả chi tiết sự kiện</h5>
+                        <div class="card-text text-secondary style-description" th:utext="${event.description}">
+                            Nội dung mô tả chi tiết sự kiện hiển thị ở đây...
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Cột phải: Thông số kỹ thuật & Thao tác kiểm duyệt của Admin -->
-                <div class="col-lg-4">
-                    <!-- Thẻ thông số -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white py-3">
-                            <h6 class="m-0 fw-bold text-primary"><i class="bi bi-info-circle-fill me-1"></i> Thông tin vận hành</h6>
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush small">
-                                <li class="list-group-item d-flex justify-content-between py-3">
-                                    <span class="text-muted"><i class="bi bi-calendar2-event me-2"></i>Bắt đầu:</span>
-                                    <span class="fw-bold text-end text-dark" th:text="${event.startTime}">01/01/2026 08:00</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between py-3">
-                                    <span class="text-muted"><i class="bi bi-calendar-x me-2"></i>Kết thúc:</span>
-                                    <span class="fw-bold text-end text-dark" th:text="${event.endTime}">01/01/2026 12:00</span>
-                                </li>
-                                <li class="list-group-item py-3">
-                                    <div class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-2"></i>Địa điểm tổ chức:</div>
-                                    <div class="fw-bold text-dark ps-4" th:text="${event.location}">Hồ Chí Minh</div>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between py-3">
-                                    <span class="text-muted"><i class="bi bi-ticket-perforated me-2"></i>Tổng số lượng vé:</span>
-                                    <span class="fw-bold text-dark" th:text="${event.totalTickets} + ' vé'">500 vé</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between py-3">
-                                    <span class="text-muted"><i class="bi bi-cash-stack me-2"></i>Giá bán gốc:</span>
-                                    <span class="fw-bold text-success" th:text="${event.ticketPrice == 0 ? 'Miễn phí' : #numbers.formatDecimal(event.ticketPrice, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0 VNĐ</span>
-                                </li>
-                            </ul>
-                        </div>
+            <!-- Cột phải: Thông số kỹ thuật & Thao tác kiểm duyệt của Admin -->
+            <div class="col-lg-4">
+                <!-- Thẻ thông số -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="m-0 fw-bold text-primary"><i class="bi bi-info-circle-fill me-1"></i> Thông tin vận
+                            hành</h6>
                     </div>
-
-                    <!-- Thẻ tác vụ kiểm duyệt hành chính -->
-                    <div class="card shadow-sm border-start border-4 border-primary">
-                        <div class="card-header bg-white py-3">
-                            <h6 class="m-0 fw-bold text-dark"><i class="bi bi-shield-lock-fill me-1"></i> Tác vụ kiểm duyệt</h6>
-                        </div>
-                        <div class="card-body">
-                            <!-- Bảng điều khiển nếu sự kiện đang ở trạng thái CHỜ KIỂM DUYỆT (ID = 1) -->
-                            <div th:if="${event.status.id == 1}" class="d-grid gap-2">
-                                <p class="small text-muted mb-2">Vui lòng đọc kỹ nội dung, kiểm tra tính hợp pháp của tệp đa phương tiện trước khi phát hành hệ thống đại chúng.</p>
-
-                                <form th:action="@{/admin/events/{id}/approve(id=${event.id})}" method="POST">
-                                    <button type="submit" class="btn btn-success w-100 mb-2">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Phê duyệt phát hành
-                                    </button>
-                                </form>
-
-                                <form th:action="@{/admin/events/{id}/reject(id=${event.id})}" method="POST">
-                                    <button type="submit" class="btn btn-outline-danger w-100">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Từ chối nội dung
-                                    </button>
-                                </form>
-                            </div>
-
-                            <!-- Bảng điều khiển xử lý vi phạm nếu sự kiện đã ĐANG CÔNG KHAI (ID = 2) -->
-                            <div th:if="${event.status.id == 2}">
-                                <p class="small text-muted mb-3">Sự kiện đang hiển thị công khai trên ứng dụng người dùng. Bạn có thể ẩn ngay lập tức nếu nhận phản hồi tiêu cực vi phạm chính sách.</p>
-
-                                <div class="d-grid gap-2">
-                                    <form th:action="@{/admin/events/{id}/violation(id=${event.id})}" method="POST">
-                                        <input type="hidden" name="action" value="HIDE" />
-                                        <button type="submit" class="btn btn-warning w-100 text-dark mb-2">
-                                            <i class="bi bi-eye-slash-fill me-1"></i> Ẩn sự kiện khẩn cấp
-                                        </button>
-                                    </form>
-
-                                    <form th:action="@{/admin/events/{id}/violation(id=${event.id})}" method="POST" 
-                                          onsubmit="return confirm('Cảnh báo hệ thống: Thao tác này sẽ đánh dấu xóa hoàn toàn sự kiện khỏi cơ sở dữ liệu hiển thị. Xác nhận thực hiện?');">
-                                        <input type="hidden" name="action" value="DELETE" />
-                                        <button type="submit" class="btn btn-danger w-100">
-                                            <i class="bi bi-trash3-fill me-1"></i> Đánh dấu xóa (Vi phạm)
-                                        </button>
-                                    </form>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush small">
+                            <li class="list-group-item d-flex justify-content-between py-3">
+                                <span class="text-muted"><i class="bi bi-calendar2-event me-2"></i>Bắt đầu:</span>
+                                <span class="fw-bold text-end text-dark" th:text="${event.startTime}">01/01/2026
+                                    08:00</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between py-3">
+                                <span class="text-muted"><i class="bi bi-calendar-x me-2"></i>Kết thúc:</span>
+                                <span class="fw-bold text-end text-dark" th:text="${event.endTime}">01/01/2026
+                                    12:00</span>
+                            </li>
+                            <li class="list-group-item py-3">
+                                <div class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-2"></i>Địa điểm tổ chức:
                                 </div>
-                            </div>
+                                <div class="fw-bold text-dark ps-4" th:text="${event.location}">Hồ Chí Minh</div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between py-3">
+                                <span class="text-muted"><i class="bi bi-ticket-perforated me-2"></i>Tổng số lượng
+                                    vé:</span>
+                                <span class="fw-bold text-dark" th:text="${event.totalTickets} + ' vé'">500 vé</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between py-3">
+                                <span class="text-muted"><i class="bi bi-cash-stack me-2"></i>Giá bán gốc:</span>
+                                <span class="fw-bold text-success"
+                                    th:text="${event.ticketPrice == 0 ? 'Miễn phí' : #numbers.formatDecimal(event.ticketPrice, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0
+                                    VNĐ</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-                            <!-- Trường hợp trạng thái khác (Đã ẩn hoặc đã bị từ chối) -->
-                            <div th:if="${event.status.id == 3 || event.status.id == 4}" class="text-center py-2">
-                                <span class="text-muted small"><i class="bi bi-lock-fill me-1"></i> Không thể thực hiện thêm tác vụ do sự kiện đã bị đóng kiểm duyệt.</span>
+                <!-- Thẻ tác vụ kiểm duyệt hành chính -->
+                <div class="card shadow-sm border-start border-4 border-primary">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="m-0 fw-bold text-dark"><i class="bi bi-shield-lock-fill me-1"></i> Tác vụ kiểm duyệt
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Bảng điều khiển nếu sự kiện đang ở trạng thái CHỜ KIỂM DUYỆT (ID = 1) -->
+                        <div th:if="${event.status.id == 1}" class="d-grid gap-2">
+                            <p class="small text-muted mb-2">Vui lòng đọc kỹ nội dung, kiểm tra tính hợp pháp của tệp đa
+                                phương tiện trước khi phát hành hệ thống đại chúng.</p>
+
+                            <form th:action="@{/admin/events/{id}/approve(id=${event.id})}" method="POST">
+                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Phê duyệt phát hành
+                                </button>
+                            </form>
+
+                            <form th:action="@{/admin/events/{id}/reject(id=${event.id})}" method="POST">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-x-circle-fill me-1"></i> Từ chối nội dung
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Bảng điều khiển xử lý vi phạm nếu sự kiện đã ĐANG CÔNG KHAI (ID = 2) -->
+                        <div th:if="${event.status.id == 2}">
+                            <p class="small text-muted mb-3">Sự kiện đang hiển thị công khai trên ứng dụng người dùng.
+                                Bạn có thể ẩn ngay lập tức nếu nhận phản hồi tiêu cực vi phạm chính sách.</p>
+
+                            <div class="d-grid gap-2">
+                                <form th:action="@{/admin/events/{id}/violation(id=${event.id})}" method="POST">
+                                    <input type="hidden" name="action" value="HIDE" />
+                                    <button type="submit" class="btn btn-warning w-100 text-dark mb-2">
+                                        <i class="bi bi-eye-slash-fill me-1"></i> Ẩn sự kiện khẩn cấp
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/admin/events/{id}/violation(id=${event.id})}" method="POST"
+                                    onsubmit="return confirm('Cảnh báo hệ thống: Thao tác này sẽ đánh dấu xóa hoàn toàn sự kiện khỏi cơ sở dữ liệu hiển thị. Xác nhận thực hiện?');">
+                                    <input type="hidden" name="action" value="DELETE" />
+                                    <button type="submit" class="btn btn-danger w-100">
+                                        <i class="bi bi-trash3-fill me-1"></i> Đánh dấu xóa (Vi phạm)
+                                    </button>
+                                </form>
                             </div>
+                        </div>
+
+                        <!-- Trường hợp trạng thái khác (Đã ẩn hoặc đã bị từ chối) -->
+                        <div th:if="${event.status.id == 3 || event.status.id == 4}" class="text-center py-2">
+                            <span class="text-muted small"><i class="bi bi-lock-fill me-1"></i> Không thể thực hiện thêm
+                                tác vụ do sự kiện đã bị đóng kiểm duyệt.</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-    </body>
+</body>
+
 </html>

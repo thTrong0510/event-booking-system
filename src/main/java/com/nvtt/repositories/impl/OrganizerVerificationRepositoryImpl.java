@@ -94,14 +94,12 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
     public List<OrganizerVerification> findAll(String status, String search, int offset, int limit) {
         Session session = factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<OrganizerVerification> cq
-                = cb.createQuery(OrganizerVerification.class);
-
-        Root<OrganizerVerification> root
-                = cq.from(OrganizerVerification.class);
-
-        root.fetch("user", JoinType.INNER);
-        root.fetch("approvedBy", JoinType.LEFT);
+        
+        CriteriaQuery<OrganizerVerification> cq = cb.createQuery(OrganizerVerification.class);
+        Root<OrganizerVerification> root = cq.from(OrganizerVerification.class);
+        
+        Join<OrganizerVerification, User> userJoin = root.join("user", JoinType.INNER);
+        Join<OrganizerVerification, User> approvedByJoin = root.join("approvedBy", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -110,23 +108,29 @@ public class OrganizerVerificationRepositoryImpl implements OrganizerVerificatio
         }
 
         if (search != null && !search.trim().isEmpty()) {
-
             String searchPattern = "%" + search.trim().toLowerCase() + "%";
 
-            Join<OrganizerVerification, User> userJoin
-                    = root.join("user", JoinType.INNER);
-
-            Predicate searchEmail
-                    = cb.like(cb.lower(userJoin.get("email")), searchPattern);
-
-            Predicate searchName
-                    = cb.like(cb.lower(userJoin.get("fullName")), searchPattern);
+            // Tái sử dụng biến userJoin ở trên, không tạo thêm bản join mới nữa
+            Predicate searchEmail = cb.like(cb.lower(userJoin.get("email")), searchPattern);
+            Predicate searchName = cb.like(cb.lower(userJoin.get("fullName")), searchPattern);
 
             predicates.add(cb.or(searchEmail, searchName));
         }
 
-        cq.select(root)
-                .where(predicates.toArray(new Predicate[0]))
+        // THAY THẾ cq.select(root) thành Constructor Projection chỉ định danh cột cần dùng
+        cq.select(cb.construct(
+                OrganizerVerification.class,
+                root.get("id"),
+                root.get("status"),
+                root.get("createdAt"),
+                root.get("approvedAt"),
+                userJoin.get("avatarUrl"),
+                userJoin.get("fullName"),
+                userJoin.get("email"),
+                approvedByJoin.get("fullName") // Trường này lấy từ bảng kết nối LEFT JOIN
+        ));
+
+        cq.where(predicates.toArray(new Predicate[0]))
                 .orderBy(cb.desc(root.get("createdAt")))
                 .distinct(true);
 

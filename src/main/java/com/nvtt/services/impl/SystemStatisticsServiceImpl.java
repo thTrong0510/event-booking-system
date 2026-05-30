@@ -64,4 +64,81 @@ public class SystemStatisticsServiceImpl implements SystemStatisticsService {
         dailyReport.setTotalEvents(totalEvents.intValue());
         statisticsRepository.save(dailyReport);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public SystemStatisticsDaily getSystemSummary(String timeFilter, Integer selectedYear) {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR); 
+        
+        Date startDate = null;
+        Date endDate = null;
+        boolean includeToday = false;
+        if ("YEAR".equals(timeFilter)) {
+            includeToday = true;
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            setToEndOfDay(cal);
+            endDate = cal.getTime();
+        } else {
+            if (selectedYear == null) selectedYear = currentYear;
+            cal.set(selectedYear, Calendar.JANUARY, 1, 0, 0, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            startDate = cal.getTime();
+            if (selectedYear == currentYear) {
+                includeToday = true;
+                cal.setTime(new Date());
+                cal.add(Calendar.DAY_OF_MONTH, -1); // Lùi về hôm qua để lấy mốc chặn cuối cho bảng thống kê
+                setToEndOfDay(cal);
+                endDate = cal.getTime();
+            } else {
+                cal.set(selectedYear, Calendar.DECEMBER, 31, 23, 59, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+                endDate = cal.getTime();
+            }
+        }
+
+        // Bước 1: Lấy tổng dữ liệu lịch sử đã lưu cố định từ bảng SystemStatisticsDaily
+        SystemStatisticsDaily summary = statisticsRepository.getHistoricalSummary(startDate, endDate);
+
+        // Bước 2: Nếu khoảng bộ lọc chứa ngày hôm nay, tiến hành truy vấn trực tiếp và cộng dồn
+        if (includeToday) {
+            cal.setTime(new Date());
+            
+            // Mốc bắt đầu ngày hôm nay (00:00:00.000)
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            Date startToday = cal.getTime();
+
+            // Mốc kết thúc ngày hôm nay (23:59:59.999)
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            cal.set(Calendar.MILLISECOND, 999);
+            Date endToday = cal.getTime();
+
+            // Thực hiện các lệnh đếm thời gian thực từ bảng gốc
+            Map<String, Object> liveOrders = statisticsRepository.getLiveOrderSummaryToday(startToday, endToday);
+            Long liveEventsCount = statisticsRepository.getLiveEventCountToday(startToday, endToday);
+
+            int todayOrders = (Integer) liveOrders.get("totalOrders");
+            BigDecimal todayRevenue = (BigDecimal) liveOrders.get("totalRevenue");
+            int todayEvents = liveEventsCount.intValue();
+
+            // Tiến hành cộng dồn dữ liệu của ngày hôm nay vào kết quả lịch sử
+            summary.setTotalOrders(summary.getTotalOrders() != null ? summary.getTotalOrders() + todayOrders : todayOrders);
+            summary.setTotalRevenue(summary.getTotalRevenue() != null ? summary.getTotalRevenue().add(todayRevenue) : todayRevenue);
+            summary.setTotalEvents(summary.getTotalEvents() != null ? summary.getTotalEvents() + todayEvents : todayEvents);
+        }
+
+        return summary;
+    }
+
+    private void setToEndOfDay(Calendar cal) {
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+    }
 }

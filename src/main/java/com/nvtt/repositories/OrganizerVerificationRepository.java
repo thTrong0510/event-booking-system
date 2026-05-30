@@ -14,10 +14,14 @@ import com.nvtt.pojo.OrganizerVerification;
  * @author lequa
  */
 public interface OrganizerVerificationRepository {
+
     OrganizerVerification addOrganizerVerification(OrganizerVerification organizerVerification);
+
     List<OrganizerVerification> getOrganizerVerifications(Map<String, String> params);
+
     OrganizerVerification getOrganizerVerificationById(Long id);
-        List<OrganizerVerification> findAll(String status, String search, int offset, int limit);
+
+    List<OrganizerVerification> findAll(String status, String search, int offset, int limit);
 
     long countAll(String status, String search);
 

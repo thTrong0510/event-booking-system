@@ -139,9 +139,15 @@ public class PermissionRepositoryImpl implements PermissionRepository {
 
     @Override
     public List<Permission> findByRoleId(Long roleId) {
-        // Câu lệnh liên kết bảng trung gian qua quan hệ n-n (ManyToMany) trên Entity
-        String hql = "SELECT p FROM Permission p JOIN p.roles r WHERE r.id = :roleId";
-        return this.getSession().createQuery(hql, Permission.class)
+        String hql = """
+            SELECT p
+            FROM Role r
+            JOIN r.permissions p
+            WHERE r.id = :roleId
+        """;
+
+        return this.getSession()
+                .createQuery(hql, Permission.class)
                 .setParameter("roleId", roleId)
                 .getResultList();
     }

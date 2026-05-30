@@ -46,7 +46,7 @@ public class OrganizerVerificationController {
         model.addAttribute("totalElements", data.get("totalElements"));
         model.addAttribute("status", status);
         model.addAttribute("search", search);
-        model.addAttribute("activePage", "verifications"); // Kích hoạt sáng menu sidebar
+        model.addAttribute("activePage", "verifications");
 
         return "admin/verifications/list";
     }

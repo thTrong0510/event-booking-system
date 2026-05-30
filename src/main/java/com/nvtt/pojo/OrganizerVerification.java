@@ -147,6 +147,25 @@ public class OrganizerVerification implements Serializable {
         return true;
     }
 
+    public OrganizerVerification(Long id, OrganizerVerificationStatus status, Date createdAt, Date approvedAt,
+            String userAvatarUrl, String userFullName, String userEmail,
+            String approvedByFullName) {
+        this.id = id;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.approvedAt = approvedAt;
+        
+        this.user = new User();
+        this.user.setAvatarUrl(userAvatarUrl);
+        this.user.setFullName(userFullName);
+        this.user.setEmail(userEmail);
+        
+        if (approvedByFullName != null) {
+            this.approvedBy = new User();
+            this.approvedBy.setFullName(approvedByFullName);
+        }
+    }
+
     @Override
     public String toString() {
         return "com.nvtt.pojo.OrganizerVerification[ id=" + id + " ]";

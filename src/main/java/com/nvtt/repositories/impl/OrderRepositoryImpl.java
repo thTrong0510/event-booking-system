@@ -82,7 +82,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         Query query = session.createQuery(q);
 
         if (params != null) {
-            int pageSize = this.env.getProperty("orders.page_size", Integer.class, 10);
+            int pageSize = this.env.getProperty("orders.pageSize", Integer.class, 10);
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
             int start = (page - 1) * pageSize;
 

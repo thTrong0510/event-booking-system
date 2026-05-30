@@ -5,8 +5,10 @@
 package com.nvtt.controllers.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nvtt.pojo.SystemStatisticsDaily;
 import com.nvtt.pojo.dtos.admin.AdminDashboardDTO;
 import com.nvtt.services.DashboardService;
+import com.nvtt.services.SystemStatisticsService;
 import java.time.LocalDate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,23 +31,29 @@ public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;
+    
+    @Autowired
+    private SystemStatisticsService statisticsService;
 
     @GetMapping
     public String showDashboard(
             @RequestParam(value = "timeFilter", required = false, defaultValue = "MONTH") String timeFilter,
             @RequestParam(value = "selectedYear", required = false) Integer selectedYear,
             Model model) {
-
-        // Nếu không chọn năm, hệ thống tự động lấy năm hiện tại làm mốc mặc định
+        
         if (selectedYear == null) {
             selectedYear = LocalDate.now().getYear();
         }
         logger.info("start sql showDashboard");
+        SystemStatisticsDaily systemSummary = statisticsService.getSystemSummary(timeFilter, selectedYear);
         AdminDashboardDTO dashboardData = dashboardService.getDashboardData(timeFilter, selectedYear);
         logger.info("end sql");
 
         ObjectMapper mapper = new ObjectMapper();
         try {
+            model.addAttribute("systemSummary", systemSummary);
+            model.addAttribute("currentTimeFilter", timeFilter);
+            model.addAttribute("currentYear", selectedYear);
             model.addAttribute("eventsJson", mapper.writeValueAsString(dashboardData.getEventsByTime()));
             model.addAttribute("salesJson", mapper.writeValueAsString(dashboardData.getTicketSalesTrend()));
             model.addAttribute("organizerJson", mapper.writeValueAsString(dashboardData.getRevenueByOrganizer()));

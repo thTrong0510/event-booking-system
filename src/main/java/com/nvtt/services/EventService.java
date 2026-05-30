@@ -41,7 +41,7 @@ public interface EventService {
     
     boolean endEvent(Long id);
 
-    List<EventResponseDTO> getFilteredEvents(EventSearchCriteriaDTO criteria);
+    Map<String, Object> getFilteredEvents(EventSearchCriteriaDTO criteria);
 
     Event getEventDetails(Long id);
 

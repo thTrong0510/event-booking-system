@@ -116,8 +116,7 @@ public class DashboardRepositoryImpl implements DashboardRepository {
 
         return executeAndFormatResult(query, getPrefixLabel(type));
     }
-
-    // 3. BIỂU ĐỒ: TỶ LỆ DOANH THU THEO LĨNH VỰC (Lọc theo Thời gian đã chọn)
+    
     @Override
     public List<Map<String, Object>> getStatisticsByCategory(String type, int year) {
         CriteriaBuilder cb = getCurrentSession().getCriteriaBuilder();

@@ -78,7 +78,7 @@ public class OrganizerVerificationServiceImpl implements OrganizerVerificationSe
     @Override
     @Transactional(readOnly = true)
     public Map<String, Object> getVerificationsData(String status, String search, int page) {
-        int size = this.env.getProperty("pagination.page_size", Integer.class);
+        int size = this.env.getProperty("pagination.pageSize", Integer.class);
         int offset = (page - 1) * size;
 
         List<OrganizerVerification> list = organizerVerificationRepository.findAll(status, search, offset, size);

@@ -388,10 +388,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getFilteredEvents(EventSearchCriteriaDTO criteria) {
-        List<Event> events = eventRepository.searchEvents(criteria);
+    public Map<String, Object> getFilteredEvents(EventSearchCriteriaDTO criteria) {
+        Map<String, Object> repoResult = eventRepository.searchEvents(criteria);
+        List<Event> events = (List<Event>) repoResult.get("events");
 
-        return events.stream().map(e -> new EventResponseDTO(
+        List<EventResponseDTO> dtos = (List<EventResponseDTO>) events.stream().map(e -> new EventResponseDTO(
                 e.getId(),
                 e.getName(),
                 e.getCategory().getName(),
@@ -404,6 +405,8 @@ public class EventServiceImpl implements EventService {
                 e.getAvailableTickets(),
                 e.getTicketPrice()
         )).collect(Collectors.toList());
+        repoResult.put("events", dtos);
+        return repoResult;
     }
 
     @Override
@@ -418,12 +421,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void approveEvent(Long id) {
-        changeEventStatus(id, "PUBLISHED"); // Duyệt công khai hiển thị trên ReactJS Client
+        changeEventStatus(id, "PUBLISHED");
     }
 
     @Override
     public void rejectEvent(Long id) {
-        changeEventStatus(id, "REJECTED"); // Từ chối duyệt nội dung xấu
+        changeEventStatus(id, "REJECTED");
     }
 
     @Override
@@ -434,9 +437,7 @@ public class EventServiceImpl implements EventService {
     private void changeEventStatus(Long id, String statusName) {
         Event event = eventRepository.findById(id);
         if (event != null) {
-            // Tìm thực thể Trạng thái tương ứng từ database (HQL tuyển dụng proxy)
-            // Giả lập lấy trạng thái cấu hình hệ thống từ DB
-            EventStatus status = this.eventStatusRepository.findByName(statusName); // Hàm xử lý map tên cấu hình DB của bạn
+            EventStatus status = this.eventStatusRepository.findByName(statusName);
 
             event.setStatus(status);
             eventRepository.update(event);

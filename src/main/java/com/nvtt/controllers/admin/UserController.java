@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/users")
 public class UserController {
-    
+
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
@@ -48,18 +48,15 @@ public class UserController {
             Model model) {
         logger.info("start sql listUsers admin");
         Map<String, Object> data = userService.getUsersData(search, roleId, page);
-        logger.info("end sql");
 
         model.addAllAttributes(data);
         model.addAttribute("search", search);
         model.addAttribute("roleId", roleId);
-        model.addAttribute("allRoles", roleService.findAll()); // Dành cho dropdown lọc và dropdown sửa quyền
-        model.addAttribute("activePage", "users");
-
+        model.addAttribute("allRoles", roleService.findAll());
+        logger.info("end sql");
         return "admin/users/list";
     }
 
-    // Chặn / Kích hoạt tài khoản người dùng
     @PostMapping("/{id}/toggle-status")
     public String toggleStatus(@PathVariable("id") Long id,
             @RequestParam(value = "search", required = false) String search,
@@ -77,16 +74,14 @@ public class UserController {
                 user.getFullName(),
                 emailType
         );
-        
+
         logger.info("end sql");
 
-        // Giữ nguyên trạng thái phân trang và bộ lọc sau khi thực thi xong hành động
         return "redirect:/admin/users?search=" + (search != null ? search : "")
                 + "&roleId=" + (roleId != null ? roleId : "")
                 + "&page=" + page;
     }
 
-    // Cập nhật quyền (Role) cho người dùng
     @PostMapping("/{id}/update-role")
     public String updateRole(@PathVariable("id") Long id,
             @RequestParam("newRoleId") Long newRoleId,

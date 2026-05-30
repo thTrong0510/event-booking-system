@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Map<String, Object> getUsersData(String search, Long roleId, int page) {
-        int size = this.env.getProperty("pagination.page_size", Integer.class);
+        int size = this.env.getProperty("pagination.pageSize", Integer.class);
 
         int offset = (page - 1) * size;
 

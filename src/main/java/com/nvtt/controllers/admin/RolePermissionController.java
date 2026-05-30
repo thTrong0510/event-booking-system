@@ -118,7 +118,6 @@ public class RolePermissionController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", rolePermissionService.getAllRoles());
             model.addAttribute("permissionGrouped", rolePermissionService.getPermissionsGroupedByModule());
-            // Cung cấp object rỗng cho form Role còn lại
             model.addAttribute("newRole", new Role());
             return "admin/authorization/roles-permissions";
         }

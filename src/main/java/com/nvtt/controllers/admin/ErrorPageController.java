@@ -19,7 +19,7 @@ public class ErrorPageController {
 
     @GetMapping("/404")
     public String handle404(Model model) {
-        model.addAttribute("activePage", "error"); // Tránh làm sáng các menu khác
+        model.addAttribute("activePage", "error");
         return "admin/errors/404";
     }
 

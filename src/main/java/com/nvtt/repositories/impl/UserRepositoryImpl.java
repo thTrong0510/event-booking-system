@@ -139,7 +139,7 @@ public class UserRepositoryImpl implements UserRepository {
             String pattern = "%" + search.toLowerCase() + "%";
 
             Predicate usernameLike
-                    = cb.like(cb.lower(root.get("username")), pattern);
+                    = cb.like(cb.lower(root.get("fullName")), pattern);
 
             Predicate emailLike
                     = cb.like(cb.lower(root.get("email")), pattern);
@@ -186,7 +186,7 @@ public class UserRepositoryImpl implements UserRepository {
             String pattern = "%" + search.trim().toLowerCase() + "%";
 
             Predicate usernameLike
-                    = cb.like(cb.lower(root.get("username")), pattern);
+                    = cb.like(cb.lower(root.get("fullName")), pattern);
 
             Predicate emailLike
                     = cb.like(cb.lower(root.get("email")), pattern);

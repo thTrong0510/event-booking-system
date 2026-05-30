@@ -108,7 +108,7 @@ public class PayPalServiceImpl implements PayPalService {
 
         Map<String, Object> purchaseUnit = new HashMap<>();
         Map<String, String> amountMap = new HashMap<>();
-        amountMap.put("currency_code", "USD"); // Chuyển đổi currency tùy cấu hình hệ thống
+        amountMap.put("currency_code", "VND"); // Chuyển đổi currency tùy cấu hình hệ thống
         amountMap.put("value", totalAmount.toString());
         purchaseUnit.put("amount", amountMap);
         orderRequest.put("purchase_units", Collections.singletonList(purchaseUnit));

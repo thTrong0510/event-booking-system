@@ -9,6 +9,7 @@ import com.nvtt.services.CategoryService;
 import com.nvtt.services.EventService;
 import com.nvtt.services.EventStatusService;
 import com.nvtt.services.UserService;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,16 +45,15 @@ public class EventController {
     @Autowired
     private UserService userService;
 
-    // Bạn có thể Autowired thêm Category/Organizer Service ở đây chỉ để lấy danh sách đổ vào thẻ <select> bộ lọc.
-
     @GetMapping
     public String listEvents(@ModelAttribute("criteria") EventSearchCriteriaDTO criteria, Model model) {
         logger.info("start sql listEvents admin");
-        model.addAttribute("events", adminEventService.getFilteredEvents(criteria));
+        Map<String, Object> data = adminEventService.getFilteredEvents(criteria);
+        model.addAllAttributes(data);
         model.addAttribute("activePage", "events");
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("statuses", eventStatusService.getAllStatuses());
-        model.addAttribute("organizers", userService.findByRoleName("STAFF"));
+        model.addAttribute("organizers", userService.findByRoleName("ORGANIZER"));
         logger.info("end sql");
         return "admin/events/list";
     }

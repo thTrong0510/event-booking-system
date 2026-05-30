@@ -1,175 +1,196 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
-    <head>
-        <title>Quản Lý Vai Trò & Phân Quyền | Admin</title>
-    </head>
-    <body>
-        <div th:fragment="main-content">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2"><i class="bi bi-shield-lock"></i> Quản Lý Vai Trò & Phân Quyền</h1>
-            </div>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: main-layout(~{::main-content}, ~{::title})}">
 
-            <!-- Thông báo thành công nếu có -->
-            <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill"></i> <span th:text="${successMsg}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+<head>
+    <title>Quản Lý Vai Trò & Phân Quyền | Admin</title>
+</head>
 
-            <div class="row">
-                <!-- CỘT BÊN TRÁI: FORM TẠO ROLE, FORM TẠO PERMISSION & DANH SÁCH ROLE -->
-                <div class="col-lg-5 col-md-12 mb-4">
+<body>
+    <div th:fragment="main-content">
+        <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2"><i class="bi bi-shield-lock"></i> Quản Lý Vai Trò & Phân Quyền</h1>
+        </div>
 
-                    <!-- TỐI ƯU: Thêm Form Tạo Permission Mới -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0 text-success"><i class="bi bi-key"></i> Thêm Quyền Hạn Mới (Permission)</h5>
-                        </div>
-                        <div class="card-body">
-                            <form th:action="@{/admin/permissions/create}" th:object="${newPermission}" method="POST">
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label class="form-label fw-bold small">Tên Quyền</label>
-                                        <input type="text" th:field="*{name}" 
-                                               class="form-control form-control-sm" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-                                               placeholder="Ví dụ: Duyệt nhà tổ chức">
-                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <label class="form-label fw-bold small">Module Nhóm</label>
-                                        <input type="text" th:field="*{module}" 
-                                               class="form-control form-control-sm" th:classappend="${#fields.hasErrors('module')} ? 'is-invalid' : ''"
-                                               placeholder="Ví dụ: ORGANIZER_MOD">
-                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('module')}" th:errors="*{module}"></div>
-                                    </div>
-                                </div>
+        <!-- Thông báo thành công nếu có -->
+        <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> <span th:text="${successMsg}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
-                                <div class="row">
-                                    <div class="col-md-8 mb-3">
-                                        <label class="form-label fw-bold small">Đường Dẫn API (URL)</label>
-                                        <input type="text" th:field="*{apiPath}" 
-                                               class="form-control form-control-sm" th:classappend="${#fields.hasErrors('apiPath')} ? 'is-invalid' : ''"
-                                               placeholder="Ví dụ: /api/v1/organizers/*">
-                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('apiPath')} ? 'is-invalid' : ''" th:errors="*{apiPath}"></div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold small">Phương Thức</label>
-                                        <select th:field="*{apiMethod}" class="form-select form-select-sm">
-                                            <option value="GET">GET</option>
-                                            <option value="POST">POST</option>
-                                            <option value="PUT">PUT</option>
-                                            <option value="DELETE">DELETE</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-sm w-100"><i class="bi bi-plus-square"></i> Lưu Quyền Hạn</button>
-                            </form>
-                        </div>
+        <div class="row">
+            <!-- CỘT BÊN TRÁI: FORM TẠO ROLE, FORM TẠO PERMISSION & DANH SÁCH ROLE -->
+            <div class="col-lg-5 col-md-12 mb-4">
+
+                <!-- TỐI ƯU: Thêm Form Tạo Permission Mới -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-success"><i class="bi bi-key"></i> Thêm Quyền Hạn Mới (Permission)</h5>
                     </div>
-
-                    <!-- Form Tạo Role Mới -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0 text-primary"><i class="bi bi-plus-circle"></i> Thêm Vai Trò Mới</h5>
-                        </div>
-                        <div class="card-body">
-                            <form th:action="@{/admin/roles/create}" th:object="${newRole}" method="POST">
-                                <div class="mb-3">
-                                    <label for="roleName" class="form-label fw-bold small">Tên Vai Trò (ROLE_XYZ)</label>
-                                    <input type="text" th:field="*{name}" id="roleName" 
-                                           class="form-control form-control-sm" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-                                           placeholder="Nhập tên vai trò...">
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/permissions/create}" th:object="${newPermission}" method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-bold small">Tên Quyền</label>
+                                    <input type="text" th:field="*{name}" class="form-control form-control-sm"
+                                        th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                        placeholder="Ví dụ: Duyệt nhà tổ chức">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+                                        th:errors="*{name}"></div>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-save"></i> Lưu Vai Trò</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Bảng Danh Sách Role -->
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh Sách Vai Trò Hiện Tại</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="ps-3">Tên Vai Trò</th>
-                                            <th>Trạng Thái</th>
-                                            <th class="text-end pe-3">Phân Quyền</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="r : ${roles}" th:classappend="${currentRole != null && currentRole.id == r.id} ? 'table-primary' : ''">
-                                            <td class="ps-3 fw-bold" th:text="${r.name}">ROLE_USER</td>
-                                            <td>
-                                                <span th:if="${r.isActive}" class="badge bg-success-subtle text-success border border-success-subtle">Active</span>
-                                                <span th:unless="${r.isActive}" class="badge bg-danger-subtle text-danger border border-danger-subtle">Inactive</span>
-                                            </td>
-                                            <td class="text-end pe-3">
-                                                <a th:href="@{/admin/roles-permissions(roleId=${r.id})}" class="btn btn-sm btn-outline-primary py-0">
-                                                    Cập nhật quyền <i class="bi bi-arrow-right-short"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-bold small">Module Nhóm</label>
+                                    <input type="text" th:field="*{module}" class="form-control form-control-sm"
+                                        th:classappend="${#fields.hasErrors('module')} ? 'is-invalid' : ''"
+                                        placeholder="Ví dụ: ORGANIZER_MOD">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('module')}"
+                                        th:errors="*{module}"></div>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label fw-bold small">Đường Dẫn API (URL)</label>
+                                    <input type="text" th:field="*{apiPath}" class="form-control form-control-sm"
+                                        th:classappend="${#fields.hasErrors('apiPath')} ? 'is-invalid' : ''"
+                                        placeholder="Ví dụ: /api/v1/organizers/*">
+                                    <div class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('apiPath')} ? 'is-invalid' : ''"
+                                        th:errors="*{apiPath}"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold small">Phương Thức</label>
+                                    <select th:field="*{apiMethod}" class="form-select form-select-sm">
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm w-100"><i class="bi bi-plus-square"></i>
+                                Lưu Quyền Hạn</button>
+                        </form>
                     </div>
                 </div>
 
-                <!-- CỘT BÊN PHẢI: PHÂN QUYỀN ĐỘNG CHO ROLE ĐANG CHỌN -->
-                <div class="col-lg-7 col-md-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0">
-                                <i class="bi bi-check2-square"></i> Cấu Hình Quyền: 
-                                <span class="text-danger fw-bold" th:text="${currentRole != null ? currentRole.name : 'Vui lòng chọn vai trò bên trái'}"></span>
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div th:if="${currentRole == null}" class="text-center py-5 text-muted">
-                                <i class="bi bi-shield-exclamation display-1"></i>
-                                <p class="mt-3">Hãy click vào nút <strong>"Cập nhật quyền"</strong> của một vai trò ở bảng bên trái để tiến hành gán quyền hệ thống.</p>
+                <!-- Form Tạo Role Mới -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-plus-circle"></i> Thêm Vai Trò Mới</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/roles/create}" th:object="${newRole}" method="POST">
+                            <div class="mb-3">
+                                <label for="roleName" class="form-label fw-bold small">Tên Vai Trò (ROLE_XYZ)</label>
+                                <input type="text" th:field="*{name}" id="roleName" class="form-control form-control-sm"
+                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                    placeholder="Nhập tên vai trò...">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                </div>
                             </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-save"></i> Lưu
+                                Vai Trò</button>
+                        </form>
+                    </div>
+                </div>
 
-                            <form th:if="${currentRole != null}" th:action="@{/admin/roles/assign-permissions}" method="POST">
-                                <input type="hidden" name="roleId" th:value="${currentRole.id}">
+                <!-- Bảng Danh Sách Role -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh Sách Vai Trò Hiện Tại</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Tên Vai Trò</th>
+                                        <th>Trạng Thái</th>
+                                        <th class="text-end pe-3">Phân Quyền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="r : ${roles}"
+                                        th:classappend="${currentRole != null && currentRole.id == r.id} ? 'table-primary' : ''">
+                                        <td class="ps-3 fw-bold" th:text="${r.name}">ROLE_USER</td>
+                                        <td>
+                                            <span th:if="${r.isActive}"
+                                                class="badge bg-success-subtle text-success border border-success-subtle">Active</span>
+                                            <span th:unless="${r.isActive}"
+                                                class="badge bg-danger-subtle text-danger border border-danger-subtle">Inactive</span>
+                                        </td>
+                                        <td class="text-end pe-3">
+                                            <a th:href="@{/admin/roles-permissions(roleId=${r.id})}"
+                                                class="btn btn-sm btn-outline-primary py-0">
+                                                Cập nhật quyền <i class="bi bi-arrow-right-short"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                <div th:each="entry : ${permissionGrouped}" class="mb-4 border rounded p-3 bg-white">
-                                    <h6 class="text-uppercase text-secondary fw-bold border-bottom pb-2 mb-3" style="font-size: 13px;">
-                                        <i class="bi bi-folder2-open me-2 text-warning"></i> Module: [[${entry.key}]]
-                                    </h6>
-                                    <div class="row">
-                                        <div th:each="p : ${entry.value}" class="col-md-6 mb-2">
-                                            <div class="form-check form-switch py-1">
-                                                <input class="form-check-input" type="checkbox" name="permissionIds" 
-                                                       th:value="${p.id}" th:id="'p-' + ${p.id}"
-                                                       th:checked="${#lists.contains(assignedPermissionIds, p.id)}">
-                                                <label class="form-check-input-label text-dark" th:for="'p-' + ${p.id}">
-                                                    <strong th:text="${p.name}">Tên quyền</strong>
-                                                    <small class="d-block text-muted" style="font-size: 11px;">
-                                                        <span class="badge bg-secondary-subtle text-secondary py-0">[[${p.apiMethod}]]</span> [[${p.apiPath}]]
-                                                    </small>
-                                                </label>
-                                            </div>
+            <!-- CỘT BÊN PHẢI: PHÂN QUYỀN ĐỘNG CHO ROLE ĐANG CHỌN -->
+            <div class="col-lg-7 col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-check2-square"></i> Cấu Hình Quyền:
+                            <span class="text-danger fw-bold"
+                                th:text="${currentRole != null ? currentRole.name : 'Vui lòng chọn vai trò bên trái'}"></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${currentRole == null}" class="text-center py-5 text-muted">
+                            <i class="bi bi-shield-exclamation display-1"></i>
+                            <p class="mt-3">Hãy click vào nút <strong>"Cập nhật quyền"</strong> của một vai trò ở bảng
+                                bên trái để tiến hành gán quyền hệ thống.</p>
+                        </div>
+
+                        <form th:if="${currentRole != null}" th:action="@{/admin/roles/assign-permissions}"
+                            method="POST">
+                            <input type="hidden" name="roleId" th:value="${currentRole.id}">
+
+                            <div th:each="entry : ${permissionGrouped}" class="mb-4 border rounded p-3 bg-white">
+                                <h6 class="text-uppercase text-secondary fw-bold border-bottom pb-2 mb-3"
+                                    style="font-size: 13px;">
+                                    <i class="bi bi-folder2-open me-2 text-warning"></i> Module: [[${entry.key}]]
+                                </h6>
+                                <div class="row">
+                                    <div th:each="p : ${entry.value}" class="col-md-6 mb-2">
+                                        <div class="form-check form-switch py-1">
+                                            <input class="form-check-input" type="checkbox" name="permissionIds"
+                                                th:value="${p.id}" th:id="'p-' + ${p.id}"
+                                                th:checked="${#lists.contains(assignedPermissionIds, p.id)}">
+                                            <label class="form-check-input-label text-dark" th:for="'p-' + ${p.id}">
+                                                <strong th:text="${p.name}">Tên quyền</strong>
+                                                <small class="d-block text-muted" style="font-size: 11px;">
+                                                    <span
+                                                        class="badge bg-secondary-subtle text-secondary py-0">[[${p.apiMethod}]]</span>
+                                                    [[${p.apiPath}]]
+                                                </small>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary w-100 shadow-sm">
-                                        <i class="bi bi-shield-check"></i> Xác Nhận Cập Nhật Quyền Cho [[${currentRole.name}]]
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary w-100 shadow-sm">
+                                    <i class="bi bi-shield-check"></i> Xác Nhận Cập Nhật Quyền Cho
+                                    [[${currentRole.name}]]
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
