@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nvtt.pojo.Orders;
 import com.nvtt.repositories.OrderRepository;
+import jakarta.persistence.NoResultException;
 
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -26,6 +27,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.Optional;
 
 /**
  *
@@ -91,5 +93,28 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
 
         return query.getResultList();
+    }
+
+    @Override
+    public Orders getOrderById(Long id) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query query = s.createNamedQuery("Orders.findById", Orders.class);
+        query.setParameter("id", id);
+
+        Optional<Orders> optionalOrder;
+
+        try {
+            Orders order = (Orders) query.getSingleResult();
+            optionalOrder = Optional.of(order);
+        } catch (NoResultException e) {
+            optionalOrder= Optional.empty();
+        }
+
+        if (optionalOrder.isEmpty()) {
+            return null;
+        }
+
+        return optionalOrder.get();
     }
 }

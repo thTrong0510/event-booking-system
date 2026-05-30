@@ -15,4 +15,5 @@ import com.nvtt.pojo.Orders;
  */
 public interface OrderRepository {
     public List<Orders> getOrders(Map<String, String> params);
+    public Orders getOrderById(Long id);
 }

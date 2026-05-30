@@ -67,4 +67,9 @@ public class OrderServiceImpl implements OrderService {
         }
         return this.orderRepository.getOrders(Map.of("userId", currentUser.getId().toString()));
     }
+
+    @Override
+    public Orders getOrderById(Long Id) {
+        return this.orderRepository.getOrderById(Id);
+    }
 }

@@ -6,6 +6,7 @@ package com.nvtt.repositories.impl;
 
 import com.nvtt.pojo.Category;
 import com.nvtt.pojo.Event;
+import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.EventStatus;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.admin.EventSearchCriteriaDTO;
@@ -27,6 +28,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Expression;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -416,7 +418,7 @@ public class EventRepositoryImpl implements EventRepository {
         List<Predicate> predicates_ = buildPredicates(criteria, cb, root);
 
         cq.where(
-            predicates_.toArray(new Predicate[0])
+                predicates_.toArray(new Predicate[0])
         );
         cq.orderBy(cb.desc(root.get("createdAt")));
 
@@ -424,7 +426,7 @@ public class EventRepositoryImpl implements EventRepository {
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .getResultList();
-        
+
         Map<String, Object> result = new HashMap<>();
         result.put("events", events);
         result.put("totalElements", totalElements);
@@ -432,7 +434,6 @@ public class EventRepositoryImpl implements EventRepository {
         result.put("currentPage", criteria.getPage());
         return result;
     }
-
 
     private List<Predicate> buildPredicates(EventSearchCriteriaDTO criteria, CriteriaBuilder cb, Root<Event> root) {
         List<Predicate> predicates = new ArrayList<>();
@@ -455,16 +456,30 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<Event> findEventsWithDetailsByIds(List<Long> ids) {
-        String hql = "SELECT DISTINCT e FROM Event e "
+    public List<Object[]> findEventsWithDetailsByIds(List<Long> ids) {
+        // 1. Lấy danh sách Event (đã bỏ FETCH EventStatistic)
+        String hqlEvent = "SELECT DISTINCT e FROM Event e "
                 + "LEFT JOIN FETCH e.category "
                 + "LEFT JOIN FETCH e.organizer "
-                + "LEFT JOIN FETCH e.eventStatistic "
                 + "LEFT JOIN FETCH e.eventMedias "
                 + "WHERE e.id IN :eventIds";
 
-        return getCurrentSession().createQuery(hql, Event.class)
+        List<Event> events = getCurrentSession().createQuery(hqlEvent, Event.class)
                 .setParameter("eventIds", ids)
                 .getResultList();
+
+        String hqlStat = "FROM EventStatistic s WHERE s.id IN :eventIds";
+        List<EventStatistic> stats = getCurrentSession().createQuery(hqlStat, EventStatistic.class)
+                .setParameter("eventIds", ids)
+                .getResultList();
+
+        Map<Long, EventStatistic> statMap = stats.stream().collect(Collectors.toMap(EventStatistic::getEventId, s -> s));
+
+        List<Object[]> result = new ArrayList<>();
+        for (Event e : events) {
+            result.add(new Object[]{e, statMap.get(e.getId())});
+        }
+
+        return result;
     }
 }

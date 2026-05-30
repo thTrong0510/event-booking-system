@@ -42,5 +42,5 @@ public interface EventRepository {
 
     Map<String, Object> searchEvents(EventSearchCriteriaDTO criteria);
 
-    List<Event> findEventsWithDetailsByIds(List<Long> ids);
+    List<Object[]> findEventsWithDetailsByIds(List<Long> ids);
 }

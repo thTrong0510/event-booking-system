@@ -89,9 +89,9 @@ public class EventServiceImpl implements EventService {
     public List<Event> getPublicEvents(Map<String, String> params) {
         try {
             List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-            for (EventStatus p : publicStatuses){
+            for (EventStatus p : publicStatuses) {
                 EventStatus checkedStatus = eventStatusService.getStatusByName(p.getName());
-                if (checkedStatus == null){
+                if (checkedStatus == null) {
                     throw new ServiceException("Don't find any status in public statuses");
                 }
             }
@@ -118,7 +118,7 @@ public class EventServiceImpl implements EventService {
         try {
             List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
             Event event = eventRepository.getEventById(id, publicStatuses);
-            if (event == null){
+            if (event == null) {
                 throw new ServiceException("Don't have any event with this id");
             }
             return event;
@@ -132,14 +132,14 @@ public class EventServiceImpl implements EventService {
         try {
             User u = userUtils.getCurrentUser();
             Event e = eventRepository.getOwnEventById(id, u.getId());
-            if (e == null){
+            if (e == null) {
                 throw new ServiceException("You dont have permission for this event or event doesnt exist");
             }
             return e;
         } catch (Exception e) {
             throw new ServiceException(e.getMessage());
         }
-        
+
     }
 
     @Override
@@ -350,8 +350,8 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException("Error in lauch event: " + e.getMessage());
         }
     }
-    
-    public boolean endEvent(Long id){
+
+    public boolean endEvent(Long id) {
         try {
             Event event = eventRepository.getEventById(id);
             User current = userUtils.getCurrentUser();
@@ -364,14 +364,14 @@ public class EventServiceImpl implements EventService {
                 EventStatus status = eventStatusService.getStatusByName("ENDED");
                 event.setStatus(status);
                 Event savedEvent = eventRepository.addEvent(event);
-                if (savedEvent != null){
+                if (savedEvent != null) {
                     return true;
                 } else {
                     throw new ServiceException("Event doesnt save successfully");
                 }
             }
         } catch (Exception e) {
-            throw new ServiceException("Failed to end event: "+ e.getMessage());
+            throw new ServiceException("Failed to end event: " + e.getMessage());
         }
     }
 
@@ -447,14 +447,18 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<EventCompareResponseDTO> getEventsForComparison(List<Long> ids) {
-        // Gọi xuống tầng Repository để truy vấn dữ liệu tối ưu
-        List<Event> events = eventRepository.findEventsWithDetailsByIds(ids);
+        List<Object[]> eventDataList = eventRepository.findEventsWithDetailsByIds(ids);
 
-        // Chuyển đổi dữ liệu Entity sang DTO để trả ra ngoài Client
-        return events.stream().map(this::convertToCompareDTO).collect(Collectors.toList());
+        return eventDataList.stream()
+                .map(row -> {
+                    Event event = (Event) row[0];
+                    EventStatistic stat = (EventStatistic) row[1];
+                    return convertToCompareDTO(event, stat);
+                })
+                .collect(Collectors.toList());
     }
 
-    private EventCompareResponseDTO convertToCompareDTO(Event event) {
+    private EventCompareResponseDTO convertToCompareDTO(Event event, EventStatistic eventStatistic) {
         EventCompareResponseDTO dto = new EventCompareResponseDTO();
         dto.setId(event.getId());
         dto.setName(event.getName());
@@ -466,38 +470,31 @@ public class EventServiceImpl implements EventService {
         dto.setAvailable_tickets(event.getAvailableTickets());
         dto.setTotal_tickets(event.getTotalTickets());
 
-        // Lấy 1 ảnh đại diện đầu tiên (media_type = 'IMAGE') từ danh sách Media đã được Fetch Join sẵn
         if (event.getEventMedias() != null) {
             event.getEventMedias().stream()
                     .filter(m -> "IMAGE".equals(m.getMediaType()))
                     .findFirst()
                     .ifPresent(media -> dto.setRepresentative_image(media.getMediaUrl()));
 
-            // Lấy video đầu tiên nếu có phục vụ logic so sánh có/không video
             event.getEventMedias().stream()
                     .filter(m -> "VIDEO".equals(m.getMediaType()))
                     .findFirst()
                     .ifPresent(media -> dto.setVideo_url(media.getMediaUrl()));
         }
 
-        // Map thông tin Category
         if (event.getCategory() != null) {
             EventCompareResponseDTO.CategoryDTO catDto = new EventCompareResponseDTO.CategoryDTO();
             catDto.setName(event.getCategory().getName());
             dto.setCategory(catDto);
         }
 
-        // Map thông tin Nhà tổ chức (Organizer)
         if (event.getOrganizer() != null) {
             EventCompareResponseDTO.OrganizerDTO orgDto = new EventCompareResponseDTO.OrganizerDTO();
             orgDto.setFull_name(event.getOrganizer().getFullName());
             orgDto.setAvatar_url(event.getOrganizer().getAvatarUrl());
             dto.setOrganizer(orgDto);
         }
-        
-        EventStatistic eventStatistic = eventStatisticService.getEventStatisticByEventId(event.getId());
 
-        // Map thông tin Thống kê (Statistics)
         if (eventStatistic != null) {
             EventCompareResponseDTO.StatisticsDTO statDto = new EventCompareResponseDTO.StatisticsDTO();
             statDto.setTotal_tickets_sold(eventStatistic.getTotalTicketsSold());

@@ -24,4 +24,6 @@ public interface EventStatusRepository {
     List<EventStatus> findAll();
 
     EventStatus findByName(String name);
+
+    List<EventStatus> findByNameIn(List<String> names);
 }

@@ -23,6 +23,7 @@ import com.nvtt.utils.constants.OrderStatus;
 import com.nvtt.utils.constants.PaymentStatus;
 import com.nvtt.utils.constants.ProviderStatus;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,11 +106,13 @@ public class PayPalServiceImpl implements PayPalService {
         // Xây dựng Body Request gửi lên PayPal API v2
         Map<String, Object> orderRequest = new HashMap<>();
         orderRequest.put("intent", "CAPTURE");
+        
+        BigDecimal usdAmount = totalAmount.divide(new BigDecimal("26000"), 2, RoundingMode.UP);
 
         Map<String, Object> purchaseUnit = new HashMap<>();
         Map<String, String> amountMap = new HashMap<>();
-        amountMap.put("currency_code", "VND"); // Chuyển đổi currency tùy cấu hình hệ thống
-        amountMap.put("value", totalAmount.toString());
+        amountMap.put("currency_code", "USD"); 
+        amountMap.put("value", usdAmount.toString());
         purchaseUnit.put("amount", amountMap);
         orderRequest.put("purchase_units", Collections.singletonList(purchaseUnit));
 

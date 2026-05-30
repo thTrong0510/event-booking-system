@@ -40,11 +40,8 @@ public class EventStatusUtils {
     }
     
     public List<EventStatus> eventStatusPublic(){
-        return Stream.of(
-                eventStatusRepository.getStatusByName("ONSALE"),
-                eventStatusRepository.getStatusByName("SOLDOUT"),
-                eventStatusRepository.getStatusByName("ENDED"),
-                eventStatusRepository.getStatusByName("COMPLETED")
-        ).filter(status -> status != null).toList();
+        return eventStatusRepository.findByNameIn(
+                List.of("PUBLISHED", "ONSALE", "SOLDOUT", "ENDED", "COMPLETED")
+        );
     }
 }

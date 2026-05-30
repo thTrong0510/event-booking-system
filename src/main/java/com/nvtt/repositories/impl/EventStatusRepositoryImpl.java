@@ -23,17 +23,15 @@ import org.hibernate.query.Query;
  */
 @Repository
 @Transactional
-public class EventStatusRepositoryImpl implements EventStatusRepository{
-
+public class EventStatusRepositoryImpl implements EventStatusRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
 
-    
     private Session getCurrentSession() {
         return factory.getObject().getCurrentSession();
     }
-    
+
     @Override
     public EventStatus getStatusByName(String name) {
         Query query = this.getCurrentSession().createNamedQuery("EventStatus.findByName", EventStatus.class);
@@ -54,12 +52,12 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
 
         return optionalStatus.get();
     }
-    
+
     @Override
     public EventStatus getStatusById(Long id) {
         Query query = this.getCurrentSession().createNamedQuery("EventStatus.findById", EventStatus.class);
         query.setParameter("id", id);
-        
+
         Optional<EventStatus> optionalStatus;
 
         try {
@@ -116,5 +114,15 @@ public class EventStatusRepositoryImpl implements EventStatusRepository{
         }
 
         return optionalStatus.get();
+    }
+
+    @Override
+    public List<EventStatus> findByNameIn(List<String> names) {
+        String hql = "FROM EventStatus es WHERE es.name IN (:names) ORDER BY es.id ASC";
+
+        return getCurrentSession()
+                .createQuery(hql, EventStatus.class)
+                .setParameter("names", names)
+                .getResultList();
     }
 }
