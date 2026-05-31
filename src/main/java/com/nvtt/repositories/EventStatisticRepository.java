@@ -14,11 +14,20 @@ import java.util.Map;
  * @author lequa
  */
 public interface EventStatisticRepository {
+
     EventStatistic addEventStatistic(EventStatistic eventStatistic);
+
     List<EventStatistic> getEventStatistics(Map<String, String> params);
+
     List<EventStatistic> getEventStatisticsByCreatedAtRange(Map<String, String> params, Date fromCreatedAt, Date toCreatedAt);
+
     List<EventStatistic> getEventStatisticsByOrganizerAndCreatedAtRange(Long organizerId, Map<String, String> params, Date fromCreatedAt, Date toCreatedAt);
+
     EventStatistic getEventStatisticByEventId(Long eventId);
+
     EventStatistic getEventStatisticByEventIdAndOrganizerId(Long eventId, Long organizerId);
+
     EventStatistic updateEventStatistic(EventStatistic eventStatistic);
+
+    List<EventStatistic> getEventStatisticsByEventIds(List<Long> eventIds);
 }

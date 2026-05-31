@@ -67,7 +67,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         String[] whiteList = {
-            "/", "/login", "/admin/**"
+            "/", "/login", "/admin/**", "/api/**"
         };
         registry.addInterceptor(getPermissionInterceptor())
                 .excludePathPatterns(whiteList);

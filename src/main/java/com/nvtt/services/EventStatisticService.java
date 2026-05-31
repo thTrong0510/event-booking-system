@@ -16,5 +16,6 @@ public interface EventStatisticService {
     List<EventStatistic> getEventStatistics(Map<String, String> params);
     EventStatistic getEventStatisticByEventId(Long eventId); 
     EventStatistic updateEventStatistic(Long id, Map<String, String> params);
-    void increaseViews(Long eventId, int views);
+    void increaseViews(Long eventId, int views, EventStatistic es);
+    public EventStatistic getStatisticByEventId(Long eventId);
 }

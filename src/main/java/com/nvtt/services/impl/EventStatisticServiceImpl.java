@@ -81,9 +81,8 @@ public class EventStatisticServiceImpl implements EventStatisticService {
     }
 
     @Override
-    public void increaseViews(Long eventId, int views) {
+    public void increaseViews(Long eventId, int views, EventStatistic es) {
         try {
-            EventStatistic es = eventStatisticRepository.getEventStatisticByEventId(eventId);
             if (es == null) {
                 throw new RuntimeException("Don't have any Event Statistic with this Event Id");
             } else {
@@ -177,5 +176,10 @@ public class EventStatisticServiceImpl implements EventStatisticService {
     }
     
     private record DateRange(Date from, Date to) {
+    }
+
+    @Override
+    public EventStatistic getStatisticByEventId(Long eventId) {
+        return eventStatisticRepository.getEventStatisticByEventId(eventId);
     }
 }

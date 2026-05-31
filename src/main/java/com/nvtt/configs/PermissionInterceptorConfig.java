@@ -13,6 +13,8 @@ import com.nvtt.utils.exceptions.PermissionException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -24,6 +26,8 @@ import org.springframework.web.servlet.HandlerMapping;
  */
 public class PermissionInterceptorConfig implements HandlerInterceptor {
 
+    private static final Logger logger = LogManager.getLogger(PermissionInterceptorConfig.class);
+    
     @Autowired
     private UserService userService;
 
@@ -41,10 +45,12 @@ public class PermissionInterceptorConfig implements HandlerInterceptor {
         System.out.println(">>> path= " + path);
         System.out.println(">>> httpMethod= " + httpMethod);
         System.out.println(">>> requestURI= " + requestURI);
-
+        
+        logger.info("start sql: interceptor");
+        
         // check permission
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        if (email != null && !email.isEmpty()) {
+        if (!email.isBlank()) {
             User currentUser = this.userService.getUserByEmail(email);
             if (currentUser != null) {
                 Role role = currentUser.getRole();
@@ -65,6 +71,7 @@ public class PermissionInterceptorConfig implements HandlerInterceptor {
 
             }
         }
+        logger.info("end sql");
 
         return true;
     }

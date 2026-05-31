@@ -65,22 +65,24 @@ public class ApiUserController {
 
     @PostMapping("/login")
     public ResponseEntity<ResLoginDTO> login(@RequestBody @Valid ReqUserLoginDTO reqUser, BindingResult registerResult) throws IdInvalidException {
-        logger.info("start sql loin");
+        logger.info("start sql login");
         if (registerResult.hasErrors()) {
             throw new IdInvalidException("username/password is missing");
         }
        
-        if (!this.userService.authenticate(reqUser.getEmail(), reqUser.getPassword())) {
+        if (!this.userService.checkExistEmail(reqUser.getEmail()) && !this.userService.authenticate(reqUser.getEmail(), reqUser.getPassword())) {
             throw new IdInvalidException("username/password is wrong");
         }
-        if (!this.userService.checkActiveAccount(reqUser.getEmail())) {
+        
+        User userDb = this.userService.getUserByEmail(reqUser.getEmail());
+        
+        if (!userDb.getIsActive()) {
             throw new IdInvalidException("This account was blocked");
         }
         try {
             String accessToken = this.jwtUtil.generateToken(reqUser.getEmail());
-
-            User userdb = this.userService.getUserByEmail(reqUser.getEmail());
-            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(userdb.getId(), userdb.getEmail(), userdb.getFullName(), userdb.getAvatarUrl(), userdb.getRole().getId(), userdb.getRole().getName(), userdb.getIsActive());
+            
+            ResUserInfoDTO userInfoDto = new ResUserInfoDTO(userDb.getId(), userDb.getEmail(), userDb.getFullName(), userDb.getAvatarUrl(), userDb.getRole().getId(), userDb.getRole().getName(), userDb.getIsActive());
 
             ResLoginDTO resUser = new ResLoginDTO();
             resUser.setAccessToken(accessToken);

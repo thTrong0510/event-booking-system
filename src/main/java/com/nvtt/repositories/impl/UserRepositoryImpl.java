@@ -43,23 +43,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserByEmail(String email) {
         Session s = factory.getObject().getCurrentSession();
+        String hql = "SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.email = :email";
 
-        Query query = s.createNamedQuery("User.findByEmail", User.class);
-        query.setParameter("email", email);
-
-        Optional<User> optionalUser;
         try {
-            User user = (User) query.getSingleResult();
-            optionalUser = Optional.of(user);
+            return s.createQuery(hql, User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
         } catch (NoResultException ex) {
-            optionalUser = Optional.empty();
-        }
-
-        if (optionalUser.isEmpty()) {
             return null;
         }
-
-        return optionalUser.get();
     }
 
     @Override
@@ -163,9 +155,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean authenticate(String email, String password) {
-        if(!this.checkExistEmail(email)) {
-            return false;
-        }
         User u = this.getUserByEmail(email);
         return this.passwordEncoder.matches(password, u.getPassword());
     }
@@ -177,11 +166,11 @@ public class UserRepositoryImpl implements UserRepository {
         CriteriaQuery<User> cq = cb.createQuery(User.class);
 
         Root<User> root = cq.from(User.class);
-        
+
         root.fetch("role", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-        
+
         if (search != null && !search.trim().isEmpty()) {
             String pattern = "%" + search.trim().toLowerCase() + "%";
 
@@ -193,7 +182,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             predicates.add(cb.or(usernameLike, emailLike));
         }
-        
+
         if (roleId != null) {
             predicates.add(
                     cb.equal(root.get("role").get("id"), roleId)
@@ -231,11 +220,11 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cq = cb.createQuery(User.class);
-        
+
         Root<User> root = cq.from(User.class);
         Fetch<User, Role> roleFetch = root.fetch("role", JoinType.INNER);
         Join<User, Role> roleJoin = (Join<User, Role>) roleFetch;
-        
+
         String pattern = "%" + roleName.trim().toLowerCase() + "%";
         Predicate likePredicate = cb.like(cb.lower(roleJoin.get("name")), pattern);
 

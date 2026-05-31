@@ -89,12 +89,12 @@ public class EventServiceImpl implements EventService {
     public List<Event> getPublicEvents(Map<String, String> params) {
         try {
             List<EventStatus> publicStatuses = eventStatusUtils.eventStatusPublic();
-            for (EventStatus p : publicStatuses) {
-                EventStatus checkedStatus = eventStatusService.getStatusByName(p.getName());
-                if (checkedStatus == null) {
-                    throw new ServiceException("Don't find any status in public statuses");
-                }
-            }
+//            for (EventStatus p : publicStatuses) {
+//                EventStatus checkedStatus = eventStatusService.getStatusByName(p.getName());
+//                if (checkedStatus == null) {
+//                    throw new ServiceException("Don't find any status in public statuses");
+//                }
+//            }
             List<Event> events = eventRepository.getEvents(params, publicStatuses);
             return events;
         } catch (Exception e) {

@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,15 +28,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author vthan
  */
 public class JwtFilter implements Filter {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = LogManager.getLogger(JwtFilter.class);
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest  httpReq = (HttpServletRequest)  request;
+        HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
+        logger.info("start filter Jwt");
         if (httpReq.getRequestURI().startsWith(String.format("%s/api/secure", httpReq.getContextPath())) == true) {
 
             String header = httpReq.getHeader("Authorization");
@@ -51,19 +56,19 @@ public class JwtFilter implements Filter {
                 String username = JwtUtil.validateTokenAndGetUsername(token);
                 if (username != null) {
                     httpReq.setAttribute("username", username);
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(username, null, null);
+                    UsernamePasswordAuthenticationToken auth
+                            = new UsernamePasswordAuthenticationToken(username, null, null);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     chain.doFilter(request, response);
                     return;
                 } else {
                     writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
-                        "TOKEN_INVALID",
-                        "Token không hợp lệ.");
-                return;
+                            "TOKEN_INVALID",
+                            "Token không hợp lệ.");
+                    return;
 
                 }
-                
+
             } catch (ExpiredJWTException e) {
                 writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
                         "TOKEN_EXPIRED",
@@ -76,33 +81,26 @@ public class JwtFilter implements Filter {
                 return;
             }
 
-            // username == null nhưng không throw exception
-//            writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
-//                    "TOKEN_INVALID",
-//                    "Token không hợp lệ hoặc hết hạn.");
-//            return;
         }
+
+        logger.info("end jwt filter");
 
         chain.doFilter(request, response);
     }
 
-    // -------------------------------------------------------
-    // Helper: ghi thẳng JSON vào response, KHÔNG qua Tomcat
-    // -------------------------------------------------------
     private void writeJsonError(HttpServletResponse response,
-                                int statusCode,
-                                String errorCode,
-                                String message) throws IOException {
+            int statusCode,
+            String errorCode,
+            String message) throws IOException {
 
-        // Phải set trước khi getWriter()
         response.setStatus(statusCode);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("statusCode",    statusCode);
-        body.put("error",     errorCode);
-        body.put("message",   message);
+        body.put("statusCode", statusCode);
+        body.put("error", errorCode);
+        body.put("message", message);
         body.put("data", null);
 
         response.getWriter().write(objectMapper.writeValueAsString(body));

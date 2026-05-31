@@ -32,10 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class EventStatisticRepositoryImpl implements EventStatisticRepository {
-    
+
     @Autowired
     private LocalSessionFactoryBean factory;
-    
+
     @Override
     public EventStatistic addEventStatistic(EventStatistic eventStatistic) {
         try {
@@ -46,7 +46,7 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
             throw new RuntimeException("Error in add Event Statistic: " + e.getMessage());
         }
     }
-    
+
     @Override
     public EventStatistic updateEventStatistic(EventStatistic eventStatistic) {
         try {
@@ -57,61 +57,61 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
             throw new RuntimeException("Error in update Event Statistic: " + e.getMessage());
         }
     }
-    
+
     @Override
     public List<EventStatistic> getEventStatistics(Map<String, String> params) {
         return getEventStatisticsByOrganizerAndCreatedAtRange(null, params, null, null);
     }
-    
+
     @Override
     public List<EventStatistic> getEventStatisticsByCreatedAtRange(Map<String, String> params, Date fromCreatedAt, Date toCreatedAt) {
         return getEventStatisticsByOrganizerAndCreatedAtRange(null, params, fromCreatedAt, toCreatedAt);
     }
-    
+
     @Override
-    public List<EventStatistic> getEventStatisticsByOrganizerAndCreatedAtRange(Long organizerId, Map<String, String> params, Date fromCreatedAt, Date toCreatedAt){
+    public List<EventStatistic> getEventStatisticsByOrganizerAndCreatedAtRange(Long organizerId, Map<String, String> params, Date fromCreatedAt, Date toCreatedAt) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
         Root<EventStatistic> root = q.from(EventStatistic.class);
         List<Predicate> predicates = new ArrayList<>();
-        
+
         if (organizerId != null) {
             Join<EventStatistic, Event> event = root.join("event");
             predicates.add(b.equal(event.get("organizer").get("id"), organizerId));
         }
-        
+
         if (params != null) {
             String eventId = params.get("eventId");
             if (eventId != null && !eventId.isEmpty()) {
                 predicates.add(b.equal(root.get("eventId"), Long.parseLong(eventId)));
             }
-            
+
             String fromRevenue = params.get("fromRevenue");
             if (fromRevenue != null && !fromRevenue.isEmpty()) {
                 predicates.add(b.greaterThanOrEqualTo(root.<BigDecimal>get("totalRevenue"), new BigDecimal(fromRevenue)));
             }
-            
+
             String toRevenue = params.get("toRevenue");
             if (toRevenue != null && !toRevenue.isEmpty()) {
                 predicates.add(b.lessThanOrEqualTo(root.<BigDecimal>get("totalRevenue"), new BigDecimal(toRevenue)));
             }
-            
+
             String fromViews = params.get("fromViews");
             if (fromViews != null && !fromViews.isEmpty()) {
                 predicates.add(b.greaterThanOrEqualTo(root.<Integer>get("totalViews"), Integer.parseInt(fromViews)));
             }
-            
+
             String toViews = params.get("toViews");
             if (toViews != null && !toViews.isEmpty()) {
                 predicates.add(b.lessThanOrEqualTo(root.<Integer>get("totalViews"), Integer.parseInt(toViews)));
             }
         }
-        
+
         if (fromCreatedAt != null) {
             predicates.add(b.greaterThanOrEqualTo(root.<Date>get("createdAt"), fromCreatedAt));
         }
-        
+
         if (toCreatedAt != null) {
             predicates.add(b.lessThan(root.<Date>get("createdAt"), toCreatedAt));
         }
@@ -119,9 +119,9 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
         q.where(predicates.toArray(new Predicate[0]));
         return session.createQuery(q).getResultList();
     }
-    
+
     @Override
-    public EventStatistic getEventStatisticByEventId(Long eventId){
+    public EventStatistic getEventStatisticByEventId(Long eventId) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
@@ -143,19 +143,19 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
 
         return optionalStat.get();
     }
-    
+
     @Override
-    public EventStatistic getEventStatisticByEventIdAndOrganizerId(Long eventId, Long organizerId){
+    public EventStatistic getEventStatisticByEventIdAndOrganizerId(Long eventId, Long organizerId) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
         Root<EventStatistic> root = q.from(EventStatistic.class);
         Join<EventStatistic, Event> event = root.join("event");
         q.where(
-            b.and(
-                b.equal(root.get("eventId"), eventId),
-                b.equal(event.get("organizer").get("id"), organizerId)
-            )
+                b.and(
+                        b.equal(root.get("eventId"), eventId),
+                        b.equal(event.get("organizer").get("id"), organizerId)
+                )
         );
         org.hibernate.query.Query<EventStatistic> hQuery = session.createQuery(q);
 
@@ -172,5 +172,22 @@ public class EventStatisticRepositoryImpl implements EventStatisticRepository {
         }
 
         return optionalStat.get();
+    }
+
+    @Override
+    public List<EventStatistic> getEventStatisticsByEventIds(List<Long> eventIds) {
+        if (eventIds == null || eventIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<EventStatistic> q = b.createQuery(EventStatistic.class);
+        Root<EventStatistic> root = q.from(EventStatistic.class);
+
+        // Tạo điều kiện: eventId IN (:eventIds)
+        q.where(root.get("eventId").in(eventIds));
+
+        return session.createQuery(q).getResultList();
     }
 }

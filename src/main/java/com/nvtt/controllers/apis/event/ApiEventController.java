@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nvtt.pojo.Event;
+import com.nvtt.pojo.EventStatistic;
 import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
@@ -35,6 +36,7 @@ import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.exceptions.IdInvalidException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +47,7 @@ import org.apache.logging.log4j.Logger;
 @RestController
 @RequestMapping("/api")
 public class ApiEventController {
-    
+
     private static final Logger logger = LogManager.getLogger(ApiEventController.class);
 
     @Autowired
@@ -62,69 +64,66 @@ public class ApiEventController {
 
     @GetMapping("/events")
     public ResponseEntity<List<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
-            logger.info("start sql getEvents");
-            List<Event> events = eventService.getPublicEvents(params);
-            List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
-                    .map(event -> eventUtils.convertToResEventInfoDTO(event))
-                    .collect(Collectors.toList());
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
+        logger.info("start sql getEvents");
+        List<Event> events = eventService.getPublicEvents(params);
+        List<ResEventInfoDTO> resEventInfoDTOs = this.eventUtils.convertEventsToDTOs(events);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
     }
 
     @GetMapping("/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getEventById(@PathVariable Long id) {
-            logger.info("start sql getEventById");
-            Event event = eventService.getPublicEventById(id);
-            ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
-            if (event != null) {
-                eventStatisticService.increaseViews(event.getId(), 1);
-            }
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        logger.info("start sql getEventById");
+        Event event = eventService.getPublicEventById(id);
+        EventStatistic statistic = this.eventStatisticService.getStatisticByEventId(event.getId());
+        ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event, statistic);
+        eventStatisticService.increaseViews(event.getId(), 1, statistic);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @GetMapping("/secure/organizer/events")
     public ResponseEntity<List<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
-            logger.info("start sql getOrganizerEvents");  
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                List<Event> events = eventService.getOrganizerEvents(params);
-                List<ResEventInfoDTO> resEventInfoDTOs = events.stream()
-                        .map(event -> eventUtils.convertToResEventInfoDTO(event))
-                        .collect(Collectors.toList());
-                logger.info("end sql");
-                return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body(null);
-            }
+        logger.info("start sql getOrganizerEvents");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            List<Event> events = eventService.getOrganizerEvents(params);
+            List<ResEventInfoDTO> resEventInfoDTOs = this.eventUtils.convertEventsToDTOs(events);
+            logger.info("end sql");
+            return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
     }
 
     @GetMapping("/secure/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getOwnEventById(@PathVariable Long id) {
-            logger.info("start sql getOwnEventById");
-            Event event = eventService.getOwnEventById(id);
-            ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event);
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        logger.info("start sql getOwnEventById");
+        Event event = eventService.getOwnEventById(id);
+        EventStatistic statistic = this.eventStatisticService.getEventStatisticByEventId(event.getId());
+        ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(event, statistic);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PostMapping("/secure/organizer/events")
     public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params, @RequestParam("images") Optional<Set<MultipartFile>> images,
             @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
-            logger.info("start sql addEvent");
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                String email = authentication.getName();
-                User user = userService.getUserByEmail(email);
-                Role userRole = user.getRole();
-                if (userRole == null || !userRole.getName().equals("ORGANIZER")) {
-                    throw new RuntimeException("Unauthorized: User does not have ORGANIZER role");
-                }
+        logger.info("start sql addEvent");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+            Role userRole = user.getRole();
+            if (userRole == null || !userRole.getName().equals("ORGANIZER")) {
+                throw new RuntimeException("Unauthorized: User does not have ORGANIZER role");
             }
-            Event addedEvent = eventService.addEvent(params, images, videos);
-            ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(addedEvent);
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        }
+        Event addedEvent = eventService.addEvent(params, images, videos);
+        EventStatistic statistic = this.eventStatisticService.getEventStatisticByEventId(addedEvent.getId());
+        ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(addedEvent, statistic);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/secure/organizer/events/{id}")
@@ -132,52 +131,54 @@ public class ApiEventController {
             @RequestParam("newImages") Optional<Set<MultipartFile>> newImages,
             @RequestParam("newVideos") Optional<Set<MultipartFile>> newVideos,
             @RequestParam("deletedMediaUrls") Optional<Set<String>> deletedMediaUrls) {
-            logger.info("start sql update event");
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                String email = authentication.getName();
-                User user = userService.getUserByEmail(email);
-                Event event = eventService.getOwnEventById(id);
-                if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
-                    throw new RuntimeException("Unauthorized: User is not the organizer of this event");
-                }
+        logger.info("start sql update event");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+            Event event = eventService.getOwnEventById(id);
+            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
+                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
-            Event updatedEvent = eventService.updateEvent(id, params, newImages, newVideos, deletedMediaUrls);
-            ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(updatedEvent);
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        }
+        Event updatedEvent = eventService.updateEvent(id, params, newImages, newVideos, deletedMediaUrls);
+        EventStatistic statistic = this.eventStatisticService.getEventStatisticByEventId(updatedEvent.getId());
+        ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(updatedEvent, statistic);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PutMapping("/secure/organizer/launch-event")
     public ResponseEntity<Void> launchEvent(@RequestParam Long eventId) {
-            logger.info("start sql lauchEvent");
-            eventService.launchEvent(eventId);
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        logger.info("start sql lauchEvent");
+        eventService.launchEvent(eventId);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
+
     @PutMapping("/secure/organizer/end-event")
     public ResponseEntity<Void> endEvent(@RequestParam Long eventId) {
-            eventService.endEvent(eventId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        eventService.endEvent(eventId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/secure/organizer/events/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-            logger.info("start sql deleteEvent");
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                String email = authentication.getName();
-                User user = userService.getUserByEmail(email);
-                Event event = eventService.getOwnEventById(id);
-                if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
-                    throw new RuntimeException("Unauthorized: User is not the organizer of this event");
-                }
+        logger.info("start sql deleteEvent");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+            Event event = eventService.getOwnEventById(id);
+            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
+                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
-            eventService.deleteEvent(id);
-            logger.info("end sql");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        eventService.deleteEvent(id);
+        logger.info("end sql");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
     @GetMapping("/events/compare")
     public ResponseEntity<List<EventCompareResponseDTO>> compareEvents(@RequestParam("ids") List<Long> ids) throws IdInvalidException {
         logger.info("start sql compareEvent");

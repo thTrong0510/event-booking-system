@@ -7,6 +7,7 @@ package com.nvtt.services.impl;
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.Ticket;
 import com.nvtt.pojo.User;
+import com.nvtt.pojo.dtos.ticket.ResTicketDTO;
 import com.nvtt.repositories.TicketRepository;
 import com.nvtt.services.EventService;
 import com.nvtt.services.TicketService;
@@ -47,14 +48,14 @@ public class TicketServiceImpl implements TicketService {
     }
     
     @Override
-    public List<Ticket> getMyTickets(Map<String, String> params){
+    public List<ResTicketDTO> getMyTickets(Map<String, String> params){
         try {
             User current = userUtils.getCurrentUser();
             if(params.containsKey("attendeeId")){
                 throw new ServiceException("field attendeeId is not allowed ");
             }
             params.put("attendeeId", current.getId().toString());
-            return ticketRepository.getTickets(params);
+            return ticketRepository.getTicketDTOs(params);
         } catch (Exception e) {
             throw new ServiceException("Failed to get my tickets: " + e.getMessage());
         }

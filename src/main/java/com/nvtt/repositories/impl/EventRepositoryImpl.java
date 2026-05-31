@@ -88,6 +88,8 @@ public class EventRepositoryImpl implements EventRepository {
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
+        root.fetch("category", JoinType.LEFT);
+        root.fetch("organizer", JoinType.LEFT);
         q.select(root).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
@@ -121,6 +123,7 @@ public class EventRepositoryImpl implements EventRepository {
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
+        root.fetch("category", JoinType.LEFT);
         q.select(root).distinct(true);
         q.where(
                 b.and(
@@ -152,6 +155,8 @@ public class EventRepositoryImpl implements EventRepository {
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
+        root.fetch("category", JoinType.LEFT);
+        root.fetch("organizer", JoinType.LEFT);
         q.select(root).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
@@ -457,11 +462,11 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Override
     public List<Object[]> findEventsWithDetailsByIds(List<Long> ids) {
-        // 1. Lấy danh sách Event (đã bỏ FETCH EventStatistic)
         String hqlEvent = "SELECT DISTINCT e FROM Event e "
                 + "LEFT JOIN FETCH e.category "
                 + "LEFT JOIN FETCH e.organizer "
                 + "LEFT JOIN FETCH e.eventMedias "
+                + "LEFT JOIN FETCH e.status "
                 + "WHERE e.id IN :eventIds";
 
         List<Event> events = getCurrentSession().createQuery(hqlEvent, Event.class)

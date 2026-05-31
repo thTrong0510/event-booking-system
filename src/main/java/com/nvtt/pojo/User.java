@@ -9,6 +9,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -92,7 +93,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "approvedBy")
     private Set<OrganizerVerification> organizerVerifications;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Role role;
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 //    private Set<Orders> orders;

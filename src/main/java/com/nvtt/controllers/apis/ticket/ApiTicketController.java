@@ -48,8 +48,7 @@ public class ApiTicketController {
     @GetMapping("/secure/my-tickets")
     public ResponseEntity<List<ResTicketDTO>> getMyTickets(@RequestParam Map<String, String> params) {
         logger.info("start sql getMyTickets");
-        List<Ticket> tickets = this.ticketService.getMyTickets(params);
-        List<ResTicketDTO> dtos = this.ticketUtils.convertToResTicketDTOList(tickets);
+        List<ResTicketDTO> dtos = this.ticketService.getMyTickets(params);
         logger.info("end sql");
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }

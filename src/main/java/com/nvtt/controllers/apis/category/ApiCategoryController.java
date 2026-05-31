@@ -38,8 +38,8 @@ public class ApiCategoryController {
     private CategoryUtils categoryUtils;
     
     @GetMapping("/categories")
-    public ResponseEntity<List<ResCategoryInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
-        logger.info("start sql getEvents");
+    public ResponseEntity<List<ResCategoryInfoDTO>> getCategories(@RequestParam Map<String, String> params) {
+        logger.info("start sql getCategories");
         List<Category> categories = categoryService.getCategory(params);
         List<ResCategoryInfoDTO> dto = categoryUtils.convertToResCategoryInfoDTOList(categories);
         logger.info("end sql");
@@ -47,8 +47,8 @@ public class ApiCategoryController {
     }
 
     @PostMapping("secure/categories")
-    public ResponseEntity<ResCategoryInfoDTO> addEvents(@RequestParam Map<String, String> params) {
-        logger.info("start sql addEvents");
+    public ResponseEntity<ResCategoryInfoDTO> addCategory(@RequestParam Map<String, String> params) {
+        logger.info("start sql addCategory");
         Category category = categoryService.addCategory(params);
         ResCategoryInfoDTO dto = categoryUtils.convertToResCategoryInfoDTO(category);
         logger.info("end sql");
