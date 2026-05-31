@@ -115,7 +115,7 @@ public class ApiEventController {
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
             Role userRole = user.getRole();
-            if (userRole == null || !userRole.getName().equals("ORGANIZER")) {
+            if (userRole == null || !userRole.getName().contains("ORGANIZER")) {
                 throw new RuntimeException("Unauthorized: User does not have ORGANIZER role");
             }
         }
@@ -137,7 +137,7 @@ public class ApiEventController {
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
             Event event = eventService.getOwnEventById(id);
-            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
+            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().contains("ORGANIZER")) {
                 throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
         }
@@ -170,7 +170,7 @@ public class ApiEventController {
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
             Event event = eventService.getOwnEventById(id);
-            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().equals("ORGANIZER")) {
+            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().contains("ORGANIZER")) {
                 throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
         }

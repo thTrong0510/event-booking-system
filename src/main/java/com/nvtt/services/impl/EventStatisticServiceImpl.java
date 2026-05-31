@@ -101,8 +101,8 @@ public class EventStatisticServiceImpl implements EventStatisticService {
         }
         
         if (currentUser.getRole() == null
-                || (!currentUser.getRole().getName().equals("ORGANIZER")
-                && !currentUser.getRole().getName().equals("ADMIN"))) {
+                || (!currentUser.getRole().getName().contains("ORGANIZER")
+                && !currentUser.getRole().getName().contains("ADMIN"))) {
             throw new RuntimeException("Unauthorized: User does not have ORGANIZER or ADMIN role");
         }
         
@@ -110,7 +110,7 @@ public class EventStatisticServiceImpl implements EventStatisticService {
     }
     
     private boolean isAdmin(User user) {
-        return user.getRole() != null && user.getRole().getName().equals("ADMIN");
+        return user.getRole() != null && user.getRole().getName().contains("ADMIN");
     }
     
     private DateRange buildCreatedAtRange(Map<String, String> params) {
