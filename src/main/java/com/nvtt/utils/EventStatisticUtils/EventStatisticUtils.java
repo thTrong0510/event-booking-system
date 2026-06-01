@@ -12,10 +12,12 @@ import com.nvtt.repositories.EventRepository;
 import com.nvtt.repositories.EventStatisticRepository;
 import com.nvtt.utils.EventUtils.EventUtils;
 
+import com.nvtt.pojo.Event;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -84,9 +86,33 @@ public class EventStatisticUtils {
     }
     
     public List<ResEventStatisticDTO> convertToResEventStatisticDTOList(List<EventStatistic> eventStatistics) {
+        if (eventStatistics == null || eventStatistics.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Long> eventIds = eventStatistics.stream()
+                .map(EventStatistic::getEventId)
+                .collect(Collectors.toList());
+                
+        List<Event> events = eventRepository.findEventsByIds(eventIds);
+        Map<Long, Event> eventMap = events.stream()
+                .collect(Collectors.toMap(Event::getId, e -> e));
+                
         List<ResEventStatisticDTO> dtos = new ArrayList<>();
         for (EventStatistic eventStatistic : eventStatistics) {
-            dtos.add(this.convertToResEventStatisticDTO(eventStatistic));
+            ResEventStatisticDTO dto = new ResEventStatisticDTO();
+            dto.setEventId(eventStatistic.getEventId());
+            dto.setTotalTicketsSold(getIntValue(eventStatistic.getTotalTicketsSold()));
+            dto.setTotalRevenue(eventStatistic.getTotalRevenue());
+            dto.setTotalViews(getIntValue(eventStatistic.getTotalViews()));
+            dto.setLastUpdated(eventStatistic.getLastUpdated());
+            dto.setCreatedAt(eventStatistic.getCreatedAt());
+            
+            Event event = eventMap.get(eventStatistic.getEventId());
+            if (event != null) {
+                dto.setEvent(eventUtils.convertToResEventBasicInfoDTO(event));
+            }
+            dtos.add(dto);
         }
         return dtos;
     }

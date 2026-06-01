@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nvtt.pojo.Event;
 import com.nvtt.pojo.EventStatistic;
-import com.nvtt.pojo.Role;
 import com.nvtt.pojo.User;
 import com.nvtt.pojo.dtos.event.EventCompareResponseDTO;
 import com.nvtt.pojo.dtos.event.ResEventInfoDTO;
@@ -36,7 +34,6 @@ import com.nvtt.services.EventStatisticService;
 import com.nvtt.services.UserService;
 import com.nvtt.utils.EventUtils.EventUtils;
 import com.nvtt.utils.exceptions.IdInvalidException;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -110,15 +107,6 @@ public class ApiEventController {
     public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params, @RequestParam("images") Optional<Set<MultipartFile>> images,
             @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
         logger.info("start sql addEvent");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
-            Role userRole = user.getRole();
-            if (userRole == null || !userRole.getName().contains("ORGANIZER")) {
-                throw new RuntimeException("Unauthorized: User does not have ORGANIZER role");
-            }
-        }
         Event addedEvent = eventService.addEvent(params, images, videos);
         EventStatistic statistic = this.eventStatisticService.getEventStatisticByEventId(addedEvent.getId());
         ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(addedEvent, statistic);
@@ -132,15 +120,6 @@ public class ApiEventController {
             @RequestParam("newVideos") Optional<Set<MultipartFile>> newVideos,
             @RequestParam("deletedMediaUrls") Optional<Set<String>> deletedMediaUrls) {
         logger.info("start sql update event");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
-            Event event = eventService.getOwnEventById(id);
-            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().contains("ORGANIZER")) {
-                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
-            }
-        }
         Event updatedEvent = eventService.updateEvent(id, params, newImages, newVideos, deletedMediaUrls);
         EventStatistic statistic = this.eventStatisticService.getEventStatisticByEventId(updatedEvent.getId());
         ResEventInfoDTO dto = eventUtils.convertToResEventInfoDTO(updatedEvent, statistic);
@@ -165,15 +144,6 @@ public class ApiEventController {
     @DeleteMapping("/secure/organizer/events/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         logger.info("start sql deleteEvent");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
-            Event event = eventService.getOwnEventById(id);
-            if (user.getId() != event.getOrganizer().getId() || !user.getRole().getName().contains("ORGANIZER")) {
-                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
-            }
-        }
         eventService.deleteEvent(id);
         logger.info("end sql");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

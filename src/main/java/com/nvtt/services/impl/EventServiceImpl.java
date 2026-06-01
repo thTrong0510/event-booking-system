@@ -204,9 +204,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event updateEvent(Long id, Map<String, String> params, Optional<Set<MultipartFile>> newImages, Optional<Set<MultipartFile>> newVideos, Optional<Set<String>> deletedMediaUrls) {
         try {
+            User currentUser = userUtils.getCurrentUser();
             Event event = eventRepository.getEventById(id);
             if (event == null) {
                 throw new RuntimeException("Event not found");
+            }
+            if (!eventUtils.isOwner(event, currentUser.getId())) {
+                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
 
             String statusName = event.getStatus() != null ? event.getStatus().getName() : "";
@@ -310,9 +314,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public boolean deleteEvent(Long id) {
         try {
+            User currentUser = userUtils.getCurrentUser();
             Event event = eventRepository.getEventById(id);
             if (event == null) {
                 throw new RuntimeException("Event not found");
+            }
+            if (!eventUtils.isOwner(event, currentUser.getId())) {
+                throw new RuntimeException("Unauthorized: User is not the organizer of this event");
             }
             return eventRepository.deleteEvent(event);
         } catch (Exception e) {

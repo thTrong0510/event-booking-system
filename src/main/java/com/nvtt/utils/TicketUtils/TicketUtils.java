@@ -27,8 +27,7 @@ public class TicketUtils {
         try {
             Long orderId = ticket.getOrder().getId();
             Long eventId = ticket.getEvent().getId();
-            Long attendeeId = ticket.getAttendee().getId();
-            User u = userSerivce.getUserById(attendeeId);
+            User u = ticket.getAttendee();
             if(u == null){
                 throw new RuntimeException("Dont have the owner for this ticket");
             }

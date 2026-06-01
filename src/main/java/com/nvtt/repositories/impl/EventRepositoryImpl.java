@@ -62,6 +62,9 @@ public class EventRepositoryImpl implements EventRepository {
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
+        root.fetch("category", JoinType.LEFT);
+        root.fetch("status", JoinType.LEFT);
+        root.fetch("organizer", JoinType.LEFT);
         q.select(root).distinct(true);
         q.where(b.equal(root.get("id"), id));
         Query<Event> hQuery = session.createQuery(q);
@@ -124,6 +127,8 @@ public class EventRepositoryImpl implements EventRepository {
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
         root.fetch("category", JoinType.LEFT);
+        root.fetch("status", JoinType.LEFT);
+        root.fetch("organizer", JoinType.LEFT);
         q.select(root).distinct(true);
         q.where(
                 b.and(
@@ -274,6 +279,9 @@ public class EventRepositoryImpl implements EventRepository {
         CriteriaQuery<Event> q = b.createQuery(Event.class);
         Root<Event> root = q.from(Event.class);
         root.fetch("eventMedias", JoinType.LEFT);
+        root.fetch("category", JoinType.LEFT);
+        root.fetch("status", JoinType.LEFT);
+        root.fetch("organizer", JoinType.LEFT);
         q.select(root).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
@@ -486,5 +494,22 @@ public class EventRepositoryImpl implements EventRepository {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Event> findEventsByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        String hqlEvent = "SELECT DISTINCT e FROM Event e "
+                + "LEFT JOIN FETCH e.category "
+                + "LEFT JOIN FETCH e.organizer "
+                + "LEFT JOIN FETCH e.eventMedias "
+                + "LEFT JOIN FETCH e.status "
+                + "WHERE e.id IN :eventIds";
+
+        return getCurrentSession().createQuery(hqlEvent, Event.class)
+                .setParameter("eventIds", ids)
+                .getResultList();
     }
 }
