@@ -1,9 +1,18 @@
-2026-05-31 15:50:15 INFO  JwtFilter:42 - start filter Jwt
-2026-05-31 15:50:15 INFO  JwtFilter:86 - end jwt filter
-2026-05-31 15:50:15 INFO  ApiEventController:76 - start sql getEventById
-2026-05-31 15:50:16 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name in (?,?,?,?,?) order by es1_0.id
-2026-05-31 15:50:16 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,c1_0.id,c1_0.description,c1_0.name,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,o1_0.id,o1_0.avatar_url,o1_0.created_at,o1_0.email,o1_0.full_name,o1_0.is_active,o1_0.password,o1_0.role_id,o1_0.updated_at,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id left join categories c1_0 on c1_0.id=e1_0.category_id left join users o1_0 on o1_0.id=e1_0.organizer_id where e1_0.id=? and e1_0.status_id in (?,?,?)
-2026-05-31 15:50:16 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
-2026-05-31 15:50:16 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id=?
-2026-05-31 15:50:16 DEBUG SQL:135 - update event_statistics set created_at=?,last_updated=?,total_revenue=?,total_tickets_sold=?,total_views=? where event_id=?
-2026-05-31 15:50:16 INFO  ApiEventController:81 - end sql
+2026-06-01 20:01:46 INFO  JwtFilter:45 - start filter Jwt
+2026-06-01 20:01:46 INFO  JwtFilter:89 - end jwt filter
+2026-06-01 20:01:46 INFO  AuthController:44 - start sql modelAttribute populateRoles admin/AuthenController
+2026-06-01 20:01:46 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 order by r1_0.name
+2026-06-01 20:01:47 INFO  AuthController:46 - end sql
+2026-06-01 20:01:47 INFO  JwtFilter:45 - start filter Jwt
+2026-06-01 20:01:47 INFO  JwtFilter:89 - end jwt filter
+2026-06-01 20:01:47 INFO  ApiEventController:64 - start sql getEvents
+2026-06-01 20:01:47 INFO  JwtFilter:45 - start filter Jwt
+2026-06-01 20:01:47 INFO  JwtFilter:89 - end jwt filter
+2026-06-01 20:01:47 INFO  AuthController:44 - start sql modelAttribute populateRoles admin/AuthenController
+2026-06-01 20:01:47 DEBUG SQL:135 - select r1_0.id,r1_0.is_active,r1_0.name from roles r1_0 order by r1_0.name
+2026-06-01 20:01:47 DEBUG SQL:135 - select es1_0.id,es1_0.description,es1_0.name from event_status es1_0 where es1_0.name in (?,?,?,?,?) order by es1_0.id
+2026-06-01 20:01:47 INFO  AuthController:46 - end sql
+2026-06-01 20:01:47 WARN  query:108 - HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+2026-06-01 20:01:47 DEBUG SQL:135 - select distinct e1_0.id,e1_0.available_tickets,e1_0.category_id,c1_0.id,c1_0.description,c1_0.name,e1_0.created_at,e1_0.description,e1_0.end_time,em1_0.event_id,em1_0.id,em1_0.media_type,em1_0.media_url,e1_0.location,e1_0.name,e1_0.organizer_id,o1_0.id,o1_0.avatar_url,o1_0.created_at,o1_0.email,o1_0.full_name,o1_0.is_active,o1_0.password,o1_0.role_id,o1_0.updated_at,e1_0.start_time,e1_0.status_id,e1_0.ticket_price,e1_0.total_tickets,e1_0.updated_at from events e1_0 left join event_media em1_0 on e1_0.id=em1_0.event_id left join categories c1_0 on c1_0.id=e1_0.category_id left join users o1_0 on o1_0.id=e1_0.organizer_id where e1_0.status_id in (?,?,?) order by e1_0.start_time
+2026-06-01 20:01:48 DEBUG SQL:135 - select es1_0.event_id,es1_0.created_at,es1_0.last_updated,es1_0.total_revenue,es1_0.total_tickets_sold,es1_0.total_views from event_statistics es1_0 where es1_0.event_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+2026-06-01 20:01:48 INFO  ApiEventController:67 - end sql

@@ -26,7 +26,7 @@ import com.nvtt.utils.exceptions.IdInvalidException;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiOrganizerApplicationController {
     
     private static final Logger logger = LogManager.getLogger(ApiOrganizerApplicationController.class);
@@ -34,7 +34,7 @@ public class ApiOrganizerApplicationController {
     @Autowired
     private OrganizerVerificationService organizerVerificationService;
     
-    @PostMapping("secure/organizer-application")
+    @PostMapping("/me/organizer-application")
     public ResponseEntity<ResOrganizerApplicationDTO> addOrganizerApplication(@RequestParam Map<String, String> params) throws IdInvalidException {
         logger.info("start sql addOrganizerApplication");
         OrganizerVerification addedVerification = organizerVerificationService.addOrganizerVerification(params);

@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiEventController {
 
     private static final Logger logger = LogManager.getLogger(ApiEventController.class);
@@ -59,7 +59,7 @@ public class ApiEventController {
     @Autowired
     private EventStatisticService eventStatisticService;
 
-    @GetMapping("/events")
+    @GetMapping("/public/events")
     public ResponseEntity<List<ResEventInfoDTO>> getEvents(@RequestParam Map<String, String> params) {
         logger.info("start sql getEvents");
         List<Event> events = eventService.getPublicEvents(params);
@@ -68,7 +68,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.OK).body(resEventInfoDTOs);
     }
 
-    @GetMapping("/events/{id}")
+    @GetMapping("/public/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getEventById(@PathVariable Long id) {
         logger.info("start sql getEventById");
         Event event = eventService.getPublicEventById(id);
@@ -79,7 +79,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @GetMapping("/secure/organizer/events")
+    @GetMapping("/organizer/events")
     public ResponseEntity<List<ResEventInfoDTO>> getOrganizerEvents(@RequestParam Map<String, String> params) {
         logger.info("start sql getOrganizerEvents");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -93,7 +93,7 @@ public class ApiEventController {
         }
     }
 
-    @GetMapping("/secure/organizer/events/{id}")
+    @GetMapping("/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> getOwnEventById(@PathVariable Long id) {
         logger.info("start sql getOwnEventById");
         Event event = eventService.getOwnEventById(id);
@@ -103,7 +103,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @PostMapping("/secure/organizer/events")
+    @PostMapping("/organizer/events")
     public ResponseEntity<ResEventInfoDTO> addEvent(@RequestParam Map<String, String> params, @RequestParam("images") Optional<Set<MultipartFile>> images,
             @RequestParam("videos") Optional<Set<MultipartFile>> videos) {
         logger.info("start sql addEvent");
@@ -114,7 +114,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @PutMapping("/secure/organizer/events/{id}")
+    @PutMapping("/organizer/events/{id}")
     public ResponseEntity<ResEventInfoDTO> updateEvent(@PathVariable Long id, @RequestParam Map<String, String> params,
             @RequestParam("newImages") Optional<Set<MultipartFile>> newImages,
             @RequestParam("newVideos") Optional<Set<MultipartFile>> newVideos,
@@ -127,7 +127,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @PutMapping("/secure/organizer/launch-event")
+    @PutMapping("/organizer/launch-event")
     public ResponseEntity<Void> launchEvent(@RequestParam Long eventId) {
         logger.info("start sql lauchEvent");
         eventService.launchEvent(eventId);
@@ -135,13 +135,13 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/secure/organizer/end-event")
+    @PutMapping("/organizer/end-event")
     public ResponseEntity<Void> endEvent(@RequestParam Long eventId) {
         eventService.endEvent(eventId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/secure/organizer/events/{id}")
+    @DeleteMapping("/organizer/events/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         logger.info("start sql deleteEvent");
         eventService.deleteEvent(id);
@@ -149,7 +149,7 @@ public class ApiEventController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/events/compare")
+    @GetMapping("/public/events/compare")
     public ResponseEntity<List<EventCompareResponseDTO>> compareEvents(@RequestParam("ids") List<Long> ids) throws IdInvalidException {
         logger.info("start sql compareEvent");
         if (ids == null || ids.size() < 2 || ids.size() > 3) {

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiTicketController {
     
     private static final Logger logger = LogManager.getLogger(ApiTicketController.class);
@@ -36,7 +36,7 @@ public class ApiTicketController {
     @Autowired
     private TicketUtils ticketUtils;
     
-    @GetMapping("/secure/tickets")
+    @GetMapping("/me/tickets")
     public ResponseEntity<List<ResTicketDTO>> getTickets(@RequestParam Map<String, String> params) {
         logger.info("start sql getTickets");
         List<Ticket> tickets = this.ticketService.getTickets(params);
@@ -45,7 +45,7 @@ public class ApiTicketController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
-    @GetMapping("/secure/my-tickets")
+    @GetMapping("/me/my-tickets")
     public ResponseEntity<List<ResTicketDTO>> getMyTickets(@RequestParam Map<String, String> params) {
         logger.info("start sql getMyTickets");
         List<ResTicketDTO> dtos = this.ticketService.getMyTickets(params);
@@ -53,7 +53,7 @@ public class ApiTicketController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
-    @GetMapping("/secure/organizer/tickets")
+    @GetMapping("/organizer/tickets")
     public ResponseEntity<List<ResTicketDTO>> getOrganizerTickets(@RequestParam Map<String, String> params) {
         logger.info("start sql getOrganizerTickets");
         List<Ticket> tickets = this.ticketService.getOrganizerTickets(params);

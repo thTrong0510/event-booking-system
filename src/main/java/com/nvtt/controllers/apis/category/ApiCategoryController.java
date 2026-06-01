@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiCategoryController {
     
     private static final Logger logger = LogManager.getLogger(ApiCategoryController.class);
@@ -37,7 +37,7 @@ public class ApiCategoryController {
     @Autowired
     private CategoryUtils categoryUtils;
     
-    @GetMapping("/categories")
+    @GetMapping("/public/categories")
     public ResponseEntity<List<ResCategoryInfoDTO>> getCategories(@RequestParam Map<String, String> params) {
         logger.info("start sql getCategories");
         List<Category> categories = categoryService.getCategory(params);
@@ -46,7 +46,7 @@ public class ApiCategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @PostMapping("secure/categories")
+    @PostMapping("/me/categories")
     public ResponseEntity<ResCategoryInfoDTO> addCategory(@RequestParam Map<String, String> params) {
         logger.info("start sql addCategory");
         Category category = categoryService.addCategory(params);

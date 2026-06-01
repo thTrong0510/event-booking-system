@@ -57,15 +57,14 @@ public class SpringSecurityConfigs {
 
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource())).csrf(c -> c.disable())
                 .authorizeHttpRequests(req -> req
-                .requestMatchers("/api/**", "/").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/public/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling.accessDeniedPage("/admin/errors/401"))
-                .formLogin(form -> form.loginPage("/admin/login") // đường dẫn tới trang đăng nhập
-                .loginProcessingUrl("/admin/login") // đường dẫn xử lý post 
-                .defaultSuccessUrl("/", true) // chuyển hướng khi thành công
-                .failureUrl("/admin/login?error=true") // chuyển hướng khi thất bại
+                .formLogin(form -> form.loginPage("/admin/login")
+                .loginProcessingUrl("/admin/login")
+                .defaultSuccessUrl("/admin/dashboard", true) 
+                .failureUrl("/admin/login?error=true") 
                 .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/admin/login").permitAll());
 

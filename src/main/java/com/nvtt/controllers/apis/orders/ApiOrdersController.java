@@ -26,7 +26,7 @@ import com.nvtt.utils.OrderUtils.OrderUtils;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiOrdersController {
     
     private static final Logger logger = LogManager.getLogger(ApiOrdersController.class);
@@ -37,7 +37,7 @@ public class ApiOrdersController {
     @Autowired
     private OrderService orderService;
     
-    @GetMapping("secure/orders")
+    @GetMapping("/me/orders")
     public ResponseEntity<List<ResOrderInfoDTO>> getOrders(@RequestParam Map<String, String> params) {
         logger.info("start sql getOrders");
         List<Orders> orders = this.orderService.getOrders(params);
@@ -46,7 +46,7 @@ public class ApiOrdersController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
-    @GetMapping("secure/my-orders")
+    @GetMapping("/me/my-orders")
     public ResponseEntity<List<ResOrderInfoDTO>> getMyOrders() {
         logger.info("start sql getMyOrders");
         List<Orders> orders = this.orderService.getMyOrders();

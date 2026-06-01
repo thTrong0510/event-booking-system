@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @PropertySource("classpath:configs.properties")
-@RequestMapping("/api/payment/paypal")
+@RequestMapping("/api/v1/me/payment/paypal")
 public class PaymentController {
 
     private static final Logger logger = LogManager.getLogger(PaymentController.class);

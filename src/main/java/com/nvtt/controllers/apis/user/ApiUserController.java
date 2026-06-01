@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author vthan
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ApiUserController {
     
     private static final Logger logger = LogManager.getLogger(ApiUserController.class);
@@ -47,7 +47,7 @@ public class ApiUserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/users")
+    @PostMapping("/public/register")
     public ResponseEntity<ResUserInfoDTO> createUser(@RequestParam Map<String, String> params,
             @RequestParam("avatar") MultipartFile avatar) throws IdInvalidException {
         
@@ -63,7 +63,7 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<ResLoginDTO> login(@RequestBody @Valid ReqUserLoginDTO reqUser, BindingResult registerResult) throws IdInvalidException {
         logger.info("start sql login");
         if (registerResult.hasErrors()) {
@@ -96,7 +96,7 @@ public class ApiUserController {
         }
     }
 
-    @GetMapping("/secure/me")
+    @GetMapping("/me")
     public ResponseEntity<ResUserInfoDTO> getMyInfo() {
         logger.info("start sql getMyInfo");
         User currentUser = userService.getMyInfo();
@@ -107,7 +107,7 @@ public class ApiUserController {
 
     }
 
-    @PutMapping("/secure/me")
+    @PutMapping("/me")
     public ResponseEntity<ResUserInfoDTO> updateMyInfo(@RequestParam Map<String, String> params,
             @RequestParam("avatar") Optional<MultipartFile> avatar) {
         logger.info("start sql updateMyInfo");

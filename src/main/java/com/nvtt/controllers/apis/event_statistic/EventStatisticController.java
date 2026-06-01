@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lequa
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class EventStatisticController {
     
     private static final Logger logger = LogManager.getLogger(EventStatisticController.class);
@@ -38,7 +38,7 @@ public class EventStatisticController {
     @Autowired
     private EventStatisticUtils eventStatisticUtils;
     
-    @GetMapping("/secure/event-statistics")
+    @GetMapping("/me/event-statistics")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatistics(@RequestParam Map<String, String> params) {
         logger.info("start sql getEventStatistics");
         List<EventStatistic> eventStatistics = eventStatisticService.getEventStatistics(params);
@@ -47,7 +47,7 @@ public class EventStatisticController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
-    @GetMapping("/secure/event-statistics/by-month")
+    @GetMapping("/me/event-statistics/by-month")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatisticsByMonth(
             @RequestParam String month,
             @RequestParam(required = false) String year,
@@ -66,7 +66,7 @@ public class EventStatisticController {
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
-    @GetMapping("/secure/event-statistics/by-quarter")
+    @GetMapping("/me/event-statistics/by-quarter")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatisticsByQuarter(
             @RequestParam String quarter,
             @RequestParam(required = false) String year,
@@ -85,7 +85,7 @@ public class EventStatisticController {
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
-    @GetMapping("/secure/event-statistics/by-year")
+    @GetMapping("/me/event-statistics/by-year")
     public ResponseEntity<List<ResEventStatisticDTO>> getEventStatisticsByYear(
             @RequestParam String year,
             @RequestParam Map<String, String> params) {
@@ -100,7 +100,7 @@ public class EventStatisticController {
             return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
     
-    @GetMapping("/secure/event-statistics/{eventId}")
+    @GetMapping("/me/event-statistics/{eventId}")
     public ResponseEntity<ResEventStatisticDTO> getEventStatisticByEventId(@PathVariable Long eventId) {
             logger.info("start sql getEventStatisticByEventId");
             EventStatistic eventStatistic = eventStatisticService.getEventStatisticByEventId(eventId);

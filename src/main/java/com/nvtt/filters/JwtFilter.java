@@ -39,8 +39,11 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
+        boolean isSecureApi = httpReq.getRequestURI().startsWith(httpReq.getContextPath() + "/api/v1/me")
+                || httpReq.getRequestURI().startsWith(httpReq.getContextPath() + "/api/v1/organizer");
+
         logger.info("start filter Jwt");
-        if (httpReq.getRequestURI().startsWith(String.format("%s/api/secure", httpReq.getContextPath())) == true) {
+        if (isSecureApi) {
 
             String header = httpReq.getHeader("Authorization");
 
