@@ -57,14 +57,14 @@ public class SpringSecurityConfigs {
 
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource())).csrf(c -> c.disable())
                 .authorizeHttpRequests(req -> req
-                .requestMatchers("/api/v1/public/**").permitAll()
+                .requestMatchers("/api/v1/public/**", "/api/v1/me/**", "/api/v1/organizer/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling.accessDeniedPage("/admin/errors/401"))
                 .formLogin(form -> form.loginPage("/admin/login")
                 .loginProcessingUrl("/admin/login")
-                .defaultSuccessUrl("/admin/dashboard", true) 
-                .failureUrl("/admin/login?error=true") 
+                .defaultSuccessUrl("/admin/dashboard", true)
+                .failureUrl("/admin/login?error=true")
                 .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/admin/login").permitAll());
 
@@ -88,17 +88,17 @@ public class SpringSecurityConfigs {
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000/")); 
+        config.setAllowedOrigins(List.of("http://localhost:3000/"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
-        config.setAllowCredentials(true); 
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

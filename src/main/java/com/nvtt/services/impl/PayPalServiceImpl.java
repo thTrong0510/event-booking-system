@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,6 +46,12 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class PayPalServiceImpl implements PayPalService {
+    
+    @Value("${paypal.cancel-url}")
+    private String cancelUrl;
+    
+    @Value("${paypal.return-url}")
+    private String returnUrl;
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -118,8 +125,8 @@ public class PayPalServiceImpl implements PayPalService {
 
         // Nhúng ngược orderId và paymentId vào URL callback trả về phục vụ Bước 5 & 6
         Map<String, String> applicationContext = new HashMap<>();
-        applicationContext.put("return_url", "http://localhost:8080/nvtt_lqv/api/payment/paypal/success?orderId=" + orderId + "&paymentId=" + paymentId);
-        applicationContext.put("cancel_url", "http://localhost:8080/nvtt_lqv/api/payment/paypal/cancel?orderId=" + orderId + "&paymentId=" + paymentId);
+        applicationContext.put("return_url", returnUrl + "?orderId=" + orderId + "&paymentId=" + paymentId);
+        applicationContext.put("cancel_url", cancelUrl + "?orderId=" + orderId + "&paymentId=" + paymentId + "&eventId=" + event.getId());
         orderRequest.put("application_context", applicationContext);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(orderRequest, headers);

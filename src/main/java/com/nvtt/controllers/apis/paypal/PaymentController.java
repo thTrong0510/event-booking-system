@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @PropertySource("classpath:configs.properties")
-@RequestMapping("/api/v1/me/payment/paypal")
+@RequestMapping("/api/v1")
 public class PaymentController {
 
     private static final Logger logger = LogManager.getLogger(PaymentController.class);
@@ -47,7 +47,7 @@ public class PaymentController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/create")
+    @PostMapping("/me/payment/paypal/create")
     public ResponseEntity<PayPalResponseDTO> createPayment(@RequestBody PaymentCreateRequest request) {
         logger.info("start sql createPayment");
         PayPalResponseDTO response = paypalService.createPayPalPayment(request);
@@ -55,7 +55,7 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/success")
+    @GetMapping("/public/payment/paypal/success")
     public ResponseEntity<PaymentSuccessResponseDTO> successPayment(
             @RequestParam("token") String token,
             @RequestParam("PayerID") String payerId,
@@ -89,13 +89,19 @@ public class PaymentController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/cancel")
+    @GetMapping("/public/payment/paypal/cancel")
     public ResponseEntity<String> cancelPayment(
             @RequestParam("orderId") Long orderId,
-            @RequestParam("paymentId") Long paymentId) {
+            @RequestParam("paymentId") Long paymentId,
+            @RequestParam("eventId") Long eventId,
+            HttpServletResponse response) {
         logger.info("start sql cancelPayment");
         paypalService.executeCancelPayment(orderId, paymentId);
         logger.info("end sql");
+        String frontendBaseUrl = this.env.getProperty("frontend.url", String.class);
+        String redirectUrl = frontendBaseUrl
+                + "/payment/cancel?orderId=" + orderId
+                + "&eventId=" + eventId;
         return ResponseEntity.ok("Giao dịch thanh toán bằng tài khoản PayPal đã bị hủy bỏ bởi người dùng.");
     }
 }

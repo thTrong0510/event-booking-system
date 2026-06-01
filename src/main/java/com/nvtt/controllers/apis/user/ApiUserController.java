@@ -104,7 +104,6 @@ public class ApiUserController {
                 currentUser.getFullName(), currentUser.getAvatarUrl(), currentUser.getRole().getId(), currentUser.getRole().getName(), currentUser.getIsActive());
         logger.info("end sql");
         return ResponseEntity.status(HttpStatus.OK).body(userInfoDto);
-
     }
 
     @PutMapping("/me")
