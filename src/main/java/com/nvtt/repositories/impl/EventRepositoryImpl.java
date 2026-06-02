@@ -313,9 +313,9 @@ public class EventRepositoryImpl implements EventRepository {
                 predicates.add(b.equal(root.get("category").get("id"), Integer.parseInt(cateId)));
             }
 
-            String statusId = params.get("statusId");
-            if (statusId != null && !statusId.isEmpty()) {
-                predicates.add(b.equal(root.get("status").get("id"), Integer.parseInt(statusId)));
+            String status = params.get("status");
+            if (status != null && !status.isEmpty()) {
+                predicates.add(b.like(root.get("status").get("name"), String.format("%%%s%%", status)));
             }
 
             String startTime = params.get("startTime");

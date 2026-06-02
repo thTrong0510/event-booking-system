@@ -5,12 +5,13 @@
 package com.nvtt.utils.EventStatusUtils;
 
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
 import com.nvtt.pojo.EventStatus;
+import com.nvtt.pojo.dtos.event_status.ResEventStatusDTO;
 import com.nvtt.repositories.EventStatusRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,4 +45,17 @@ public class EventStatusUtils {
                 List.of("PUBLISHED", "ONSALE", "SOLDOUT", "ENDED", "COMPLETED")
         );
     }
+    
+    public ResEventStatusDTO convertToEventStatusDTO(EventStatus eventStatus){
+        ResEventStatusDTO dto = new ResEventStatusDTO(eventStatus.getId(), eventStatus.getName());
+        return dto;
+    }
+    
+    public List<ResEventStatusDTO> convertToListResEventStatusDTO(List<EventStatus> eventStatuses){
+        List<ResEventStatusDTO> dtos = new ArrayList<>();
+        for (EventStatus e : eventStatuses) {
+            dtos.add(this.convertToEventStatusDTO(e));
+        }
+        return dtos;
+    } 
 }
