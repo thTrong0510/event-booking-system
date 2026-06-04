@@ -22,7 +22,7 @@ import com.nvtt.utils.exceptions.IdInvalidException;
 import java.util.Objects;
 
 @Service
-@PropertySource("classpath:configs.properties")
+@PropertySource(value = "classpath:configs.properties", ignoreResourceNotFound = true)
 @Transactional
 public class OrganizerVerificationServiceImpl implements OrganizerVerificationService {
 

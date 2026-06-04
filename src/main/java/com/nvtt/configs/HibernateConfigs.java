@@ -14,7 +14,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 @Configuration
-@PropertySource("classpath:databases.properties")
+@PropertySource(value = "classpath:databases.properties", ignoreResourceNotFound = true)
 public class HibernateConfigs {
 
     @Autowired

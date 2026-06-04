@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@PropertySource("classpath:configs.properties")
+@PropertySource(value = "classpath:configs.properties", ignoreResourceNotFound = true)
 public class UserServiceImpl implements UserService {
 
     @Autowired

@@ -21,7 +21,6 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Expression;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-@PropertySource("classpath:configs.properties")
+@PropertySource(value = "classpath:configs.properties", ignoreResourceNotFound = true)
 public class EventRepositoryImpl implements EventRepository {
 
     @Autowired

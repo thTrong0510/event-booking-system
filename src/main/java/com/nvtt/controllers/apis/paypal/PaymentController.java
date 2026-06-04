@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@PropertySource("classpath:configs.properties")
+@PropertySource(value = "classpath:configs.properties", ignoreResourceNotFound = true)
 @RequestMapping("/api/v1")
 public class PaymentController {
 
