@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.nvtt.pojo.EventStatus</class>
+    <class>com.nvtt.pojo.SystemStatisticsDaily</class>
+    <class>com.nvtt.pojo.Category</class>
+    <class>com.nvtt.pojo.Event</class>
+    <class>com.nvtt.pojo.EventStatistic</class>
+    <class>com.nvtt.pojo.OrganizerVerification</class>
+    <class>com.nvtt.pojo.PaymentTransaction</class>
+    <class>com.nvtt.pojo.Payment</class>
+    <class>com.nvtt.pojo.Permission</class>
+    <class>com.nvtt.pojo.Role</class>
+    <class>com.nvtt.pojo.Ticket</class>
+    <class>com.nvtt.pojo.User</class>
+    <class>com.nvtt.pojo.EventMedia</class>
+    <class>com.nvtt.pojo.Orders</class>
+  </persistence-unit>
+</persistence>

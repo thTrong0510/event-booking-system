@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<body>
+    <nav th:fragment="admin-sidebar" id="sidebarMenu"
+        class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse border-end">
+        <div class="sidebar-sticky pt-3">
+
+            <p class="px-3 mb-1 text-uppercase fw-semibold"
+                style="font-size:0.7rem;letter-spacing:.08em;color:#adb5bd;">
+                Tổng quan
+            </p>
+            <ul class="nav flex-column gap-1 px-2 mb-3">
+                <li class="nav-item">
+                    <a th:href="@{/admin/dashboard}"
+                        th:class="${activePage == 'dashboard'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'dashboard'} ? 'bi bi-speedometer2 me-2 text-white' : 'bi bi-speedometer2 me-2 text-primary'"></i>
+                        Bảng điều khiển
+                    </a>
+                </li>
+            </ul>
+
+            <p class="px-3 mb-1 text-uppercase fw-semibold"
+                style="font-size:0.7rem;letter-spacing:.08em;color:#adb5bd;">
+                Quản lý
+            </p>
+            <ul class="nav flex-column gap-1 px-2 mb-3">
+                <li class="nav-item">
+                    <a th:href="@{/admin/verifications}"
+                        th:class="${activePage == 'verifications'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'verifications'} ? 'bi bi-shield-check me-2 text-white' : 'bi bi-shield-check me-2 text-success'"></i>
+                        Phê duyệt hồ sơ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/users}"
+                        th:class="${activePage == 'users'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'users'} ? 'bi bi-people me-2 text-white' : 'bi bi-people me-2 text-info'"></i>
+                        Quản lý người dùng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/roles-permissions}"
+                        th:class="${activePage == 'roles-permissions'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'roles-permissions'} ? 'bi bi-shield-lock me-2 text-white' : 'bi bi-shield-check me-2 text-success'"></i>
+                        Quản lý phân quyền
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/events}"
+                        th:class="${activePage == 'events'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'events'} ? 'bi bi-calendar-event me-2 text-white' : 'bi bi-calendar-event me-2 text-warning'"></i>
+                        Quản lý sự kiện
+                    </a>
+                </li>
+            </ul>
+
+            <p class="px-3 mb-1 text-uppercase fw-semibold"
+                style="font-size:0.7rem;letter-spacing:.08em;color:#adb5bd;">
+                Hệ thống
+            </p>
+            <ul class="nav flex-column gap-1 px-2 mb-3">
+                <li class="nav-item">
+                    <a th:href="@{/admin/settings}"
+                        th:class="${activePage == 'settings'} ? 'nav-link py-2 px-3 rounded active-menu' : 'nav-link py-2 px-3 rounded text-dark hover-bg'">
+                        <i
+                            th:class="${activePage == 'settings'} ? 'bi bi-gear me-2 text-white' : 'bi bi-gear me-2 text-secondary'"></i>
+                        Cài đặt
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${emailTitle}">Thông báo tài khoản</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 580px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eef2f5;
+        }
+
+        .header {
+            background-color: #4f46e5;
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 35px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .greeting {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .body-text {
+            font-size: 15px;
+            color: #475569;
+            background-color: #f8fafc;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+            margin: 20px 0;
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2 th:text="${emailTitle}">Tiêu đề thông báo</h2>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Xin chào, <span th:text="${recipientName}">Người dùng</span>!
+            </div>
+            <p>Hệ thống Đặt Vé Sự Kiện Trực Tuyến xin thông báo trạng thái cập nhật mới nhất liên quan đến tài khoản của
+                bạn:</p>
+
+
+            <div class="body-text" th:text="${emailMessage}">
+                Nội dung thông báo chi tiết của hệ thống nằm ở đây.
+            </div>
+
+            <p>Nếu bạn có bất kỳ thắc mắc nào cần được giải đáp hoặc cho rằng đây là một sự nhầm lẫn, vui lòng liên hệ
+                ngay với đội ngũ Quản trị viên của chúng tôi để được hỗ trợ kịp thời.</p>
+            <p>Trân trọng,<br><strong>Ban Quản Trị Hệ Thống</strong></p>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Ticket Booking System. All rights reserved.
+        </div>
+    </div>
+
+</body>
+
+</html>

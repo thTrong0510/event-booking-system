@@ -1,0 +1,103 @@
+package com.nvtt.filters;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jwt.proc.ExpiredJWTException;
+import com.nvtt.utils.JwtUtil;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+public class JwtFilter implements Filter {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = LogManager.getLogger(JwtFilter.class);
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        HttpServletResponse httpRes = (HttpServletResponse) response;
+
+        boolean isSecureApi = httpReq.getRequestURI().startsWith(httpReq.getContextPath() + "/api/v1/me")
+                || httpReq.getRequestURI().startsWith(httpReq.getContextPath() + "/api/v1/organizer");
+
+        logger.info("start filter Jwt");
+        if (isSecureApi) {
+
+            String header = httpReq.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
+                        "MISSING_TOKEN",
+                        "Missing or invalid Authorization header.");
+                return;
+            }
+
+            String token = header.substring(7);
+            try {
+                String username = JwtUtil.validateTokenAndGetUsername(token);
+                if (username != null) {
+                    httpReq.setAttribute("username", username);
+                    UsernamePasswordAuthenticationToken auth
+                            = new UsernamePasswordAuthenticationToken(username, null, null);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    chain.doFilter(request, response);
+                    return;
+                } else {
+                    writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
+                            "TOKEN_INVALID",
+                            "Token không hợp lệ.");
+                    return;
+
+                }
+
+            } catch (ExpiredJWTException e) {
+                writeJsonError(httpRes, HttpServletResponse.SC_UNAUTHORIZED,
+                        "TOKEN_EXPIRED",
+                        "Token đã hết hạn, vui lòng đăng nhập lại.");
+                return;
+            } catch (Exception e) {
+                writeJsonError(httpRes, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "SERVER_ERROR",
+                        "Lỗi xác thực không xác định.");
+                return;
+            }
+
+        }
+
+        logger.info("end jwt filter");
+
+        chain.doFilter(request, response);
+    }
+
+    private void writeJsonError(HttpServletResponse response,
+            int statusCode,
+            String errorCode,
+            String message) throws IOException {
+
+        response.setStatus(statusCode);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("statusCode", statusCode);
+        body.put("error", errorCode);
+        body.put("message", message);
+        body.put("data", null);
+
+        response.getWriter().write(objectMapper.writeValueAsString(body));
+        response.getWriter().flush();
+    }
+}
