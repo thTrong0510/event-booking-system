@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 FROM tomcat:9.0-jdk17-corretto
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/nvtt_lqv.war
 
 RUN sed -i 's/port="8005" shutdown="SHUTDOWN"/port="-1" shutdown="SHUTDOWN"/g' /usr/local/tomcat/conf/server.xml
 
