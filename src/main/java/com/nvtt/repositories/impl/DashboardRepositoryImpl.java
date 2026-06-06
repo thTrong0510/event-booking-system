@@ -117,7 +117,7 @@ public class DashboardRepositoryImpl implements DashboardRepository {
         Join<Orders, Event> eventJoin = root.join("event");
         Join<Event, Category> categoryJoin = eventJoin.join("category");
 
-        query.multiselect(categoryJoin.get("name"), cb.sum(root.get("totalAmount")));
+        query.multiselect(categoryJoin.get("name"), cb.sum(root.get("totalAmount")), cb.count(eventJoin.get("id")));
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(root.get("status"), "CONFIRMED"));
@@ -136,6 +136,7 @@ public class DashboardRepositoryImpl implements DashboardRepository {
             Map<String, Object> map = new HashMap<>();
             map.put("category", row[0]);
             map.put("revenue", row[1] != null ? row[1] : 0);
+            map.put("eventCount", row[2]);
             list.add(map);
         }
         return list;

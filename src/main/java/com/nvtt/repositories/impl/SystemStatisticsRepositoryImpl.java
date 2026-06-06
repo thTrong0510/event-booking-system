@@ -2,15 +2,14 @@ package com.nvtt.repositories.impl;
 
 import com.nvtt.pojo.SystemStatisticsDaily;
 import com.nvtt.repositories.SystemStatisticsRepository;
-import com.nvtt.utils.Utilities;
 import jakarta.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -81,7 +80,11 @@ public class SystemStatisticsRepositoryImpl implements SystemStatisticsRepositor
             hql += "AND s.statDate <= :endDate ";
         }
 
-        var query = sessionFactory.getObject().getCurrentSession().createQuery(hql);
+        Query<Object[]> query = sessionFactory
+                .getObject()
+                .getCurrentSession()
+                .createQuery(hql, Object[].class);
+        
         if (startDate != null) {
             query.setParameter("startDate", startDate);
         }

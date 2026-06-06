@@ -18,7 +18,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
         boolean valid = true;
 
         if (!user.getPassword().equals(user.getConfirmPassword())) {
-            context.buildConstraintViolationWithTemplate("Passwords nhập không chính xác")
+            context.buildConstraintViolationWithTemplate("ConfirmedPasswords nhập không khớp")
                     .addPropertyNode("confirmPassword")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();

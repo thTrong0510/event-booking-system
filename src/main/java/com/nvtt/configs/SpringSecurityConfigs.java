@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,13 +44,18 @@ public class SpringSecurityConfigs {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource())).csrf(c -> c.disable())
                 .authorizeHttpRequests(req -> req
-                .requestMatchers("/api/v1/public/**", "/api/v1/me/**", "/api/v1/organizer/**").permitAll()
+                .requestMatchers("/api/v1/public/**", "/api/v1/me/**", "/api/v1/organizer/**", "/admin/register").permitAll()
                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling.accessDeniedPage("/admin/errors/401"))

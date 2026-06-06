@@ -32,7 +32,7 @@ public class OrderCleanupScheduler {
     public void cancelExpiredPendingOrders() {
 
         Date fiveMinutesAgo = new Date(System.currentTimeMillis() - 15 * 60 * 1000);
-
+        logger.info("start sql cancelExpiredPendingOrders");
         List<Orders> expiredOrders = paymentRepository.findPendingOrdersBefore(fiveMinutesAgo);
 
         if (expiredOrders != null && !expiredOrders.isEmpty()) {
@@ -47,6 +47,7 @@ public class OrderCleanupScheduler {
                 logger.info("Đã tự động hủy đơn hàng rác ID: {}", order.getId());
             }
         }
+        logger.info("end sql");
     }
 
     private void handleFailure(Long orderId, Long paymentId, int quantityTickets, Long eventId) {

@@ -2,6 +2,7 @@ package com.nvtt.configs;
 
 import java.util.Base64;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +25,11 @@ public class PayPalConfig {
 
     @Value("${paypal.base-url}")
     private String baseUrl;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+    
+    @Autowired
+    private RestTemplate restTemplate;
 
     public String getAccessToken() {
-        RestTemplate restTemplate = new RestTemplate();
         String auth = clientId + ":" + secret;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 

@@ -12,16 +12,16 @@ public class LoginValidator implements ConstraintValidator<LoginChecked, ReqUser
     public boolean isValid(ReqUserLoginDTO user, ConstraintValidatorContext context) {
         boolean valid = true;
         if (user.getPassword().isBlank()) {
-            context.buildConstraintViolationWithTemplate("Email is missed")
-                    .addPropertyNode("email")
+            context.buildConstraintViolationWithTemplate("Password is missed")
+                    .addPropertyNode("password")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
             valid = false;
         }
 
         if (user.getEmail().isBlank()) {
-            context.buildConstraintViolationWithTemplate("Password is missed")
-                    .addPropertyNode("password")
+            context.buildConstraintViolationWithTemplate("Email is missed")
+                    .addPropertyNode("email")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
             valid = false;
